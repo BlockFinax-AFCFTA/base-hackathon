@@ -1,0 +1,913 @@
+// FILE STRUCTURE
+// src/
+// ├── components/
+// │   ├── layout/
+// │   │   ├── Header.tsx
+// │   │   ├── Sidebar.tsx
+// │   │   └── Layout.tsx
+// │   ├── dashboard/
+// │   │   ├── DashboardStats.tsx
+// │   │   ├── RecentTransactions.tsx
+// │   │   └── Dashboard.tsx
+// │   ├── wallet/
+// │   │   ├── ConnectWallet.tsx
+// │   │   ├── WalletBalance.tsx
+// │   │   └── WalletPage.tsx
+// │   ├── contracts/
+// │   │   ├── ContractForm.tsx
+// │   │   ├── ContractList.tsx
+// │   │   ├── ContractDetails.tsx
+// │   │   └── ContractsPage.tsx
+// │   └── documents/
+// │       ├── DocumentUpload.tsx
+// │       ├── DocumentList.tsx
+// │       └── DocumentsPage.tsx
+// ├── context/
+// │   ├── Web3Context.tsx
+// │   └── AppContext.tsx
+// ├── hooks/
+// │   ├── useWeb3.ts
+// │   ├── useContracts.ts
+// │   └── useDocuments.ts
+// ├── types/
+// │   ├── contract.ts
+// │   ├── document.ts
+// │   └── user.ts
+// ├── services/
+// │   ├── web3Service.ts
+// │   ├── contractService.ts
+// │   └── documentService.ts
+// ├── App.tsx
+// └── index.tsx
+
+// TYPES
+
+// src/types/contract.ts
+export enum ContractStatus {
+  DRAFT = 'DRAFT',
+  AWAITING_FUNDS = 'AWAITING_FUNDS',
+  FUNDED = 'FUNDED',
+  GOODS_SHIPPED = 'GOODS_SHIPPED',
+  GOODS_RECEIVED = 'GOODS_RECEIVED',
+  COMPLETED = 'COMPLETED',
+  DISPUTED = 'DISPUTED',
+  CANCELLED = 'CANCELLED'
+}
+
+export enum PartyRole {
+  IMPORTER = 'IMPORTER',
+  EXPORTER = 'EXPORTER',
+  MEDIATOR = 'MEDIATOR'
+}
+
+export interface Party {
+  address: string;
+  role: PartyRole;
+  name: string;
+  country: string;
+}
+
+export interface TradeTerms {
+  incoterm: string; // EXW, FOB, CIF, etc.
+  paymentTerms: string; // Letter of Credit, Open Account, etc.
+  currency: string; 
+  amount: number;
+  deliveryDeadline: Date;
+  inspectionPeriod: number; // in days
+  disputeResolutionMechanism: string;
+}
+
+export interface ContractDocument {
+  id: string;
+  name: string;
+  documentType: string; // Bill of Lading, Invoice, Certificate of Origin, etc.
+  hash: string;
+  uploadedBy: string;
+  uploadedAt: Date;
+  url: string;
+}
+
+export interface EscrowContract {
+  id: string;
+  contractAddress?: string;
+  title: string;
+  description: string;
+  status: ContractStatus;
+  parties: Party[];
+  tradeTerms: TradeTerms;
+  documents: ContractDocument[];
+  createdAt: Date;
+  updatedAt: Date;
+  milestones: {
+    created: Date;
+    funded?: Date;
+    shipped?: Date;
+    received?: Date;
+    completed?: Date;
+    disputed?: Date;
+  };
+}
+
+// src/types/document.ts
+export interface Document {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  hash: string;
+  url: string;
+  contractId?: string;
+  uploadedBy: string;
+  uploadedAt: Date;
+  tags: string[];
+}
+
+// src/types/user.ts
+export interface User {
+  address: string;
+  username?: string;
+  profileImage?: string;
+  connectedAt: Date;
+}
+
+// CONTEXT
+
+// src/context/Web3Context.tsx
+import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import { ethers } from 'ethers';
+import { User } from '../types/user';
+
+interface Web3ContextType {
+  provider: ethers.providers.Web3Provider | null;
+  signer: ethers.Signer | null;
+  account: string | null;
+  user: User | null;
+  balance: string;
+  connectWallet: () => Promise<void>;
+  disconnectWallet: () => void;
+  isConnecting: boolean;
+  isConnected: boolean;
+  error: string | null;
+}
+
+export const Web3Context = createContext<Web3ContextType>({
+  provider: null,
+  signer: null,
+  account: null,
+  user: null,
+  balance: '0',
+  connectWallet: async () => {},
+  disconnectWallet: () => {},
+  isConnecting: false,
+  isConnected: false,
+  error: null,
+});
+
+interface Web3ProviderProps {
+  children: ReactNode;
+}
+
+export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
+  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
+  const [signer, setSigner] = useState<ethers.Signer | null>(null);
+  const [account, setAccount] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [balance, setBalance] = useState('0');
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const detectProvider = (): any => {
+    if (window.ethereum) return window.ethereum;
+    
+    if (window.web3?.currentProvider) return window.web3.currentProvider;
+    
+    return null;
+  };
+
+  const connectWallet = async () => {
+    try {
+      setIsConnecting(true);
+      setError(null);
+      
+      const ethereum = detectProvider();
+      
+      if (!ethereum) {
+        throw new Error('No Ethereum browser extension detected. Please install MetaMask or similar provider.');
+      }
+      
+      // Request account access
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+      const ethersProvider = new ethers.providers.Web3Provider(ethereum);
+      const ethersSigner = ethersProvider.getSigner();
+      const address = accounts[0];
+      
+      // Get account balance
+      const accountBalance = await ethersProvider.getBalance(address);
+      const balanceInEth = ethers.utils.formatEther(accountBalance);
+      
+      setProvider(ethersProvider);
+      setSigner(ethersSigner);
+      setAccount(address);
+      setBalance(balanceInEth);
+      setUser({
+        address,
+        connectedAt: new Date()
+      });
+      
+      // Listen for account changes
+      ethereum.on('accountsChanged', (newAccounts: string[]) => {
+        if (newAccounts.length === 0) {
+          disconnectWallet();
+        } else {
+          setAccount(newAccounts[0]);
+          updateBalance(ethersProvider, newAccounts[0]);
+        }
+      });
+      
+      // Listen for chain changes
+      ethereum.on('chainChanged', () => {
+        window.location.reload();
+      });
+      
+    } catch (err: any) {
+      setError(err.message);
+      console.error("Error connecting wallet:", err);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+  
+  const updateBalance = async (
+    provider: ethers.providers.Web3Provider, 
+    address: string
+  ) => {
+    const accountBalance = await provider.getBalance(address);
+    const balanceInEth = ethers.utils.formatEther(accountBalance);
+    setBalance(balanceInEth);
+  };
+
+  const disconnectWallet = () => {
+    setProvider(null);
+    setSigner(null);
+    setAccount(null);
+    setUser(null);
+    setBalance('0');
+  };
+
+  useEffect(() => {
+    // Check if there's a connected wallet on component mount
+    const checkConnection = async () => {
+      const ethereum = detectProvider();
+      if (ethereum) {
+        try {
+          const ethersProvider = new ethers.providers.Web3Provider(ethereum);
+          const accounts = await ethersProvider.listAccounts();
+          
+          if (accounts.length > 0) {
+            await connectWallet();
+          }
+        } catch (err) {
+          console.error("Failed to reconnect wallet:", err);
+        }
+      }
+    };
+    
+    checkConnection();
+    
+    return () => {
+      const ethereum = detectProvider();
+      if (ethereum) {
+        ethereum.removeAllListeners('accountsChanged');
+        ethereum.removeAllListeners('chainChanged');
+      }
+    };
+  }, []);
+
+  return (
+    <Web3Context.Provider
+      value={{
+        provider,
+        signer,
+        account,
+        user,
+        balance,
+        connectWallet,
+        disconnectWallet,
+        isConnecting,
+        isConnected: !!account,
+        error,
+      }}
+    >
+      {children}
+    </Web3Context.Provider>
+  );
+};
+
+// HOOKS
+
+// src/hooks/useWeb3.ts
+import { useContext } from 'react';
+import { Web3Context } from '../context/Web3Context';
+
+export const useWeb3 = () => {
+  return useContext(Web3Context);
+};
+
+// src/hooks/useContracts.ts
+import { useState, useEffect } from 'react';
+import { ContractService } from '../services/contractService';
+import { EscrowContract } from '../types/contract';
+
+export const useContracts = () => {
+  const [contracts, setContracts] = useState<EscrowContract[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const contractService = new ContractService();
+  
+  const fetchContracts = async () => {
+    try {
+      setLoading(true);
+      const data = await contractService.getContracts();
+      setContracts(data);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || 'Failed to fetch contracts');
+      console.error('Error fetching contracts:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const getContractById = async (id: string) => {
+    try {
+      return await contractService.getContractById(id);
+    } catch (err: any) {
+      setError(err.message || 'Failed to fetch contract');
+      console.error(`Error fetching contract ${id}:`, err);
+      return null;
+    }
+  };
+  
+  const createContract = async (contractData: Partial<EscrowContract>) => {
+    try {
+      const newContract = await contractService.createContract(contractData);
+      setContracts([...contracts, newContract]);
+      return newContract;
+    } catch (err: any) {
+      setError(err.message || 'Failed to create contract');
+      console.error('Error creating contract:', err);
+      return null;
+    }
+  };
+  
+  useEffect(() => {
+    fetchContracts();
+  }, []);
+  
+  return {
+    contracts,
+    loading,
+    error,
+    fetchContracts,
+    getContractById,
+    createContract
+  };
+};
+
+// src/hooks/useDocuments.ts
+import { useState, useEffect } from 'react';
+import { DocumentService } from '../services/documentService';
+import { Document } from '../types/document';
+
+export const useDocuments = (contractId?: string) => {
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const documentService = new DocumentService();
+  
+  const fetchDocuments = async () => {
+    try {
+      setLoading(true);
+      let data: Document[];
+      
+      if (contractId) {
+        data = await documentService.getDocumentsByContractId(contractId);
+      } else {
+        data = await documentService.getDocuments();
+      }
+      
+      setDocuments(data);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || 'Failed to fetch documents');
+      console.error('Error fetching documents:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const uploadDocument = async (file: File, contractId?: string, tags: string[] = []) => {
+    try {
+      const newDocument = await documentService.uploadDocument(file, contractId, tags);
+      setDocuments([...documents, newDocument]);
+      return newDocument;
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload document');
+      console.error('Error uploading document:', err);
+      return null;
+    }
+  };
+  
+  const deleteDocument = async (id: string) => {
+    try {
+      const success = await documentService.deleteDocument(id);
+      if (success) {
+        setDocuments(documents.filter(doc => doc.id !== id));
+      }
+      return success;
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete document');
+      console.error(`Error deleting document ${id}:`, err);
+      return false;
+    }
+  };
+  
+  useEffect(() => {
+    fetchDocuments();
+  }, [contractId]);
+  
+  return {
+    documents,
+    loading,
+    error,
+    fetchDocuments,
+    uploadDocument,
+    deleteDocument
+  };
+};
+
+// SERVICES
+
+// src/services/web3Service.ts
+import { ethers } from 'ethers';
+
+const ESCROW_CONTRACT_ABI = [
+  // This is a simplified ABI for an escrow contract
+  "function createEscrow(address _seller, address _mediator, uint256 _value, uint256 _releaseTime) payable returns (uint256)",
+  "function getEscrowDetails(uint256 _escrowId) view returns (address buyer, address seller, address mediator, uint256 amount, uint256 releaseTime, uint8 status)",
+  "function confirmDelivery(uint256 _escrowId)",
+  "function refundBuyer(uint256 _escrowId)",
+  "function resolveDispute(uint256 _escrowId, address _recipient)",
+  "event EscrowCreated(uint256 indexed escrowId, address indexed buyer, address indexed seller, uint256 amount)",
+  "event DeliveryConfirmed(uint256 indexed escrowId)",
+  "event DisputeResolved(uint256 indexed escrowId, address recipient)"
+];
+
+const ESCROW_FACTORY_ADDRESS = '0x...'; // Replace with your deployed contract address
+
+export class Web3Service {
+  private provider: ethers.providers.Web3Provider;
+  private signer: ethers.Signer;
+  
+  constructor(provider: ethers.providers.Web3Provider, signer: ethers.Signer) {
+    this.provider = provider;
+    this.signer = signer;
+  }
+  
+  async getEscrowFactoryContract() {
+    return new ethers.Contract(ESCROW_FACTORY_ADDRESS, ESCROW_CONTRACT_ABI, this.signer);
+  }
+  
+  async createEscrowContract(
+    sellerAddress: string,
+    mediatorAddress: string,
+    amount: string,
+    releaseTimeInDays: number
+  ) {
+    try {
+      const contract = await this.getEscrowFactoryContract();
+      const amountInWei = ethers.utils.parseEther(amount);
+      const releaseTime = Math.floor(Date.now() / 1000) + (releaseTimeInDays * 86400);
+      
+      const tx = await contract.createEscrow(
+        sellerAddress,
+        mediatorAddress,
+        amountInWei,
+        releaseTime,
+        { value: amountInWei }
+      );
+      
+      const receipt = await tx.wait();
+      const event = receipt.events?.find(e => e.event === 'EscrowCreated');
+      
+      if (!event) {
+        throw new Error('Failed to create escrow contract');
+      }
+      
+      return {
+        escrowId: event.args.escrowId.toString(),
+        buyer: event.args.buyer,
+        seller: event.args.seller,
+        amount: ethers.utils.formatEther(event.args.amount)
+      };
+    } catch (error) {
+      console.error('Error creating escrow contract:', error);
+      throw error;
+    }
+  }
+  
+  async getEscrowDetails(escrowId: string) {
+    try {
+      const contract = await this.getEscrowFactoryContract();
+      const details = await contract.getEscrowDetails(escrowId);
+      
+      return {
+        buyer: details.buyer,
+        seller: details.seller,
+        mediator: details.mediator,
+        amount: ethers.utils.formatEther(details.amount),
+        releaseTime: new Date(details.releaseTime.toNumber() * 1000),
+        status: this.getStatusString(details.status)
+      };
+    } catch (error) {
+      console.error('Error getting escrow details:', error);
+      throw error;
+    }
+  }
+  
+  private getStatusString(status: number): string {
+    const statuses = [
+      'Created',
+      'Funded',
+      'Delivered',
+      'Completed',
+      'Refunded',
+      'Disputed'
+    ];
+    return statuses[status] || 'Unknown';
+  }
+  
+  async confirmDelivery(escrowId: string) {
+    try {
+      const contract = await this.getEscrowFactoryContract();
+      const tx = await contract.confirmDelivery(escrowId);
+      await tx.wait();
+      return true;
+    } catch (error) {
+      console.error('Error confirming delivery:', error);
+      throw error;
+    }
+  }
+  
+  async refundBuyer(escrowId: string) {
+    try {
+      const contract = await this.getEscrowFactoryContract();
+      const tx = await contract.refundBuyer(escrowId);
+      await tx.wait();
+      return true;
+    } catch (error) {
+      console.error('Error refunding buyer:', error);
+      throw error;
+    }
+  }
+  
+  async resolveDispute(escrowId: string, recipientAddress: string) {
+    try {
+      const contract = await this.getEscrowFactoryContract();
+      const tx = await contract.resolveDispute(escrowId, recipientAddress);
+      await tx.wait();
+      return true;
+    } catch (error) {
+      console.error('Error resolving dispute:', error);
+      throw error;
+    }
+  }
+}
+
+// src/services/contractService.ts
+import { EscrowContract, ContractStatus, Party, TradeTerms } from '../types/contract';
+
+export class ContractService {
+  async getContracts(): Promise<EscrowContract[]> {
+    // In a real application, you'd fetch this from your backend or blockchain
+    // For demo purposes, we're returning mock data
+    return [
+      {
+        id: '1',
+        contractAddress: '0x123456789abcdef',
+        title: 'Coffee Bean Import from Colombia',
+        description: 'Import of 2000kg of premium Arabica coffee beans from Colombia to USA',
+        status: ContractStatus.FUNDED,
+        parties: [
+          {
+            address: '0xabc123...',
+            role: 'IMPORTER' as PartyRole,
+            name: 'US Coffee Distributors Inc.',
+            country: 'USA'
+          },
+          {
+            address: '0xdef456...',
+            role: 'EXPORTER' as PartyRole,
+            name: 'Colombian Coffee Growers',
+            country: 'Colombia'
+          }
+        ],
+        tradeTerms: {
+          incoterm: 'FOB',
+          paymentTerms: 'Letter of Credit',
+          currency: 'USD',
+          amount: 45000,
+          deliveryDeadline: new Date('2025-05-15'),
+          inspectionPeriod: 7,
+          disputeResolutionMechanism: 'ICC Arbitration'
+        },
+        documents: [
+          {
+            id: 'd1',
+            name: 'Commercial Invoice.pdf',
+            documentType: 'Invoice',
+            hash: '0xabcdef...',
+            uploadedBy: '0xabc123...',
+            uploadedAt: new Date('2025-03-28'),
+            url: '/documents/invoice.pdf'
+          },
+          {
+            id: 'd2',
+            name: 'Bill of Lading.pdf',
+            documentType: 'Bill of Lading',
+            hash: '0xfedcba...',
+            uploadedBy: '0xdef456...',
+            uploadedAt: new Date('2025-04-05'),
+            url: '/documents/bol.pdf'
+          }
+        ],
+        createdAt: new Date('2025-03-25'),
+        updatedAt: new Date('2025-04-05'),
+        milestones: {
+          created: new Date('2025-03-25'),
+          funded: new Date('2025-03-28')
+        }
+      },
+      {
+        id: '2',
+        contractAddress: '0x987654321fedcba',
+        title: 'Electronics Export to Europe',
+        description: 'Export of 500 laptop computers from Taiwan to Germany',
+        status: ContractStatus.GOODS_SHIPPED,
+        parties: [
+          {
+            address: '0x789xyz...',
+            role: 'IMPORTER' as PartyRole,
+            name: 'Deutsche Tech Distributors GmbH',
+            country: 'Germany'
+          },
+          {
+            address: '0x456uvw...',
+            role: 'EXPORTER' as PartyRole,
+            name: 'Taiwan Electronics Manufacturing Co.',
+            country: 'Taiwan'
+          }
+        ],
+        tradeTerms: {
+          incoterm: 'CIF',
+          paymentTerms: 'Open Account, 30 days',
+          currency: 'EUR',
+          amount: 325000,
+          deliveryDeadline: new Date('2025-04-30'),
+          inspectionPeriod: 14,
+          disputeResolutionMechanism: 'HKIAC Arbitration'
+        },
+        documents: [
+          {
+            id: 'd3',
+            name: 'Packing List.pdf',
+            documentType: 'Packing List',
+            hash: '0x123abc...',
+            uploadedBy: '0x456uvw...',
+            uploadedAt: new Date('2025-04-01'),
+            url: '/documents/packing-list.pdf'
+          }
+        ],
+        createdAt: new Date('2025-03-15'),
+        updatedAt: new Date('2025-04-02'),
+        milestones: {
+          created: new Date('2025-03-15'),
+          funded: new Date('2025-03-20'),
+          shipped: new Date('2025-04-02')
+        }
+      }
+    ];
+  }
+  
+  async getContractById(id: string): Promise<EscrowContract | null> {
+    const contracts = await this.getContracts();
+    return contracts.find(contract => contract.id === id) || null;
+  }
+  
+  async createContract(contractData: Partial<EscrowContract>): Promise<EscrowContract> {
+    // In a real app, you'd send this to your backend or blockchain
+    console.log('Creating contract with data:', contractData);
+    
+    // Return mock data for demonstration
+    return {
+      id: Math.random().toString(36).substring(2, 9),
+      contractAddress: undefined, // Will be assigned after blockchain transaction
+      title: contractData.title || 'Untitled Contract',
+      description: contractData.description || '',
+      status: ContractStatus.DRAFT,
+      parties: contractData.parties || [],
+      tradeTerms: contractData.tradeTerms as TradeTerms,
+      documents: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      milestones: {
+        created: new Date()
+      }
+    };
+  }
+  
+  async updateContractStatus(id: string, status: ContractStatus): Promise<boolean> {
+    // In a real app, you'd send this to your backend or blockchain
+    console.log(`Updating contract ${id} to status ${status}`);
+    return true;
+  }
+}
+
+// src/services/documentService.ts
+import { Document } from '../types/document';
+
+export class DocumentService {
+  async getDocuments(): Promise<Document[]> {
+    // In a real application, you'd fetch this from your backend
+    // For demo purposes, we're returning mock data
+    return [
+      {
+        id: 'd1',
+        name: 'Commercial Invoice.pdf',
+        type: 'application/pdf',
+        size: 258000,
+        hash: '0xabcdef...',
+        url: '/documents/invoice.pdf',
+        contractId: '1',
+        uploadedBy: '0xabc123...',
+        uploadedAt: new Date('2025-03-28'),
+        tags: ['invoice', 'payment']
+      },
+      {
+        id: 'd2',
+        name: 'Bill of Lading.pdf',
+        type: 'application/pdf',
+        size: 423000,
+        hash: '0xfedcba...',
+        url: '/documents/bol.pdf',
+        contractId: '1',
+        uploadedBy: '0xdef456...',
+        uploadedAt: new Date('2025-04-05'),
+        tags: ['shipping', 'legal']
+      },
+      {
+        id: 'd3',
+        name: 'Packing List.pdf',
+        type: 'application/pdf',
+        size: 156000,
+        hash: '0x123abc...',
+        url: '/documents/packing-list.pdf',
+        contractId: '2',
+        uploadedBy: '0x456uvw...',
+        uploadedAt: new Date('2025-04-01'),
+        tags: ['shipping', 'inventory']
+      }
+    ];
+  }
+  
+  async getDocumentsByContractId(contractId: string): Promise<Document[]> {
+    const documents = await this.getDocuments();
+    return documents.filter(doc => doc.contractId === contractId);
+  }
+  
+  async uploadDocument(
+    file: File, 
+    contractId?: string, 
+    tags: string[] = []
+  ): Promise<Document> {
+    // In a real app, you'd upload the file to IPFS or another storage solution
+    console.log('Uploading document:', file.name, 'for contract:', contractId);
+    
+    // Return mock data for demonstration
+    return {
+      id: Math.random().toString(36).substring(2, 9),
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      hash: '0x' + Math.random().toString(16).substring(2, 10),
+      url: URL.createObjectURL(file), // In real app, this would be the IPFS URL
+      contractId,
+      uploadedBy: '0xCurrentUserAddress', // In real app, this would be dynamic
+      uploadedAt: new Date(),
+      tags
+    };
+  }
+  
+  async deleteDocument(id: string): Promise<boolean> {
+    // In a real app, you'd send this to your backend
+    console.log(`Deleting document ${id}`);
+    return true;
+  }
+}
+
+// COMPONENTS
+
+// src/components/layout/Header.tsx
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useWeb3 } from '../../hooks/useWeb3';
+
+export const Header: React.FC = () => {
+  const { account, balance, connectWallet, disconnectWallet, isConnecting } = useWeb3();
+  
+  return (
+    <header className="bg-white shadow-md px-6 py-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <div className="flex items-center">
+          <h1 className="text-2xl font-bold text-blue-600">
+            <Link to="/">TradeEscrow</Link>
+          </h1>
+          
+          <nav className="ml-8">
+            <ul className="flex space-x-6">
+              <li>
+                <Link to="/" className="text-gray-700 hover:text-blue-600">Dashboard</Link>
+              </li>
+              <li>
+                <Link to="/wallet" className="text-gray-700 hover:text-blue-600">Wallet</Link>
+              </li>
+              <li>
+                <Link to="/contracts" className="text-gray-700 hover:text-blue-600">Contracts</Link>
+              </li>
+              <li>
+                <Link to="/documents" className="text-gray-700 hover:text-blue-600">Documents</Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        
+        <div>
+          {account ? (
+            <div className="flex items-center">
+              <div className="mr-4">
+                <div className="text-sm text-gray-500">Balance</div>
+                <div className="font-medium">{parseFloat(balance).toFixed(4)} ETH</div>
+              </div>
+              <div className="mr-4">
+                <div className="text-sm text-gray-500">Account</div>
+                <div className="font-medium">
+                  {account.substring(0, 6)}...{account.substring(account.length - 4)}
+                </div>
+              </div>
+              <button
+                onClick={disconnectWallet}
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg"
+              >
+                Disconnect
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={connectWallet}
+              disabled={isConnecting}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+            >
+              {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+            </button>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+};
+
+// src/components/layout/Sidebar.tsx
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { useWeb3 } from '../../hooks/useWeb3';
+
+export const Sidebar: React.FC = () => {
+  const { isConnected } = useWeb3();
+  
+  if (!isConnected) {
+    return null;
+  }
+  
+  return (
+    <aside className="bg-gray-800 text-white w-64 min-h-screen p-4">
+      <div className="mb-8">
+        <h2 className="text-xl font-bold">TradeEscrow</h2>
+      </div>
+      
+      <nav>
+        <ul className="space-y-2">
+          <li>
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => 
+                `block p-2 rounded-lg ${isActive ? 'bg-blue-600' : 'hover:bg-gray-700'
