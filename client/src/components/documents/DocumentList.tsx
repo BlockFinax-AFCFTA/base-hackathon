@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'wouter';
 import { useDocuments } from '@/hooks/useDocuments';
-import { formatFileSize, getDocumentIcon } from '@/types/document';
+import { Document, formatFileSize, getDocumentIcon } from '@/types/document';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -35,6 +35,9 @@ const DocumentList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  
+  // Ensure documents is treated as Document[] even if it comes as unknown
+  const documentsList: Document[] = Array.isArray(documents) ? documents : [];
   
   const formatDate = (dateString: string | Date) => {
     const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
@@ -71,9 +74,9 @@ const DocumentList = () => {
     }
   };
   
-  const filteredDocuments = documents?.filter(doc => 
+  const filteredDocuments = documentsList.filter((doc: Document) => 
     doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (doc.tags && doc.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+    (doc.tags && doc.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase())))
   );
   
   return (
@@ -110,7 +113,7 @@ const DocumentList = () => {
             <div className="py-12 text-center text-gray-500">
               Loading documents...
             </div>
-          ) : documents.length === 0 ? (
+          ) : documentsList.length === 0 ? (
             <div className="py-12 text-center text-gray-500">
               <AlertCircle className="h-12 w-12 mx-auto mb-4 text-gray-400" />
               <p className="mb-2">No documents found</p>
@@ -127,7 +130,7 @@ const DocumentList = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredDocuments?.map((document) => (
+              {filteredDocuments?.map((document: Document) => (
                 <div key={document.id} className="flex items-start p-4 border border-gray-200 rounded-lg">
                   <div className="p-2 bg-gray-100 rounded-md mr-4">
                     <File className="h-6 w-6 text-gray-600" />

@@ -23,8 +23,12 @@ function Router() {
         <Route path="/documents" component={DocumentsPage} />
         <Route path="/documents/upload" component={DocumentsPage} />
         <Route path="/wallet" component={WalletPage} />
-        <Route path="/api" component={() => <NotFound customMessage="API documentation coming soon" />} />
-        <Route path="/docs" component={() => <NotFound customMessage="Documentation coming soon" />} />
+        <Route path="/api">
+          {() => <NotFound customMessage="API documentation coming soon" />}
+        </Route>
+        <Route path="/docs">
+          {() => <NotFound customMessage="Documentation coming soon" />}
+        </Route>
         <Route component={NotFound} />
       </Switch>
     </Layout>
