@@ -18,8 +18,8 @@ const ContractStatusOverview = () => {
     COMPLETED: 0
   };
   
-  if (contracts && !isLoadingContracts) {
-    contracts.forEach(contract => {
+  if (contracts && Array.isArray(contracts) && !isLoadingContracts) {
+    contracts.forEach((contract: any) => {
       if (contract.status === 'DRAFT') {
         countByStatus.DRAFT += 1;
       } else if (contract.status === 'AWAITING_FUNDS') {
@@ -34,10 +34,10 @@ const ContractStatusOverview = () => {
   
   return (
     <div className="mt-8">
-      <Card>
+      <Card className="bg-gradient-to-r from-slate-50 to-slate-100 shadow-md">
         <CardHeader className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Contract Status Overview</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">Current status of all your contracts.</p>
+          <h3 className="text-lg leading-6 font-medium text-primary">Contract Portfolio Status</h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">Asset distribution by contract status</p>
         </CardHeader>
         <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
           <div className="flex flex-col">
@@ -45,29 +45,33 @@ const ContractStatusOverview = () => {
               <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                 <div>
                   <dl className="grid grid-cols-1 gap-5 sm:grid-cols-4">
-                    <div className="px-4 py-5 bg-gray-50 shadow rounded-lg overflow-hidden sm:p-6">
+                    <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-slate-500">
                       <dt className="text-sm font-medium text-gray-500 truncate">Draft</dt>
                       <dd className="mt-1 text-3xl font-semibold text-gray-900">
                         {isLoadingContracts ? '...' : countByStatus.DRAFT}
                       </dd>
+                      <div className="mt-1 text-sm text-gray-500">Pending finalization</div>
                     </div>
-                    <div className="px-4 py-5 bg-yellow-50 shadow rounded-lg overflow-hidden sm:p-6">
-                      <dt className="text-sm font-medium text-yellow-800 truncate">Awaiting Funds</dt>
-                      <dd className="mt-1 text-3xl font-semibold text-yellow-800">
+                    <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-amber-500">
+                      <dt className="text-sm font-medium text-gray-500 truncate">Escrow Required</dt>
+                      <dd className="mt-1 text-3xl font-semibold text-gray-900">
                         {isLoadingContracts ? '...' : countByStatus.AWAITING_FUNDS}
                       </dd>
+                      <div className="mt-1 text-sm text-gray-500">Awaiting deposit</div>
                     </div>
-                    <div className="px-4 py-5 bg-green-50 shadow rounded-lg overflow-hidden sm:p-6">
-                      <dt className="text-sm font-medium text-green-800 truncate">Active</dt>
-                      <dd className="mt-1 text-3xl font-semibold text-green-800">
+                    <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-primary">
+                      <dt className="text-sm font-medium text-gray-500 truncate">Active</dt>
+                      <dd className="mt-1 text-3xl font-semibold text-primary">
                         {isLoadingContracts ? '...' : countByStatus.ACTIVE}
                       </dd>
+                      <div className="mt-1 text-sm text-gray-500">In-transit assets</div>
                     </div>
-                    <div className="px-4 py-5 bg-blue-50 shadow rounded-lg overflow-hidden sm:p-6">
-                      <dt className="text-sm font-medium text-blue-800 truncate">Completed</dt>
-                      <dd className="mt-1 text-3xl font-semibold text-blue-800">
+                    <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-green-600">
+                      <dt className="text-sm font-medium text-gray-500 truncate">Completed</dt>
+                      <dd className="mt-1 text-3xl font-semibold text-green-600">
                         {isLoadingContracts ? '...' : countByStatus.COMPLETED}
                       </dd>
+                      <div className="mt-1 text-sm text-gray-500">Settled transactions</div>
                     </div>
                   </dl>
                 </div>
@@ -83,47 +87,47 @@ const ContractStatusOverview = () => {
 const QuickActions = () => {
   return (
     <div className="mt-8">
-      <Card>
+      <Card className="bg-gradient-to-r from-slate-50 to-slate-100 shadow-md">
         <CardHeader className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Quick Actions</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">Common tasks and actions.</p>
+          <h3 className="text-lg leading-6 font-medium text-primary">Financial Actions</h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">Execute trade operations</p>
         </CardHeader>
         <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Link href="/contracts/new">
-              <a className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-300 focus:outline-none">
-                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary flex items-center justify-center">
+              <div className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-md flex items-center space-x-3 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
+                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-primary flex items-center justify-center">
                   <Plus className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">Create New Contract</p>
-                  <p className="text-sm text-gray-500">Start a new trade agreement</p>
+                  <p className="text-sm font-medium text-gray-900">New Trade Contract</p>
+                  <p className="text-sm text-gray-500">Initiate escrow transaction</p>
                 </div>
-              </a>
+              </div>
             </Link>
             
             <Link href="/documents/upload">
-              <a className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-300 focus:outline-none">
-                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-indigo-500 flex items-center justify-center">
+              <div className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-md flex items-center space-x-3 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
+                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-slate-800 flex items-center justify-center">
                   <Upload className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">Upload Document</p>
-                  <p className="text-sm text-gray-500">Add support documentation</p>
+                  <p className="text-sm font-medium text-gray-900">Secure Documents</p>
+                  <p className="text-sm text-gray-500">Upload verification files</p>
                 </div>
-              </a>
+              </div>
             </Link>
             
             <Link href="/contracts">
-              <a className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-300 focus:outline-none">
-                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-green-500 flex items-center justify-center">
+              <div className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-md flex items-center space-x-3 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
+                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-green-600 flex items-center justify-center">
                   <Check className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">Verify Shipment</p>
-                  <p className="text-sm text-gray-500">Confirm receipt of goods</p>
+                  <p className="text-sm font-medium text-gray-900">Release Payment</p>
+                  <p className="text-sm text-gray-500">Confirm & settle transaction</p>
                 </div>
-              </a>
+              </div>
             </Link>
           </div>
         </CardContent>
@@ -138,26 +142,28 @@ const Dashboard = () => {
   if (!isConnected) {
     return (
       <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl font-semibold text-primary mb-6">Financial Dashboard</h1>
         
-        <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">Connect your wallet to get started</h3>
-            <div className="mt-2 max-w-xl text-sm text-gray-500">
-              <p>Connect your Ethereum wallet to start creating and managing trade contracts securely on the blockchain.</p>
+        <div className="mt-6 bg-gradient-to-r from-slate-50 to-slate-100 shadow-md overflow-hidden sm:rounded-lg border border-gray-200">
+          <div className="px-6 py-8 sm:p-8">
+            <h3 className="text-xl leading-6 font-medium text-slate-800">Connect Your Digital Wallet</h3>
+            <div className="mt-4 max-w-xl text-sm text-gray-500">
+              <p className="mb-2">Securely access TradeFinex's blockchain-powered financial services by connecting your digital wallet.</p>
+              <p>All transactions are protected by military-grade encryption and smart contract verification.</p>
             </div>
-            <div className="mt-5">
+            <div className="mt-6">
               <Button 
                 onClick={() => {
                   const { connectWallet } = require('@/hooks/useWeb3').useWeb3();
                   connectWallet();
                 }}
-                className="inline-flex items-center"
+                className="inline-flex items-center bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md shadow-sm transition-colors"
+                size="lg"
               >
-                <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Connect with MetaMask
+                Connect Digital Wallet
               </Button>
             </div>
           </div>
@@ -167,8 +173,13 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
-      <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold text-primary">Financial Dashboard</h1>
+        <div className="text-sm text-gray-500">
+          Last updated: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+        </div>
+      </div>
       
       <DashboardStats />
       <RecentTransactions />
