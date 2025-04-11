@@ -33,44 +33,44 @@ const Sidebar = () => {
         <div className="flex flex-col flex-grow overflow-y-auto">
           <nav className="flex-1 px-2 py-4 space-y-1">
             <Link href="/">
-              <a className={`flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+              <div className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${
                 location === "/" 
                   ? "text-white bg-primary" 
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}>
                 <Home className="mr-3 h-5 w-5" />
                 Dashboard
-              </a>
+              </div>
             </Link>
             <Link href="/contracts">
-              <a className={`flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+              <div className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${
                 location === "/contracts" 
                   ? "text-white bg-primary" 
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}>
                 <FileText className="mr-3 h-5 w-5" />
                 Contracts
-              </a>
+              </div>
             </Link>
             <Link href="/documents">
-              <a className={`flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+              <div className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${
                 location === "/documents" 
                   ? "text-white bg-primary" 
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}>
                 <Upload className="mr-3 h-5 w-5" />
                 Documents
-              </a>
+              </div>
             </Link>
             <Link href="/wallet">
-              <a className={`flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+              <div className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${
                 location === "/wallet" 
                   ? "text-white bg-primary" 
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}>
                 <Wallet className="mr-3 h-5 w-5" />
                 Wallet
-              </a>
+              </div>
             </Link>
           </nav>
           {account && (

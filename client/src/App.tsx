@@ -18,8 +18,13 @@ function Router() {
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/contracts" component={ContractsPage} />
+        <Route path="/contracts/:id" component={ContractsPage} />
+        <Route path="/contracts/new" component={ContractsPage} />
         <Route path="/documents" component={DocumentsPage} />
+        <Route path="/documents/upload" component={DocumentsPage} />
         <Route path="/wallet" component={WalletPage} />
+        <Route path="/api" component={() => <NotFound customMessage="API documentation coming soon" />} />
+        <Route path="/docs" component={() => <NotFound customMessage="Documentation coming soon" />} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

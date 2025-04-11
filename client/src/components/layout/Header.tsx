@@ -29,10 +29,14 @@ const Header = () => {
             <div className="hidden sm:ml-6 sm:flex sm:items-center">
               <div className="flex space-x-4">
                 <Link href="/">
-                  <a className="px-3 py-2 text-sm font-medium text-primary">Home</a>
+                  <div className="px-3 py-2 text-sm font-medium text-primary cursor-pointer">Home</div>
                 </Link>
-                <a href="#" className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700">API</a>
-                <a href="#" className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700">Documentation</a>
+                <Link href="/api">
+                  <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">API</div>
+                </Link>
+                <Link href="/docs">
+                  <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">Documentation</div>
+                </Link>
               </div>
             </div>
           </div>

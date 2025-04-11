@@ -149,9 +149,9 @@ const DocumentList = () => {
                             <span className="flex items-center">
                               <Link2 className="h-4 w-4 mr-1 text-gray-400" />
                               <Link href={`/contracts/${document.contractId}`}>
-                                <a className="text-primary hover:text-primary-700">
+                                <span className="text-primary hover:text-primary-700 cursor-pointer">
                                   View Contract
-                                </a>
+                                </span>
                               </Link>
                             </span>
                           )}
