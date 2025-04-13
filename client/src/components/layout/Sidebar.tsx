@@ -2,22 +2,16 @@ import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { 
   Home, FileText, Upload, Wallet, X, 
-  CreditCard, Globe, UserCheck, FileText as FileInvoice, 
-  BookOpen, FileText2
+  CreditCard, Globe, UserCheck, Receipt, 
+  Shield,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useWeb3 } from '@/hooks/useWeb3';
 import { shortenAddress } from '@/types/user';
 import { useAppContext } from '@/hooks/useAppContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  Collapsible, 
-  CollapsibleContent, 
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { KYCStatus } from '@/hooks/useKYC';
 
 const Sidebar = () => {
   const [location] = useLocation();
@@ -91,7 +85,7 @@ const Sidebar = () => {
             
             <NavItem 
               href="/invoices" 
-              icon={<FileInvoice className="mr-3 h-5 w-5" />} 
+              icon={<Receipt className="mr-3 h-5 w-5" />} 
               label="Invoices" 
               active={isGroupActive(["/invoices"])} 
             />
@@ -121,19 +115,11 @@ const Sidebar = () => {
           {account && (
             <div className="mt-auto">
               <Separator />
-              {user?.kycStatus && (
+              {user && (
                 <div className="p-2 px-3">
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-xs text-gray-500">Identity Verification</span>
-                    {user?.kycStatus === KYCStatus.VERIFIED && (
-                      <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">Verified</Badge>
-                    )}
-                    {user?.kycStatus === KYCStatus.PENDING && (
-                      <Badge variant="outline" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pending</Badge>
-                    )}
-                    {user?.kycStatus === KYCStatus.REJECTED && (
-                      <Badge variant="outline" className="bg-red-100 text-red-800 hover:bg-red-100">Rejected</Badge>
-                    )}
+                    <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">Verified</Badge>
                   </div>
                 </div>
               )}
