@@ -140,38 +140,7 @@ const Dashboard = () => {
   const { isConnected } = useWeb3();
   const { contracts } = useContracts();
 
-  if (!isConnected) {
-    return (
-      <div>
-        <h1 className="text-2xl font-semibold text-primary mb-6">Financial Dashboard</h1>
-        
-        <div className="mt-6 bg-gradient-to-r from-slate-50 to-slate-100 shadow-md overflow-hidden sm:rounded-lg border border-gray-200">
-          <div className="px-6 py-8 sm:p-8">
-            <h3 className="text-xl leading-6 font-medium text-slate-800">Connect Your Digital Wallet</h3>
-            <div className="mt-4 max-w-xl text-sm text-gray-500">
-              <p className="mb-2">Securely access TradeFinex's blockchain-powered financial services by connecting your digital wallet.</p>
-              <p>All transactions are protected by military-grade encryption and smart contract verification.</p>
-            </div>
-            <div className="mt-6">
-              <Button 
-                onClick={() => {
-                  const { connectWallet } = require('@/hooks/useWeb3').useWeb3();
-                  connectWallet();
-                }}
-                className="inline-flex items-center bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md shadow-sm transition-colors"
-                size="lg"
-              >
-                <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                Connect Digital Wallet
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Removed wallet connection check - directly show dashboard
 
   return (
     <div className="space-y-8">
