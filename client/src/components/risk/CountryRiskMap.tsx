@@ -20,7 +20,8 @@ import {
   Info,
   MapIcon,
   BarChart,
-  ArrowRight
+  ArrowRight,
+  Check
 } from 'lucide-react';
 import { CountryRisk, RiskLevel } from '@/types/risk';
 

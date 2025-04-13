@@ -645,7 +645,8 @@ export const useRiskAssessment = () => {
       // Add a delay to simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      const dashboard = generateMockRiskDashboard(contracts || []);
+      const contractsArray = Array.isArray(contracts) ? contracts : [];
+      const dashboard = generateMockRiskDashboard(contractsArray);
       setRiskDashboard(dashboard);
     } catch (error) {
       console.error('Error generating risk dashboard:', error);
@@ -665,7 +666,8 @@ export const useRiskAssessment = () => {
       await new Promise(resolve => setTimeout(resolve, 3000));
       
       // Generate new dashboard with updated data
-      const dashboard = generateMockRiskDashboard(contracts || []);
+      const contractsArray = contracts || [];
+      const dashboard = generateMockRiskDashboard(contractsArray);
       setRiskDashboard(dashboard);
       
       return true;

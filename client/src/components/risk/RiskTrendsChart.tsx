@@ -384,7 +384,7 @@ const RiskTrendsChart: React.FC<RiskTrendsChartProps> = ({ trends }) => {
             <Card className="shadow-sm">
               <CardContent className="p-4 flex flex-col items-center justify-center text-center">
                 <div className="p-2 rounded-full bg-primary/10 text-primary mb-2">
-                  <LineChart className="h-5 w-5" />
+                  <LineChartIcon className="h-5 w-5" />
                 </div>
                 <div className="text-sm text-gray-500">Forecast Range</div>
                 <div className="text-2xl font-bold">90 Days</div>
