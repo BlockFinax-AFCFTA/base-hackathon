@@ -1,6 +1,6 @@
 # Blockfinax User Guide
 
-This guide provides step-by-step instructions for using the TradeChain platform for international trade with blockchain-based escrow and document verification.
+This comprehensive guide provides detailed step-by-step instructions for leveraging the Blockfinax platform to transform your international trade operations with secure blockchain-based escrow, document verification, and trade finance solutions.
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ This guide provides step-by-step instructions for using the TradeChain platform 
 
 ### Creating Your Account
 
-1. Navigate to the TradeChain homepage
+1. Navigate to the Blockfinax platform homepage (www.blockfinax.com)
 2. Click "Register" or "Sign Up"
 3. Enter your username and password
 4. Read and accept the Terms of Service
@@ -281,4 +281,4 @@ This guide provides step-by-step instructions for using the TradeChain platform 
 
 ---
 
-**Note**: This guide covers the main functionality of TradeChain. For detailed technical information or API documentation, please refer to the Technical Documentation or Developer Resources.
+**Note**: This guide covers the core functionality of the Blockfinax platform. For detailed technical information, API documentation, or enterprise integration guides, please refer to our comprehensive Technical Documentation or Developer Resources Portal available at developers.blockfinax.com.

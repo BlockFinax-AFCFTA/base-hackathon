@@ -1,12 +1,48 @@
-# TradeChain API Documentation
+# Blockfinax Enterprise API Documentation
 
-This document provides details on the RESTful API endpoints available in the TradeChain platform. These endpoints allow for programmatic interaction with all key platform functionality.
+This comprehensive technical document provides detailed specifications for the RESTful API endpoints available in the Blockfinax platform. These robust, secure endpoints enable sophisticated programmatic interaction with all key platform functionality for enterprise integration and workflow automation.
 
-## API Overview
+## API Platform Overview
 
-- Base URL: `/api`
-- Data Format: All requests and responses use JSON format
-- Authentication: Session-based authentication for web endpoints; token-based for API integration
+The Blockfinax API is designed as a comprehensive, enterprise-grade platform that follows RESTful principles while incorporating robust security measures and performance optimizations for high-volume trade finance operations.
+
+### Core Technical Specifications
+
+- **Base URL**: 
+  - Production: `https://api.blockfinax.com/v1`
+  - Sandbox: `https://sandbox-api.blockfinax.com/v1`
+  - On-Premises Deployment: `/api/v1` (configurable)
+
+- **Data Format**: 
+  - All requests and responses use JSON format
+  - UTF-8 encoding required for all requests
+  - ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ) for all date/time fields
+  - Decimal string representation for all monetary values to prevent floating-point precision errors
+
+- **Authentication Options**:
+  - **OAuth 2.0**: Industry-standard flow for secure delegated access
+  - **API Keys**: HMAC-signed requests with rotating secrets
+  - **JWT Tokens**: Short-lived tokens with configurable expiration
+  - **Multi-factor Authentication**: Available for high-security deployments
+  - **IP Whitelisting**: Restrict API access to specific IP ranges
+
+- **Security Measures**:
+  - TLS 1.3 with strong cipher suites required for all communications
+  - Certificate pinning supported for enhanced security
+  - Comprehensive audit logs for all API transactions
+  - Request signing for non-repudiation of API calls
+
+- **Performance Features**:
+  - Global CDN distribution for API edge nodes
+  - Response compression (gzip, brotli) for bandwidth optimization
+  - Conditional requests (ETag, If-Modified-Since) for reduced data transfer
+  - Batch operations for reduced round trips
+
+- **Enterprise Integration**:
+  - Synchronous RESTful endpoints for direct operations
+  - Asynchronous webhook callbacks for event notifications
+  - SFTP data exchange for large document sets
+  - Comprehensive metadata for integration with existing systems
 
 ## Authentication API
 
@@ -758,38 +794,188 @@ PATCH /api/kyc/:userId
 }
 ```
 
-## Error Handling
+## Enterprise Error Handling Framework
 
-All API endpoints follow a consistent error response format:
+Blockfinax implements a comprehensive error handling system designed for enterprise integration requirements, providing detailed diagnostic information while maintaining security best practices.
+
+### Standardized Error Response Format
+
+All API endpoints return a consistent error response structure:
 
 ```json
 {
   "error": true,
-  "message": "Description of the error",
-  "code": "ERROR_CODE",
-  "details": {} // Optional additional error details
+  "message": "Human-readable error description",
+  "code": "MACHINE_READABLE_ERROR_CODE",
+  "requestId": "unique-request-identifier-for-tracing",
+  "timestamp": "2023-05-20T10:15:00Z",
+  "details": {
+    "field": "specific_field_with_error",
+    "constraint": "validation_rule_that_failed",
+    "value": "provided_value_that_caused_error",
+    "allowedValues": ["list", "of", "acceptable", "values"],
+    "additionalInfo": "Detailed context-specific information"
+  },
+  "documentation": "https://developers.blockfinax.com/errors/MACHINE_READABLE_ERROR_CODE"
 }
 ```
 
-### Common Error Codes
+### Comprehensive Error Classification
 
-- `UNAUTHORIZED`: Authentication required
-- `FORBIDDEN`: Insufficient permissions
-- `NOT_FOUND`: Resource not found
-- `VALIDATION_ERROR`: Invalid input data
-- `INTERNAL_ERROR`: Server error
+Errors are categorized into the following hierarchical groups:
 
-## Rate Limiting
+#### Authentication & Authorization Errors
+- `AUTH_REQUIRED`: Authentication credentials not provided
+- `AUTH_INVALID`: Authentication credentials invalid
+- `AUTH_EXPIRED`: Authentication token expired
+- `AUTH_INSUFFICIENT`: Authenticated user lacks required permissions
+- `MFA_REQUIRED`: Multi-factor authentication required for this operation
+- `IP_RESTRICTED`: Request IP not on allowed list
 
-API endpoints are subject to rate limiting to ensure platform stability:
+#### Resource Errors
+- `RESOURCE_NOT_FOUND`: Requested resource does not exist
+- `RESOURCE_ALREADY_EXISTS`: Cannot create resource that already exists
+- `RESOURCE_CONFLICT`: Resource state conflicts with request
+- `RESOURCE_LOCKED`: Resource is currently locked by another operation
+- `RESOURCE_DELETED`: Resource has been deleted
+- `RESOURCE_LIMIT_EXCEEDED`: Account resource limit reached
 
-- Standard users: 100 requests per minute
-- Business users: 300 requests per minute
-- Enterprise users: Custom limits
+#### Validation Errors
+- `VALIDATION_REQUIRED_FIELD`: Required field missing
+- `VALIDATION_FORMAT`: Field format is invalid
+- `VALIDATION_TYPE`: Field type is incorrect
+- `VALIDATION_RANGE`: Value outside allowed range
+- `VALIDATION_LENGTH`: String length outside allowed range
+- `VALIDATION_ENUM`: Value not in allowed set
+- `VALIDATION_RELATIONSHIP`: Referenced entity does not exist or is invalid
 
-## Webhook Notifications
+#### Business Logic Errors
+- `BUSINESS_INSUFFICIENT_FUNDS`: Wallet has insufficient balance
+- `BUSINESS_CONTRACT_INVALID_STATE`: Contract state does not allow operation
+- `BUSINESS_DOCUMENT_VERIFICATION_FAILED`: Document verification process failed
+- `BUSINESS_KYC_REQUIRED`: KYC verification required for this operation
+- `BUSINESS_TRANSACTION_DECLINED`: Transaction declined by business rules
+- `BUSINESS_WORKFLOW_VIOLATION`: Operation violates defined workflow sequence
 
-TradeChain also provides webhook notifications for key events:
+#### System Errors
+- `SYSTEM_UNAVAILABLE`: Service temporarily unavailable
+- `SYSTEM_TIMEOUT`: Operation timed out
+- `SYSTEM_OVERLOADED`: System under high load, try again later
+- `SYSTEM_MAINTENANCE`: System in maintenance mode
+- `SYSTEM_INTEGRATION_FAILURE`: External system integration failure
+- `SYSTEM_DATABASE_ERROR`: Database operation failed
+
+#### Blockchain Errors
+- `BLOCKCHAIN_NETWORK_UNAVAILABLE`: Blockchain network currently unavailable
+- `BLOCKCHAIN_TRANSACTION_FAILED`: Blockchain transaction execution failed
+- `BLOCKCHAIN_GAS_PRICE_TOO_LOW`: Gas price too low for transaction
+- `BLOCKCHAIN_CONTRACT_EXECUTION_ERROR`: Smart contract execution error
+- `BLOCKCHAIN_NONCE_ERROR`: Transaction nonce error
+- `BLOCKCHAIN_CONFIRMATION_TIMEOUT`: Transaction confirmation timeout
+
+### Error Handling Best Practices
+
+1. **Check Error Codes**: Applications should check the specific `code` field for programmatic error handling.
+2. **Implement Retries**: For 5XX errors or certain 4XX errors (SYSTEM_TIMEOUT, SYSTEM_OVERLOADED), implement exponential backoff retry logic.
+3. **Log Request IDs**: Always log the `requestId` field for end-to-end request tracing.
+4. **Parse Details**: For validation errors, parse the `details` object to present specific field-level errors.
+5. **Reference Documentation**: Use the `documentation` URL for detailed error resolution guidance.
+6. **Monitor Error Rates**: Establish monitoring for error rate thresholds as an early warning system.
+
+### HTTP Status Code Mapping
+
+Blockfinax API uses standard HTTP status codes in combination with detailed error objects:
+
+- **400 Bad Request**: Validation errors, malformed requests
+- **401 Unauthorized**: Authentication errors
+- **403 Forbidden**: Authorization errors
+- **404 Not Found**: Resource not found
+- **409 Conflict**: Resource conflicts
+- **422 Unprocessable Entity**: Business logic errors
+- **429 Too Many Requests**: Rate limit exceeded
+- **500 Internal Server Error**: Unexpected system errors
+- **502 Bad Gateway**: Integration errors with external systems
+- **503 Service Unavailable**: System temporarily unavailable
+
+## Enterprise Rate Management System
+
+Blockfinax implements a sophisticated adaptive rate management system that balances platform reliability with the high-throughput demands of enterprise clients, global financial institutions, and trade finance operations.
+
+### Tiered Rate Limit Structure
+
+Rate limits are applied at multiple levels based on client tier, API endpoint sensitivity, and usage patterns:
+
+| Client Tier | Standard Operations | High-Volume Operations | Bulk Operations |
+|-------------|-------------------:|-------------------:|----------------:|
+| **Standard** | 100 req/min | 60 req/min | 10 req/min |
+| **Business** | 300 req/min | 180 req/min | 30 req/min |
+| **Enterprise** | Custom | Custom | Custom |
+| **Financial Institution** | Custom | Custom | Custom |
+
+### Dynamic Rate Adjustment
+
+The platform implements a dynamic rate limiting approach that:
+
+- Increases limits during business hours in client's primary time zone
+- Provides temporary burst capacity for seasonal trade activities
+- Adjusts automatically based on platform load and health metrics
+- Offers scheduled rate increases for planned high-volume operations
+
+### Rate Limit Headers
+
+All API responses include the following headers for monitoring rate limit status:
+
+```
+X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 297
+X-RateLimit-Reset: 1683730000
+X-RateLimit-Used: 3
+```
+
+### Consumption Optimization
+
+For high-volume integrations, Blockfinax provides several methods to optimize API consumption:
+
+1. **Bulk Endpoints**: Special endpoints for batch processing multiple operations in a single request
+2. **Conditional Requests**: Support for ETag and If-Modified-Since headers to avoid unnecessary data transfers
+3. **Webhooks**: Push-based notifications for resource changes to reduce polling
+4. **Partial Response**: Field filtering with the `fields` parameter to reduce response size
+5. **Delta Updates**: Retrieving only changes since a timestamp or sequence ID
+
+### Rate Limit Exceeded Response
+
+When rate limits are exceeded, the API returns:
+
+```
+HTTP/1.1 429 Too Many Requests
+X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1683730000
+Retry-After: 60
+
+{
+  "error": true,
+  "code": "RATE_LIMIT_EXCEEDED",
+  "message": "Rate limit exceeded. Please retry after 60 seconds.",
+  "retryAfter": 60,
+  "documentation": "https://developers.blockfinax.com/rate-limits"
+}
+```
+
+### Enterprise Rate Customization
+
+Enterprise clients can request customized rate limit configurations based on:
+
+- Expected transaction volume and patterns
+- Geographic distribution of API requests
+- Business criticality of specific endpoints
+- Trade volume and frequency patterns
+
+Contact enterprise-api@blockfinax.com to discuss your specific requirements.
+
+## Enterprise Event Integration System
+
+Blockfinax provides a robust, enterprise-grade webhook notification system for real-time event integration with your existing systems:
 
 1. **Configure Webhook URL**:
 ```
@@ -825,4 +1011,4 @@ POST /api/webhooks
 
 ---
 
-This API documentation is subject to change as the platform evolves. For the latest API documentation, please refer to our Developer Portal.
+This API documentation is subject to change as the Blockfinax platform evolves. For the most current technical specifications, expanded integration examples, and SDK code samples, please refer to our dedicated Developer Portal at developers.blockfinax.com or contact our enterprise integration team at enterprise-api@blockfinax.com.
