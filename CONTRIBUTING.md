@@ -1,6 +1,6 @@
-# Contributing to TradeChain
+# Contributing to Blockfinax
 
-Thank you for your interest in contributing to TradeChain! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to Blockfinax, the industry-leading blockchain-based escrow platform for international trade finance! This comprehensive document provides detailed guidelines and instructions for contributing to our open-source platform ecosystem.
 
 ## Table of Contents
 
@@ -20,21 +20,46 @@ Our project adheres to a Code of Conduct that all contributors are expected to f
 
 ### Prerequisites
 
-To contribute to TradeChain, you will need:
+To contribute to Blockfinax, you will need:
 
-- Node.js (v16 or higher)
-- npm or yarn
-- Git
-- PostgreSQL (for database development)
-- A basic understanding of blockchain technologies and smart contracts
+#### Development Environment
+- Node.js (v18 or higher recommended)
+- npm (v8+) or yarn (v1.22+)
+- Git (v2.30+)
+- PostgreSQL (v14+) for database development
+- Docker (optional, for containerized development)
+- VSCode or similar IDE with TypeScript support
+
+#### Knowledge Requirements
+- Strong TypeScript/JavaScript experience
+- React and modern frontend development skills
+- Understanding of RESTful API design principles
+- Familiarity with PostgreSQL and Drizzle ORM
+- Working knowledge of blockchain technologies:
+  - Smart contract development (Solidity)
+  - Web3.js or ethers.js for blockchain interaction
+  - Decentralized finance (DeFi) concepts
+  - ERC standards (particularly ERC-20 and ERC-721)
+
+#### For Security-Related Contributions
+- Security assessment experience
+- Understanding of OWASP Top 10
+- Knowledge of common smart contract vulnerabilities
+- Experience with secure coding practices
+
+#### Optional Skills
+- Experience with international trade finance
+- Knowledge of regulatory requirements (KYC, AML, OFAC)
+- Understanding of financial risk management
+- Experience with business process automation
 
 ### Setting Up the Development Environment
 
 1. Fork the repository on GitHub
 2. Clone your fork locally:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/tradechain.git
-   cd tradechain
+   git clone https://github.com/YOUR-USERNAME/blockfinax.git
+   cd blockfinax
    ```
 3. Install dependencies:
    ```bash
@@ -158,27 +183,192 @@ When making changes to the database schema:
 
 ## Smart Contract Development
 
-When working on blockchain-related features:
+Blockfinax relies on secure and efficient smart contracts for its core escrow and trade finance functionality. When contributing to blockchain-related features:
 
-1. Follow smart contract best practices
-2. Test contracts thoroughly before integration
-3. Document contract interfaces and behavior
-4. Consider gas optimization
+### Smart Contract Development Process
+
+1. **Design Phase**
+   - Document contract specifications with clear business requirements
+   - Create detailed technical specification including state variables, functions, and events
+   - Review design with at least two other developers before implementation
+   - Conduct threat modeling to identify potential security vulnerabilities
+
+2. **Implementation Guidelines**
+   - Follow Solidity style guide and best practices
+   - Use the latest stable compiler version
+   - Implement proper access control mechanisms (e.g., OpenZeppelin's AccessControl)
+   - Use established libraries when possible (e.g., OpenZeppelin for standard functionality)
+   - Comment all functions, parameters, return values, and complex logic
+   - Emit events for all state changes to facilitate off-chain tracking
+   - Implement proper error handling with descriptive custom errors
+
+3. **Security Best Practices**
+   - Use reentrancy guards for external calls (check-effects-interactions pattern)
+   - Avoid using `tx.origin` for authentication
+   - Protect against integer overflow/underflow
+   - Validate all inputs and enforce bounds checking
+   - Minimize trust in external contracts
+   - Implement circuit breakers (pause functionality) for emergency situations
+   - Consider front-running attack vectors
+   - Use time locks for critical state changes
+   - Apply principle of least privilege for all roles
+
+4. **Testing Requirements**
+   - Achieve 100% code coverage for all smart contracts
+   - Include unit tests for all functions and edge cases
+   - Implement integration tests for contract interactions
+   - Conduct formal verification when possible
+   - Perform fuzz testing for critical functions
+   - Test on testnet before mainnet deployment
+   - Document all test scenarios and their coverage
+
+5. **Gas Optimization Techniques**
+   - Use appropriate data types (uint256 is often more gas efficient than smaller integers)
+   - Batch operations to reduce transaction costs
+   - Pack related storage variables to minimize storage slots
+   - Use calldata instead of memory for function parameters when possible
+   - Avoid unnecessary storage writes
+   - Cache storage values in memory when used multiple times
+   - Implement gas usage benchmarks and document them
+
+6. **Deployment Process**
+   - Use a well-documented and repeatable deployment process
+   - Verify all contract source code on block explorers
+   - Document all constructor parameters and initialization values
+   - Implement a staged deployment for complex systems
+   - Conduct post-deployment verification tests
+   - Document contract addresses and deployment details
+
+7. **Upgradeability Considerations**
+   - Decide on an upgradeability pattern (proxy, diamond, etc.) early in design
+   - Document upgrade paths and governance procedures
+   - Test upgrade procedures thoroughly
+   - Implement secure upgrade mechanisms with proper time locks and multi-sig
 
 ## Security Considerations
 
-- Never commit secrets or credentials
-- Follow security best practices
-- Validate and sanitize all user input
-- Use proper authentication and authorization
+Security is a critical aspect of Blockfinax as we handle sensitive financial transactions and trade data. All contributors must adhere to the following security guidelines:
 
-## Performance
+### General Security Principles
 
-- Consider performance implications of changes
-- Optimize queries and data access patterns
-- Minimize unnecessary re-renders in the frontend
-- Use appropriate indexing for database tables
+- Never commit secrets, credentials, or private keys to the repository
+- Follow the principle of least privilege for all system components
+- Implement defense in depth with multiple security layers
+- Validate and sanitize all user input at every layer (client, API, database)
+- Use proper authentication and authorization for all resources
+- Always verify that security controls cannot be bypassed
+
+### Application Security Requirements
+
+- **Authentication & Authorization**:
+  - Implement multi-factor authentication where appropriate
+  - Use JWT with appropriate expiration and refresh token rotation
+  - Implement proper session management with secure cookies
+  - Define and enforce clear role-based access control
+  - Log all authentication events for audit purposes
+
+- **Data Protection**:
+  - Encrypt sensitive data at rest and in transit
+  - Implement proper key management practices
+  - Use parameterized queries to prevent SQL injection
+  - Apply HTTPS/TLS for all communications
+  - Implement content security policy (CSP) headers
+  - Apply appropriate data retention and deletion policies
+
+- **Secure Development Practices**:
+  - Follow OWASP secure coding guidelines
+  - Perform thorough code reviews with security focus
+  - Conduct regular security testing (SAST, DAST, penetration testing)
+  - Maintain a vulnerability management process
+  - Implement secure dependency management
+  - Document security assumptions and requirements
+
+### Blockchain-Specific Security
+
+- Protect private keys with hardware security modules when possible
+- Implement secure wallet management practices
+- Consider frontrunning, replay attacks, and other blockchain-specific threats
+- Design smart contracts with security as the primary concern
+- Apply formal verification where possible for critical contracts
+- Implement circuit breakers and emergency response procedures
+
+### Reporting Security Issues
+
+If you discover a security vulnerability:
+
+1. **Do not** disclose it publicly in GitHub issues or discussions
+2. Send details directly to security@blockfinax.com with "SECURITY VULNERABILITY" in the subject
+3. Include detailed reproduction steps and impact assessment
+4. Our security team will acknowledge receipt within 24 hours
+5. We will work with you to understand, validate, and address the issue
+6. We follow a responsible disclosure process and will keep you informed
+
+## Performance Engineering
+
+Performance is a critical aspect of Blockfinax as our platform handles high-value international trade transactions that require responsive and reliable execution. All contributors should apply performance engineering principles to their work:
+
+### Frontend Performance
+
+- **Rendering Optimization**:
+  - Minimize unnecessary component re-renders using memoization
+  - Implement code splitting to reduce initial load time
+  - Use virtualization for long lists (react-window or similar libraries)
+  - Optimize images and other assets (compression, WebP format, lazy loading)
+  - Implement progressive loading strategies for large datasets
+
+- **Bundle Optimization**:
+  - Monitor and control bundle size with tools like Webpack Bundle Analyzer
+  - Use tree-shaking to eliminate unused code
+  - Implement modern build techniques (module federation, dynamic imports)
+  - Apply appropriate caching strategies for static assets
+  - Minimize third-party dependencies
+
+- **Network Efficiency**:
+  - Batch API requests where possible
+  - Implement request caching and deduplication
+  - Use optimistic UI updates to improve perceived performance
+  - Apply HTTP/2 multiplexing for API calls
+  - Implement efficient state management to reduce redundant data fetching
+
+### Backend Performance
+
+- **Database Optimization**:
+  - Design efficient data schemas with proper normalization
+  - Implement appropriate indexing strategies based on query patterns
+  - Use database query analysis tools to identify slow queries
+  - Apply pagination, filtering, and sorting at the database level
+  - Consider read/write separation for high-traffic applications
+
+- **API Efficiency**:
+  - Implement field selection to reduce payload size
+  - Use compression (gzip/brotli) for response bodies
+  - Design efficient API endpoints that minimize database operations
+  - Apply caching strategies (Redis, in-memory) for frequently accessed data
+  - Implement rate limiting to prevent resource exhaustion
+
+- **Blockchain Interaction**:
+  - Minimize on-chain operations to reduce gas costs and latency
+  - Implement efficient batching for blockchain transactions
+  - Use event listening instead of polling where appropriate
+  - Consider layer-2 solutions for high-frequency transactions
+  - Implement proper retry mechanisms for blockchain operations
+
+### Performance Testing
+
+- Establish performance baselines and KPIs for key user journeys
+- Implement automated performance testing in CI/CD pipeline
+- Monitor client-side performance metrics (Core Web Vitals)
+- Conduct regular load and stress testing for critical systems
+- Document performance requirements and test results
+
+### Monitoring and Optimization
+
+- Implement proper application performance monitoring (APM)
+- Set up alerts for performance degradation
+- Monitor both frontend and backend performance metrics
+- Establish a performance budget for key operations
+- Document performance patterns and anti-patterns specific to the application
 
 ---
 
-Thank you for contributing to TradeChain! Your efforts help make international trade more secure, transparent, and efficient.
+Thank you for contributing to Blockfinax! Your efforts help transform international trade finance by making it more secure, transparent, and efficient through our blockchain-based escrow and financial solutions platform.
