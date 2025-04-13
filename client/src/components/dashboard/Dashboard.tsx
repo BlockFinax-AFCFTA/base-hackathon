@@ -138,6 +138,7 @@ const QuickActions = () => {
 
 const Dashboard = () => {
   const { isConnected } = useWeb3();
+  const { contracts } = useContracts();
 
   if (!isConnected) {
     return (
