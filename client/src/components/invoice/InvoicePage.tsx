@@ -523,7 +523,7 @@ const NoInvoicesAlert = ({ type }: { type: string }) => (
 );
 
 const InvoicePage = () => {
-  const { user, isConnected } = useWeb3();
+  const { user, isLoggedIn } = useWeb3();
   const { 
     sellerInvoices, buyerInvoices, invoice, 
     isLoadingSellerInvoices, isLoadingBuyerInvoices, isLoadingInvoice,
@@ -560,7 +560,7 @@ const InvoicePage = () => {
     setCreateMode(false);
   };
   
-  if (!isConnected) {
+  if (!isLoggedIn) {
     return (
       <div className="flex flex-col gap-8">
         <div>
@@ -570,16 +570,16 @@ const InvoicePage = () => {
         
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Connect Your Wallet</CardTitle>
+            <CardTitle>Login Required</CardTitle>
             <CardDescription>
-              Please connect your wallet to view your invoices.
+              Please login to view your invoices.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center py-6">
             <AlertCircle className="h-16 w-16 text-muted-foreground" />
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button>Connect Wallet</Button>
+            <Button onClick={() => window.location.href = '/'}>Go to Login</Button>
           </CardFooter>
         </Card>
       </div>

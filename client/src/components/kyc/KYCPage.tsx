@@ -797,7 +797,7 @@ const KYCStatusView = ({ kycData, kycStatus, riskScore }: any) => {
 };
 
 const KYCPage = () => {
-  const { user, isConnected } = useWeb3();
+  const { user, isLoggedIn } = useWeb3();
   const { kycUser, kycStatus, riskScore, kycData, submitKYCMutation } = useKYC();
   
   const [kycType, setKYCType] = useState<'individual' | 'business'>('individual');
@@ -806,7 +806,7 @@ const KYCPage = () => {
     submitKYCMutation.mutate(formData);
   };
   
-  if (!isConnected) {
+  if (!isLoggedIn) {
     return (
       <div className="flex flex-col gap-8">
         <div>
@@ -816,16 +816,16 @@ const KYCPage = () => {
         
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Connect Your Wallet</CardTitle>
+            <CardTitle>Login Required</CardTitle>
             <CardDescription>
-              Please connect your wallet to access identity verification.
+              Please login to access identity verification.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center py-6">
             <AlertCircle className="h-16 w-16 text-muted-foreground" />
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button>Connect Wallet</Button>
+            <Button onClick={() => window.location.href = '/'}>Go to Login</Button>
           </CardFooter>
         </Card>
       </div>

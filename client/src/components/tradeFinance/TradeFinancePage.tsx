@@ -492,7 +492,7 @@ const NoApplicationsAlert = () => (
 );
 
 const TradeFinancePage = () => {
-  const { user, isConnected } = useWeb3();
+  const { user, isLoggedIn } = useWeb3();
   const { 
     applications, application, 
     isLoadingApplications, isLoadingApplication,
@@ -521,7 +521,7 @@ const TradeFinancePage = () => {
     setCreateMode(false);
   };
   
-  if (!isConnected) {
+  if (!isLoggedIn) {
     return (
       <div className="flex flex-col gap-8">
         <div>
@@ -531,16 +531,16 @@ const TradeFinancePage = () => {
         
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Connect Your Wallet</CardTitle>
+            <CardTitle>Login Required</CardTitle>
             <CardDescription>
-              Please connect your wallet to access trade finance.
+              Please login to access trade finance features.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center py-6">
             <AlertCircle className="h-16 w-16 text-muted-foreground" />
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button>Connect Wallet</Button>
+            <Button onClick={() => window.location.href = '/'}>Go to Login</Button>
           </CardFooter>
         </Card>
       </div>
