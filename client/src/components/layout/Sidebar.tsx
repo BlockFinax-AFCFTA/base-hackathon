@@ -1,11 +1,23 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
-import { Home, FileText, Upload, Wallet, X } from 'lucide-react';
+import { 
+  Home, FileText, Upload, Wallet, X, 
+  CreditCard, Globe, UserCheck, FileText as FileInvoice, 
+  BookOpen, FileText2
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useWeb3 } from '@/hooks/useWeb3';
 import { shortenAddress } from '@/types/user';
 import { useAppContext } from '@/hooks/useAppContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { 
+  Collapsible, 
+  CollapsibleContent, 
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { KYCStatus } from '@/hooks/useKYC';
 
 const Sidebar = () => {
   const [location] = useLocation();
@@ -15,6 +27,30 @@ const Sidebar = () => {
   const sidebarClasses = sidebarOpen 
     ? "fixed inset-0 z-40 flex md:static md:inset-auto md:flex md:flex-shrink-0 transform translate-x-0 transition-transform duration-200 ease-in-out"
     : "fixed inset-0 z-40 flex md:static md:inset-auto md:flex md:flex-shrink-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out";
+
+  // Check if a route is active
+  const isActive = (path: string) => {
+    return location === path;
+  };
+
+  // Check if a route is part of a group that is active
+  const isGroupActive = (paths: string[]) => {
+    return paths.some(path => location.startsWith(path));
+  };
+  
+  // Navigation item component
+  const NavItem = ({ href, icon, label, active }: { href: string, icon: React.ReactNode, label: string, active: boolean }) => (
+    <Link href={href}>
+      <div className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${
+        active 
+          ? "text-white bg-primary" 
+          : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+      }`}>
+        {icon}
+        {label}
+      </div>
+    </Link>
+  );
 
   return (
     <aside className={sidebarClasses}>
@@ -32,63 +68,92 @@ const Sidebar = () => {
         </div>
         <div className="flex flex-col flex-grow overflow-y-auto">
           <nav className="flex-1 px-2 py-4 space-y-1">
-            <Link href="/">
-              <div className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${
-                location === "/" 
-                  ? "text-white bg-primary" 
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-              }`}>
-                <Home className="mr-3 h-5 w-5" />
-                Dashboard
-              </div>
-            </Link>
-            <Link href="/contracts">
-              <div className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${
-                location === "/contracts" 
-                  ? "text-white bg-primary" 
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-              }`}>
-                <FileText className="mr-3 h-5 w-5" />
-                Contracts
-              </div>
-            </Link>
-            <Link href="/documents">
-              <div className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${
-                location === "/documents" 
-                  ? "text-white bg-primary" 
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-              }`}>
-                <Upload className="mr-3 h-5 w-5" />
-                Documents
-              </div>
-            </Link>
-            <Link href="/wallet">
-              <div className={`flex items-center px-2 py-2 text-sm font-medium rounded-md cursor-pointer ${
-                location === "/wallet" 
-                  ? "text-white bg-primary" 
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-              }`}>
-                <Wallet className="mr-3 h-5 w-5" />
-                Wallet
-              </div>
-            </Link>
+            <NavItem 
+              href="/" 
+              icon={<Home className="mr-3 h-5 w-5" />} 
+              label="Dashboard" 
+              active={isActive("/")} 
+            />
+            
+            <NavItem 
+              href="/contracts" 
+              icon={<FileText className="mr-3 h-5 w-5" />} 
+              label="Contracts" 
+              active={isGroupActive(["/contracts"])} 
+            />
+            
+            <NavItem 
+              href="/wallet" 
+              icon={<Wallet className="mr-3 h-5 w-5" />} 
+              label="Wallet" 
+              active={isGroupActive(["/wallet"])} 
+            />
+            
+            <NavItem 
+              href="/invoices" 
+              icon={<FileInvoice className="mr-3 h-5 w-5" />} 
+              label="Invoices" 
+              active={isGroupActive(["/invoices"])} 
+            />
+            
+            <NavItem 
+              href="/trade-finance" 
+              icon={<Globe className="mr-3 h-5 w-5" />} 
+              label="Trade Finance" 
+              active={isGroupActive(["/trade-finance"])} 
+            />
+            
+            <NavItem 
+              href="/documents" 
+              icon={<Upload className="mr-3 h-5 w-5" />} 
+              label="Documents" 
+              active={isGroupActive(["/documents"])} 
+            />
+            
+            <NavItem 
+              href="/kyc" 
+              icon={<UserCheck className="mr-3 h-5 w-5" />} 
+              label="Identity Verification" 
+              active={isGroupActive(["/kyc", "/passport"])} 
+            />
           </nav>
+          
           {account && (
-            <div className="p-4 border-t border-gray-200">
-              <div className="flex items-center">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={user?.profileImage} alt="User" />
-                  <AvatarFallback className="bg-primary text-white">
-                    {user?.username?.charAt(0) || 'U'}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-700">
-                    {user?.username || 'User'}
-                  </p>
-                  <p className="text-xs font-medium text-gray-500 font-mono truncate">
-                    {shortenAddress(account)}
-                  </p>
+            <div className="mt-auto">
+              <Separator />
+              {user?.kycStatus && (
+                <div className="p-2 px-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs text-gray-500">Identity Verification</span>
+                    {user?.kycStatus === KYCStatus.VERIFIED && (
+                      <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">Verified</Badge>
+                    )}
+                    {user?.kycStatus === KYCStatus.PENDING && (
+                      <Badge variant="outline" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pending</Badge>
+                    )}
+                    {user?.kycStatus === KYCStatus.REJECTED && (
+                      <Badge variant="outline" className="bg-red-100 text-red-800 hover:bg-red-100">Rejected</Badge>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              <div className="p-4 border-t border-gray-200">
+                <div className="flex items-center">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user?.profileImage} alt="User" />
+                    <AvatarFallback className="bg-primary text-white">
+                      {user?.username?.charAt(0) || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-gray-700">
+                      {user?.username || 'User'}
+                    </p>
+                    <p className="text-xs font-medium text-gray-500 font-mono truncate">
+                      {shortenAddress(account)}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
