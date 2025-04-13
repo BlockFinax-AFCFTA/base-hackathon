@@ -17,6 +17,118 @@ import {
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth routes
+  app.get("/api/auth/session", async (req, res) => {
+    try {
+      // Check if user is logged in based on session
+      if (req.session && req.session.userId) {
+        const user = await storage.getUser(req.session.userId);
+        if (user) {
+          // Don't send the password back
+          const { password, ...userData } = user;
+          return res.json(userData);
+        }
+      }
+      return res.status(200).json(null);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get session" });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+      
+      // Find user by username
+      const user = await storage.getUserByUsername(username);
+      
+      if (!user || user.password !== password) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      
+      // Set user in session
+      if (req.session) {
+        req.session.userId = user.id;
+      }
+      
+      // Don't send the password back
+      const { password: _, ...userData } = user;
+      
+      res.json(userData);
+    } catch (error) {
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(username);
+      
+      if (existingUser) {
+        return res.status(409).json({ message: "Username already exists" });
+      }
+      
+      // Create the user
+      const newUser = await storage.createUser({
+        username,
+        password,
+        walletAddress: null,
+        profileImage: null,
+        kycStatus: KYC_STATUS.PENDING,
+        riskScore: 0,
+        kycData: {}
+      });
+      
+      // Create a main wallet for the user
+      await storage.createWallet({
+        userId: newUser.id,
+        walletType: WALLET_TYPE.MAIN,
+        balance: "1000", // Give some initial balance
+        currency: "USD"
+      });
+      
+      // Set user in session
+      if (req.session) {
+        req.session.userId = newUser.id;
+      }
+      
+      // Don't send the password back
+      const { password: _, ...userData } = newUser;
+      
+      res.status(201).json(userData);
+    } catch (error) {
+      res.status(500).json({ message: "Registration failed" });
+    }
+  });
+
+  app.post("/api/auth/logout", (req, res) => {
+    try {
+      if (req.session) {
+        req.session.destroy((err) => {
+          if (err) {
+            return res.status(500).json({ message: "Logout failed" });
+          }
+          res.status(200).json({ message: "Logged out successfully" });
+        });
+      } else {
+        res.status(200).json({ message: "No active session" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Logout failed" });
+    }
+  });
+
   // User routes
   app.get("/api/users/:id", async (req, res) => {
     try {
