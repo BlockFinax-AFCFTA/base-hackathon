@@ -1,6 +1,6 @@
-# TradeChain: Quick Start Guide
+# Blockfinax: Quick Start Guide
 
-This guide helps you get TradeChain up and running quickly for development or testing purposes.
+This guide helps you get Blockfinax up and running quickly for development or testing purposes. The Blockfinax platform provides a comprehensive blockchain-based escrow solution for international trade finance.
 
 ## Prerequisites
 

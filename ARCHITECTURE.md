@@ -1,12 +1,12 @@
-# TradeChain: System Architecture
+# Blockfinax: Enterprise System Architecture
 
-This document provides a visual overview of the TradeChain system architecture.
+This document provides a comprehensive visual overview of the Blockfinax platform architecture, designed for secure blockchain-based escrow and trade finance operations in international commerce.
 
 ## High-Level Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        TradeChain Platform                           │
+│                        Blockfinax Platform                           │
 └─────────────────────────────────────────────────────────────────────┘
                                    │
                 ┌─────────────────┴─────────────────┐
@@ -167,7 +167,7 @@ This document provides a visual overview of the TradeChain system architecture.
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│                       TradeChain Security                           │
+│                       Blockfinax Security                           │
 └────────────────────────────────────────────────────────────────────┘
                                   │
     ┌───────────────┬─────────────┼────────────────┬──────────────┐
@@ -297,4 +297,4 @@ This document provides a visual overview of the TradeChain system architecture.
 └───────────────────────┘
 ```
 
-This document provides a high-level overview of the TradeChain system architecture. For more detailed technical information, please refer to the [TECHNICAL.md](TECHNICAL.md) document.
+This document provides a high-level overview of the Blockfinax system architecture. For more detailed technical information, please refer to the [TECHNICAL.md](TECHNICAL.md) document and the developer resources available at developers.blockfinax.com.
