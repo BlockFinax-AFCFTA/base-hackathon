@@ -388,7 +388,7 @@ const TransferDialog = ({ isOpen, onClose, onTransfer, fromWalletId, availableWa
 };
 
 const EnhancedWalletPage = () => {
-  const { user, isConnected } = useWeb3();
+  const { user, isLoggedIn } = useWeb3();
   const { wallets, userTransactions, depositMutation, withdrawMutation, transferMutation, isLoadingWallets } = useWallet();
   
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
@@ -442,7 +442,7 @@ const EnhancedWalletPage = () => {
     });
   };
   
-  if (!isConnected) {
+  if (!isLoggedIn) {
     return (
       <div className="flex flex-col gap-8">
         <div>
@@ -452,16 +452,16 @@ const EnhancedWalletPage = () => {
         
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Connect Your Wallet</CardTitle>
+            <CardTitle>Login Required</CardTitle>
             <CardDescription>
-              Please connect your wallet to view your balance and transactions.
+              Please login to view your wallet balance and transactions.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center py-6">
             <AlertCircle className="h-16 w-16 text-muted-foreground" />
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button>Connect Wallet</Button>
+            <Button onClick={() => window.location.href = '/'}>Go to Login</Button>
           </CardFooter>
         </Card>
       </div>

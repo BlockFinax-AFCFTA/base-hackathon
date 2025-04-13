@@ -1,33 +1,30 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { ethers } from 'ethers';
 import { User } from '../types/user';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 
 interface Web3ContextType {
-  provider: ethers.providers.Web3Provider | null;
-  signer: ethers.Signer | null;
   account: string | null;
   user: User | null;
   balance: string;
-  connectWallet: () => Promise<void>;
-  disconnectWallet: () => void;
-  isConnecting: boolean;
-  isConnected: boolean;
+  isLoggedIn: boolean;
+  isInitializing: boolean;
   error: string | null;
+  loginUser: (username: string, password: string) => Promise<void>;
+  logoutUser: () => void;
+  createAccount: (username: string, password: string) => Promise<void>;
 }
 
 export const Web3Context = createContext<Web3ContextType>({
-  provider: null,
-  signer: null,
   account: null,
   user: null,
   balance: '0',
-  connectWallet: async () => {},
-  disconnectWallet: () => {},
-  isConnecting: false,
-  isConnected: false,
+  isLoggedIn: false,
+  isInitializing: false,
   error: null,
+  loginUser: async () => {},
+  logoutUser: () => {},
+  createAccount: async () => {}
 });
 
 interface Web3ProviderProps {
@@ -35,164 +32,158 @@ interface Web3ProviderProps {
 }
 
 export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
-  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
-  const [signer, setSigner] = useState<ethers.Signer | null>(null);
   const [account, setAccount] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [balance, setBalance] = useState('0');
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const detectProvider = (): any => {
-    if (window.ethereum) return window.ethereum;
-    
-    if (window.web3?.currentProvider) return window.web3.currentProvider;
-    
-    return null;
-  };
-
-  const registerOrFetchUser = async (address: string) => {
+  // Get current user session
+  const fetchCurrentUser = async () => {
     try {
-      const response = await apiRequest('POST', '/api/users', {
-        walletAddress: address
-      });
+      setIsInitializing(true);
+      const response = await apiRequest('GET', '/api/auth/session');
       
-      const userData = await response.json();
-      setUser(userData);
-      return userData;
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+        setAccount(userData.walletAddress || `user-${userData.id}`);
+        
+        // Fetch user wallet balance
+        await fetchWalletBalance(userData.id);
+      }
     } catch (err) {
-      console.error('Error registering user:', err);
-      return null;
+      console.error('Failed to fetch user session:', err);
+    } finally {
+      setIsInitializing(false);
     }
   };
 
-  const connectWallet = async () => {
+  // Fetch wallet balance
+  const fetchWalletBalance = async (userId: number) => {
     try {
-      setIsConnecting(true);
+      const response = await apiRequest('GET', `/api/users/${userId}/wallets/main/balance`);
+      
+      if (response.ok) {
+        const { balance, currency } = await response.json();
+        setBalance(balance);
+      }
+    } catch (err) {
+      console.error('Failed to fetch wallet balance:', err);
+    }
+  };
+
+  // Login user
+  const loginUser = async (username: string, password: string) => {
+    try {
+      setIsInitializing(true);
       setError(null);
       
-      const ethereum = detectProvider();
+      const response = await apiRequest('POST', '/api/auth/login', {
+        username,
+        password
+      });
       
-      if (!ethereum) {
-        throw new Error('No Ethereum browser extension detected. Please install MetaMask or similar provider.');
+      if (!response.ok) {
+        throw new Error('Invalid username or password');
       }
       
-      // Request account access
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      const ethersProvider = new ethers.providers.Web3Provider(ethereum);
-      const ethersSigner = ethersProvider.getSigner();
-      const address = accounts[0];
+      const userData = await response.json();
+      setUser(userData);
+      setAccount(userData.walletAddress || `user-${userData.id}`);
       
-      // Get account balance
-      const accountBalance = await ethersProvider.getBalance(address);
-      const balanceInEth = ethers.utils.formatEther(accountBalance);
-      
-      setProvider(ethersProvider);
-      setSigner(ethersSigner);
-      setAccount(address);
-      setBalance(balanceInEth);
-      
-      // Register or fetch user
-      const userData = await registerOrFetchUser(address);
+      // Fetch user wallet balance
+      await fetchWalletBalance(userData.id);
       
       toast({
-        title: "Wallet Connected",
-        description: `Connected to ${address.substring(0, 6)}...${address.substring(address.length - 4)}`,
-      });
-      
-      // Listen for account changes
-      ethereum.on('accountsChanged', (newAccounts: string[]) => {
-        if (newAccounts.length === 0) {
-          disconnectWallet();
-        } else {
-          setAccount(newAccounts[0]);
-          updateBalance(ethersProvider, newAccounts[0]);
-          registerOrFetchUser(newAccounts[0]);
-        }
-      });
-      
-      // Listen for chain changes
-      ethereum.on('chainChanged', () => {
-        window.location.reload();
+        title: "Login Successful",
+        description: `Welcome back, ${userData.username}!`,
       });
       
     } catch (err: any) {
       setError(err.message);
       toast({
-        title: "Connection Error",
+        title: "Login Failed",
         description: err.message,
         variant: "destructive",
       });
-      console.error("Error connecting wallet:", err);
     } finally {
-      setIsConnecting(false);
+      setIsInitializing(false);
     }
   };
-  
-  const updateBalance = async (
-    provider: ethers.providers.Web3Provider, 
-    address: string
-  ) => {
-    const accountBalance = await provider.getBalance(address);
-    const balanceInEth = ethers.utils.formatEther(accountBalance);
-    setBalance(balanceInEth);
+
+  // Create account
+  const createAccount = async (username: string, password: string) => {
+    try {
+      setIsInitializing(true);
+      setError(null);
+      
+      const response = await apiRequest('POST', '/api/auth/register', {
+        username,
+        password
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create account');
+      }
+      
+      const userData = await response.json();
+      setUser(userData);
+      setAccount(userData.walletAddress || `user-${userData.id}`);
+      
+      toast({
+        title: "Account Created",
+        description: `Welcome, ${userData.username}! Your account is ready.`,
+      });
+      
+    } catch (err: any) {
+      setError(err.message);
+      toast({
+        title: "Registration Failed",
+        description: err.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsInitializing(false);
+    }
   };
 
-  const disconnectWallet = () => {
-    setProvider(null);
-    setSigner(null);
-    setAccount(null);
-    setUser(null);
-    setBalance('0');
-    toast({
-      title: "Wallet Disconnected",
-      description: "Your wallet has been disconnected",
-    });
+  // Logout user
+  const logoutUser = async () => {
+    try {
+      await apiRequest('POST', '/api/auth/logout');
+      
+      setUser(null);
+      setAccount(null);
+      setBalance('0');
+      
+      toast({
+        title: "Logged Out",
+        description: "You have been logged out successfully",
+      });
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
   };
 
   useEffect(() => {
-    // Check if there's a connected wallet on component mount
-    const checkConnection = async () => {
-      const ethereum = detectProvider();
-      if (ethereum) {
-        try {
-          const ethersProvider = new ethers.providers.Web3Provider(ethereum);
-          const accounts = await ethersProvider.listAccounts();
-          
-          if (accounts.length > 0) {
-            await connectWallet();
-          }
-        } catch (err) {
-          console.error("Failed to reconnect wallet:", err);
-        }
-      }
-    };
-    
-    checkConnection();
-    
-    return () => {
-      const ethereum = detectProvider();
-      if (ethereum) {
-        ethereum.removeAllListeners('accountsChanged');
-        ethereum.removeAllListeners('chainChanged');
-      }
-    };
+    // Try to get current user session on component mount
+    fetchCurrentUser();
   }, []);
 
   return (
     <Web3Context.Provider
       value={{
-        provider,
-        signer,
         account,
         user,
         balance,
-        connectWallet,
-        disconnectWallet,
-        isConnecting,
-        isConnected: !!account,
+        isLoggedIn: !!user,
+        isInitializing,
         error,
+        loginUser,
+        logoutUser,
+        createAccount
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -18,36 +18,53 @@ import InvoicePage from "@/components/invoice/InvoicePage";
 import TradeFinancePage from "@/components/tradeFinance/TradeFinancePage";
 import KYCPage from "@/components/kyc/KYCPage";
 
-function Router() {
-  const { isConnected } = useWeb3();
+// Auth-protected route component
+const PrivateRoute = ({ component: Component, ...rest }: { component: React.ComponentType<any>, path: string }) => {
+  const { isLoggedIn } = useWeb3();
+  
+  return (
+    <Route
+      path={rest.path}
+      {...rest}
+      component={(params: any) => 
+        isLoggedIn ? (
+          <Component {...params} />
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  );
+};
 
+function Router() {
   return (
     <Layout>
       <Switch>
         <Route path="/" component={HomePage} />
         
         {/* Contract routes */}
-        <Route path="/contracts" component={ContractsPage} />
-        <Route path="/contracts/:id" component={ContractsPage} />
-        <Route path="/contracts/new" component={ContractsPage} />
+        <PrivateRoute path="/contracts" component={ContractsPage} />
+        <PrivateRoute path="/contracts/:id" component={ContractsPage} />
+        <PrivateRoute path="/contracts/new" component={ContractsPage} />
         
         {/* Document routes */}
-        <Route path="/documents" component={DocumentsPage} />
-        <Route path="/documents/upload" component={DocumentsPage} />
+        <PrivateRoute path="/documents" component={DocumentsPage} />
+        <PrivateRoute path="/documents/upload" component={DocumentsPage} />
         
         {/* Wallet routes */}
-        <Route path="/wallet" component={EnhancedWalletPage} />
-        <Route path="/wallet/legacy" component={WalletPage} />
+        <PrivateRoute path="/wallet" component={EnhancedWalletPage} />
+        <PrivateRoute path="/wallet/legacy" component={WalletPage} />
         
         {/* Invoice routes */}
-        <Route path="/invoices" component={InvoicePage} />
+        <PrivateRoute path="/invoices" component={InvoicePage} />
         
         {/* Trade Finance routes */}
-        <Route path="/trade-finance" component={TradeFinancePage} />
+        <PrivateRoute path="/trade-finance" component={TradeFinancePage} />
         
         {/* KYC & Passport routes */}
-        <Route path="/kyc" component={KYCPage} />
-        <Route path="/passport" component={KYCPage} />
+        <PrivateRoute path="/kyc" component={KYCPage} />
+        <PrivateRoute path="/passport" component={KYCPage} />
         
         {/* Other routes */}
         <Route path="/api">
@@ -56,7 +73,9 @@ function Router() {
         <Route path="/docs">
           {() => <NotFound customMessage="Documentation coming soon" />}
         </Route>
-        <Route component={NotFound} />
+        <Route>
+          {() => <NotFound customMessage="Page not found" />}
+        </Route>
       </Switch>
     </Layout>
   );
@@ -64,10 +83,14 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
-    </QueryClientProvider>
+    <AppProvider>
+      <Web3Provider>
+        <QueryClientProvider client={queryClient}>
+          <Router />
+          <Toaster />
+        </QueryClientProvider>
+      </Web3Provider>
+    </AppProvider>
   );
 }
 
