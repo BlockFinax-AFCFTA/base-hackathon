@@ -1,117 +1,134 @@
+// Risk level enum
 export enum RiskLevel {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-  CRITICAL = 'CRITICAL'
+  LOW = "LOW",
+  MEDIUM = "MEDIUM",
+  HIGH = "HIGH",
+  CRITICAL = "CRITICAL"
 }
 
+// Risk category enum
 export enum RiskCategory {
-  CREDIT = 'CREDIT',
-  COUNTRY = 'COUNTRY',
-  CURRENCY = 'CURRENCY',
-  DELIVERY = 'DELIVERY',
-  PAYMENT = 'PAYMENT',
-  DOCUMENTATION = 'DOCUMENTATION',
-  REGULATORY = 'REGULATORY',
-  FRAUD = 'FRAUD'
+  CREDIT = "CREDIT",
+  COUNTRY = "COUNTRY",
+  CURRENCY = "CURRENCY",
+  DELIVERY = "DELIVERY",
+  PAYMENT = "PAYMENT",
+  DOCUMENTATION = "DOCUMENTATION",
+  REGULATORY = "REGULATORY",
+  FRAUD = "FRAUD"
 }
 
+// Main risk dashboard interface
+export interface RiskDashboard {
+  lastUpdated: string;
+  overallRiskScore: number;
+  riskLevel: RiskLevel;
+  insights: RiskInsight[];
+  riskFactors: RiskFactor[];
+  countryRisks: CountryRisk[];
+  partnerRisks: PartnerRisk[];
+  trends: RiskTrend[];
+  predictions: RiskPrediction[];
+}
+
+// Risk insight interface
+export interface RiskInsight {
+  id: string;
+  title: string;
+  description: string;
+  relatedCategory: RiskCategory;
+  riskLevel: RiskLevel;
+  source: string;
+  expiresAt: string;
+  relatedContractIds?: number[];
+  relatedEntityIds?: number[];
+}
+
+// Risk factor interface
 export interface RiskFactor {
   id: string;
   category: RiskCategory;
   description: string;
+  value: number;
   level: RiskLevel;
-  value: number; // 0-100 score
-  trend: 'increasing' | 'stable' | 'decreasing';
+  trend: 'increasing' | 'decreasing' | 'stable';
   impactDescription: string;
-  mitigationSuggestions: string[];
-  relatedContracts?: string[];
+  mitigationSuggestions?: string[];
 }
 
+// Country risk interface
 export interface CountryRisk {
   country: string;
   iso: string;
-  politicalStabilityScore: number; // 0-100
-  economicStabilityScore: number; // 0-100
-  regulatoryQualityScore: number; // 0-100
-  overallRiskScore: number; // 0-100
+  overallRiskScore: number;
   riskLevel: RiskLevel;
+  politicalStabilityScore: number;
+  economicStabilityScore: number;
+  regulatoryQualityScore: number;
   tradeRestrictions: string[];
   tradingPartnerCount: number;
 }
 
+// Partner risk interface
 export interface PartnerRisk {
-  partnerId: string;
+  partnerId: number;
   partnerName: string;
   country: string;
-  creditScore: number; // 0-100
+  creditScore: number;
+  riskLevel: RiskLevel;
   paymentHistory: {
     onTimePayments: number;
     latePayments: number;
     missedPayments: number;
   };
+  relationshipYears: number;
   totalTradeVolume: number;
   avgTransactionSize: number;
-  relationshipYears: number;
-  riskLevel: RiskLevel;
   recentFlags: string[];
 }
 
-export interface RiskInsight {
-  id: string;
-  title: string;
-  description: string;
-  riskLevel: RiskLevel;
-  impact: string;
-  recommendation: string;
-  expiresAt: Date;
-  source: string;
-  relatedCategory: RiskCategory;
-  relatedContracts?: string[];
+// Risk trend value point
+interface RiskTrendValuePoint {
+  date: string;
+  value: number;
 }
 
+// Risk trend forecast point
+interface RiskTrendForecastPoint {
+  date: string;
+  value: number;
+  confidence: number;
+}
+
+// Risk trend interface
 export interface RiskTrend {
   category: RiskCategory;
-  values: {
-    date: string;
-    value: number;
-  }[];
-  forecast: {
-    date: string;
-    value: number;
-    confidence: number;
-  }[];
+  description: string;
+  values: RiskTrendValuePoint[];
+  forecast: RiskTrendForecastPoint[];
 }
 
+// Risk prediction mitigation option
+interface RiskMitigationOption {
+  strategy: string;
+  effectivenessScore: number;
+  costToImplement: 'low' | 'medium' | 'high';
+  timeToImplement: string;
+}
+
+// Risk prediction interface
 export interface RiskPrediction {
   category: RiskCategory;
-  probability: number; // 0-1
-  impact: number; // 0-10 
-  riskScore: number; // probability * impact
-  potentialLoss: number;
-  timeframe: 'short' | 'medium' | 'long';
-  confidence: number; // 0-1
   factors: string[];
-  mitigationOptions: {
-    strategy: string;
-    costToImplement: number;
-    effectivenessScore: number; // 0-10
-    timeToImplement: string;
-  }[];
+  probability: number;
+  impact: number;
+  confidence: number;
+  timeframe: 'short' | 'medium' | 'long';
+  potentialLoss: number;
+  mitigationOptions: RiskMitigationOption[];
 }
 
-export interface RiskDashboard {
-  overallRiskScore: number; // 0-100
-  riskLevel: RiskLevel;
-  riskFactors: RiskFactor[];
-  countryRisks: CountryRisk[];
-  partnerRisks: PartnerRisk[];
-  insights: RiskInsight[];
-  trends: RiskTrend[];
-  predictions: RiskPrediction[];
-  lastUpdated: Date;
-}
-
+// Helper function to get risk level color
 export const getRiskLevelColor = (level: RiskLevel): string => {
   switch (level) {
     case RiskLevel.LOW:
@@ -127,25 +144,26 @@ export const getRiskLevelColor = (level: RiskLevel): string => {
   }
 };
 
+// Helper function to get risk category icon component name
 export const getRiskCategoryIcon = (category: RiskCategory): string => {
   switch (category) {
     case RiskCategory.CREDIT:
-      return 'credit-card';
+      return 'CreditCard';
     case RiskCategory.COUNTRY:
-      return 'globe';
+      return 'Globe';
     case RiskCategory.CURRENCY:
-      return 'dollar-sign';
+      return 'DollarSign';
     case RiskCategory.DELIVERY:
-      return 'truck';
+      return 'Truck';
     case RiskCategory.PAYMENT:
-      return 'landmark';
+      return 'Landmark';
     case RiskCategory.DOCUMENTATION:
-      return 'file-text';
+      return 'FileText';
     case RiskCategory.REGULATORY:
-      return 'shield';
+      return 'Shield';
     case RiskCategory.FRAUD:
-      return 'alert-triangle';
+      return 'AlertTriangle';
     default:
-      return 'alert-circle';
+      return 'AlertTriangle';
   }
 };
