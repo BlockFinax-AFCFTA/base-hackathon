@@ -1,4 +1,4 @@
-# TradeChain User Guide
+# Blockfinax User Guide
 
 This guide provides step-by-step instructions for using the TradeChain platform for international trade with blockchain-based escrow and document verification.
 
