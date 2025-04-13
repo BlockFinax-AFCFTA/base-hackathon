@@ -193,7 +193,7 @@ const Header = () => {
               >
                 <Menu className="h-6 w-6" />
               </Button>
-              <h1 className="text-xl font-bold text-primary">TradeFinex</h1>
+              <h1 className="text-xl font-bold text-primary">BlockFinaX</h1>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:items-center">
               <div className="flex space-x-4">
