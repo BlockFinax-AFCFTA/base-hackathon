@@ -1,31 +1,41 @@
-#!/usr/bin/env node
 import { spawn } from 'child_process';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-console.log('Starting Next.js application...');
-console.log('Working directory:', process.cwd());
-
-// Run next dev command
-const nextProcess = spawn('npx', ['next', 'dev', '-p', '3000'], {
+// Start the Express server for the API
+const apiServer = spawn('node', ['-r', 'tsx/register', 'server/index.ts'], {
   stdio: 'inherit',
-  shell: true,
-  env: { ...process.env, NEXT_CONFIG_PATH: './next.config.mjs' }
+  env: { ...process.env, NODE_ENV: 'development' },
+  cwd: process.cwd()
 });
 
-nextProcess.on('close', (code) => {
-  console.log(`Next.js process exited with code ${code}`);
+console.log('Starting API server...');
+
+// Start the Next.js development server
+console.log('Starting Next.js server...');
+const nextServer = spawn('npx', ['next', 'dev'], {
+  stdio: 'inherit',
+  cwd: process.cwd()
 });
 
-// Handle termination signals
+// Handle process exit
 process.on('SIGINT', () => {
-  console.log('Received SIGINT. Shutting down Next.js...');
-  nextProcess.kill('SIGINT');
+  console.log('Shutting down servers...');
+  apiServer.kill('SIGINT');
+  nextServer.kill('SIGINT');
+  process.exit();
 });
 
-process.on('SIGTERM', () => {
-  console.log('Received SIGTERM. Shutting down Next.js...');
-  nextProcess.kill('SIGTERM');
+apiServer.on('close', (code) => {
+  console.log(`API server exited with code ${code}`);
+  nextServer.kill();
+  process.exit(code);
+});
+
+nextServer.on('close', (code) => {
+  console.log(`Next.js server exited with code ${code}`);
+  apiServer.kill();
+  process.exit(code);
 });

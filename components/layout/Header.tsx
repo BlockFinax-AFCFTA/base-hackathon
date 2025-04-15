@@ -180,11 +180,11 @@ const Header = () => {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   return (
-    <header className="flex-shrink-0 bg-white border-b border-gray-200">
+    <header className="sticky top-0 z-30 flex-shrink-0 bg-white border-b border-gray-200">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
-            <div className="flex-shrink-0 flex items-center md:hidden">
+            <div className="flex-shrink-0 flex items-center">
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -195,16 +195,16 @@ const Header = () => {
               </Button>
               <h1 className="text-xl font-bold text-primary">BlockFinaX</h1>
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:items-center">
+            <div className="hidden lg:ml-6 lg:flex lg:items-center">
               <div className="flex space-x-4">
                 <Link href="/">
-                  <div className="px-3 py-2 text-sm font-medium text-primary cursor-pointer">Home</div>
+                  <div className="px-3 py-2 text-sm font-medium text-primary cursor-pointer">Dashboard</div>
                 </Link>
-                <Link href="/api">
-                  <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">API</div>
+                <Link href="/contracts">
+                  <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">Contracts</div>
                 </Link>
-                <Link href="/docs">
-                  <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">Documentation</div>
+                <Link href="/wallet">
+                  <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">Wallet</div>
                 </Link>
               </div>
             </div>
