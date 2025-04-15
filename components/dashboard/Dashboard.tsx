@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import DashboardStats from './DashboardStats';
 import RecentTransactions from './RecentTransactions';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '../ui/card';
+import { Button } from '../ui/button';
 import { Link } from 'wouter';
-import { useWeb3 } from '@/hooks/useWeb3';
+import { useWeb3 } from '../../hooks/useWeb3';
 import { Plus, Upload, Check, LineChart, AlertTriangle, ArrowRight } from 'lucide-react';
-import { useContracts } from '@/hooks/useContracts';
+import { useContracts } from '../../hooks/useContracts';
 import { 
   Tabs, 
   TabsContent, 
   TabsList, 
   TabsTrigger 
-} from "@/components/ui/tabs";
+} from "../ui/tabs";
 import RiskDashboard from '../risk/RiskDashboard';
 
 const ContractStatusOverview = () => {
@@ -187,7 +187,7 @@ const RiskSummary = () => {
 };
 
 const Dashboard = () => {
-  const { isConnected } = useWeb3();
+  const { isLoggedIn } = useWeb3();
   const { contracts } = useContracts();
   const [activeTab, setActiveTab] = useState<string>('overview');
 
