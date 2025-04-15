@@ -31,7 +31,7 @@ const Sidebar = () => {
   const isGroupActive = (paths: string[]) => {
     return paths.some(path => location.startsWith(path));
   };
-  
+
   // Navigation item component
   const NavItem = ({ href, icon, label, active }: { href: string, icon: React.ReactNode, label: string, active: boolean }) => (
     <Link href={href}>
@@ -68,42 +68,42 @@ const Sidebar = () => {
               label="Dashboard" 
               active={isActive("/")} 
             />
-            
+
             <NavItem 
               href="/contracts" 
               icon={<FileText className="mr-3 h-5 w-5" />} 
               label="Contracts" 
               active={isGroupActive(["/contracts"])} 
             />
-            
+
             <NavItem 
               href="/wallet" 
               icon={<Wallet className="mr-3 h-5 w-5" />} 
               label="Wallet" 
               active={isGroupActive(["/wallet"])} 
             />
-            
+
             <NavItem 
               href="/invoices" 
               icon={<Receipt className="mr-3 h-5 w-5" />} 
               label="Invoices" 
               active={isGroupActive(["/invoices"])} 
             />
-            
+
             <NavItem 
               href="/trade-finance" 
               icon={<Globe className="mr-3 h-5 w-5" />} 
               label="Trade Finance" 
               active={isGroupActive(["/trade-finance"])} 
             />
-            
+
             <NavItem 
               href="/documents" 
               icon={<Upload className="mr-3 h-5 w-5" />} 
               label="Documents" 
               active={isGroupActive(["/documents"])} 
             />
-            
+
             <NavItem 
               href="/kyc" 
               icon={<UserCheck className="mr-3 h-5 w-5" />} 
@@ -111,7 +111,7 @@ const Sidebar = () => {
               active={isGroupActive(["/kyc", "/passport"])} 
             />
           </nav>
-          
+
           {account && (
             <div className="mt-auto">
               <Separator />
@@ -123,7 +123,7 @@ const Sidebar = () => {
                   </div>
                 </div>
               )}
-              
+
               <div className="p-4 border-t border-gray-200">
                 <div className="flex items-center">
                   <Avatar className="h-8 w-8">
