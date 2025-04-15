@@ -1,5 +1,5 @@
 import React, { createContext, useState, ReactNode, useEffect } from 'react';
-import { useRouter } from 'next/router'; // Added import for useRouter
+import { useLocation } from 'wouter'; // Using wouter for routing
 
 // Assume a basic implementation of useKYC hook.  Replace with your actual implementation.
 const useKYC = () => {
@@ -31,14 +31,14 @@ interface AppProviderProps {
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { kycData, kycStatus } = useKYC();
-  const router = useRouter();
+  const [location, setLocation] = useLocation();
 
   useEffect(() => {
     const protectedRoutes = ['/contracts', '/documents', '/trade-finance'];
-    if (protectedRoutes.some(route => router.pathname.startsWith(route)) && !kycData) {
-      router.push('/kyc');
+    if (protectedRoutes.some(route => location.startsWith(route)) && !kycData) {
+      setLocation('/kyc');
     }
-  }, [router.pathname, kycData]);
+  }, [location, kycData, setLocation]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
