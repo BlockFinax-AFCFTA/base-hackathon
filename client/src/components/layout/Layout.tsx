@@ -3,7 +3,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import { useWeb3 } from '@/hooks/useWeb3';
 import { useAppContext } from '@/context/appContext'; // Assuming this context exists
-import { AlertCircle } from '@heroicons/react/24/solid'; // Assuming this import is correct
+import { AlertCircle } from 'lucide-react'; // Using lucide-react which is already installed
 
 
 interface LayoutProps {
