@@ -1,21 +1,13 @@
+
 import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { 
-  Home, FileText, Upload, Wallet, X, 
+  Home, FileText, Upload, Wallet, 
   CreditCard, Globe, UserCheck, Receipt
 } from 'lucide-react';
-import { Button } from '../ui/button';
-import { useWeb3 } from '../../hooks/useWeb3';
-import { shortenAddress } from '../../lib/utils';
-import { useAppContext } from '../../hooks/useAppContext';
 
 const Sidebar = () => {
   const [location] = useLocation();
-  const { account, user } = useWeb3();
-  const { sidebarOpen, toggleSidebar } = useAppContext();
-
-  // Fixed left sidebar style based on the provided image
-  const sidebarClasses = "h-full fixed left-0 top-0 w-[170px] z-40 bg-white border-r border-gray-200";
 
   // Check if a route is active
   const isActive = (path: string) => {
@@ -27,7 +19,7 @@ const Sidebar = () => {
     return paths.some(path => location.startsWith(path));
   };
 
-  // Navigation item component - styled to match the provided image
+  // Navigation item component
   const NavItem = ({ href, icon, label, active }: { href: string, icon: React.ReactNode, label: string, active: boolean }) => (
     <Link href={href}>
       <div className={`flex items-center px-4 py-2.5 text-sm font-medium cursor-pointer ${
@@ -44,7 +36,7 @@ const Sidebar = () => {
   );
 
   return (
-    <aside className={sidebarClasses}>
+    <aside className="h-full fixed left-0 top-0 w-[170px] z-40 bg-white border-r border-gray-200">
       <div className="flex flex-col h-full">
         <div className="py-4 px-2">
           <nav className="flex-1 space-y-0.5">
