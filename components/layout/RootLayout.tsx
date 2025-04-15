@@ -8,18 +8,12 @@ interface RootLayoutProps {
 }
 
 export function RootLayout({ children }: RootLayoutProps) {
-  const { sidebarOpen } = useAppContext();
-  
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <main 
-          className={`flex-1 p-6 overflow-y-auto transition-all duration-300 ${
-            sidebarOpen ? 'ml-64' : 'ml-20'
-          }`}
-        >
+        <main className="flex-1 p-6 overflow-y-auto ml-[170px]">
           {children}
         </main>
       </div>

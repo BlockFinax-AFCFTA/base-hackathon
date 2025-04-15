@@ -1,19 +1,21 @@
-import React from 'react'
-import { RootLayout } from '../components/layout/RootLayout'
-import TestComponent from '../components/TestComponent'
+import React, { useEffect } from 'react';
+import { useLocation } from 'wouter';
+import { RootLayout } from '../components/layout/RootLayout';
 
 export default function Home() {
+  const [_, setLocation] = useLocation();
+  
+  useEffect(() => {
+    setLocation('/dashboard');
+  }, [setLocation]);
+  
   return (
     <RootLayout>
-      <div className="flex flex-col items-center justify-center p-4">
-        <h1 className="text-4xl font-bold mb-6">Blockchain-Powered Escrow Platform</h1>
-        <p className="text-xl mb-8 text-center max-w-2xl">
-          Streamline international trade through secure, transparent, and intelligent contract management
+      <div className="flex h-screen flex-col items-center justify-center py-12">
+        <p className="text-lg text-gray-600 text-center">
+          Redirecting to dashboard...
         </p>
-        <div className="mt-6">
-          <TestComponent />
-        </div>
       </div>
     </RootLayout>
-  )
+  );
 }
