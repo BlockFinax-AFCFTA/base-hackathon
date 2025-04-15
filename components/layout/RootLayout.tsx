@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -9,13 +10,15 @@ interface RootLayoutProps {
 
 export function RootLayout({ children }: RootLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex">
         <Sidebar />
-        <main className="flex-1 p-6 overflow-y-auto ml-[170px]">
-          {children}
-        </main>
+        <div className="flex-1 ml-[170px]">
+          <main className="container mx-auto p-6">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   );
