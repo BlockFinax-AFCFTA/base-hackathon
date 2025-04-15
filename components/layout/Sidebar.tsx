@@ -5,13 +5,13 @@ import {
   CreditCard, Globe, UserCheck, Receipt, 
   Shield,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useWeb3 } from '@/hooks/useWeb3';
-import { shortenAddress } from '@/types/user';
-import { useAppContext } from '@/hooks/useAppContext';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '../ui/button';
+import { useWeb3 } from '../../hooks/useWeb3';
+import { shortenAddress } from '../../lib/utils'; // Updated this import
+import { useAppContext } from '../../hooks/useAppContext';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Separator } from '../ui/separator';
+import { Badge } from '../ui/badge';
 
 const Sidebar = () => {
   const [location] = useLocation();

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Menu, X, LogOut, User, LogIn, UserPlus } from 'lucide-react';
 import { Link } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { useWeb3 } from '@/hooks/useWeb3';
-import { useAppContext } from '@/hooks/useAppContext';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '../ui/button';
+import { useWeb3 } from '../../hooks/useWeb3';
+import { useAppContext } from '../../hooks/useAppContext';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel, 
   DropdownMenuSeparator, 
   DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+} from "../ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -21,10 +21,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const [username, setUsername] = useState('');
