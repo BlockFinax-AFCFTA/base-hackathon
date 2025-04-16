@@ -1,8 +1,8 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
-import { queryClient } from '@/lib/queryClient';
-import { useWeb3 } from '@/hooks/useWeb3';
-import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '../lib/queryClient';
+import { queryClient } from '../lib/queryClient';
+import { useWeb3 } from './useWeb3';
+import { useToast } from './use-toast';
 
 export interface KYCData {
   firstName?: string;
@@ -38,6 +38,7 @@ export interface KYCData {
     companyRegistration?: string;
     taxCertificate?: string;
   };
+  kycLevel?: 'BASIC' | 'ADVANCED'; // Added this property for KYC level tracking
 }
 
 export interface User {

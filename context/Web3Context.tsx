@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import { useToast } from '../hooks/use-toast';
+import { apiRequest } from '../lib/queryClient';
 
-// Define User interface directly here to avoid dependency issues
 interface User {
   id: number;
   username: string;
@@ -10,32 +11,6 @@ interface User {
   riskScore: number | null;
   kycData: any | null;
 }
-
-// Define simplified API request function
-const apiRequest = async (method: string, url: string, body?: any) => {
-  const options: RequestInit = {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-  };
-
-  if (body) {
-    options.body = JSON.stringify(body);
-  }
-
-  return fetch(url, options);
-};
-
-// Simplified toast interface for this component
-const useToast = () => {
-  const toast = (props: any) => {
-    console.log('Toast:', props);
-  };
-  
-  return { toast };
-};
 
 interface Web3ContextType {
   account: string | null;
@@ -54,11 +29,11 @@ export const Web3Context = createContext<Web3ContextType>({
   user: null,
   balance: '0',
   isLoggedIn: false,
-  isInitializing: false,
+  isInitializing: true,
   error: null,
   loginUser: async () => {},
   logoutUser: () => {},
-  createAccount: async () => {}
+  createAccount: async () => {},
 });
 
 interface Web3ProviderProps {
@@ -66,178 +41,152 @@ interface Web3ProviderProps {
 }
 
 export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
+  const { toast } = useToast();
+  
+  // State
   const [account, setAccount] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [balance, setBalance] = useState('0');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { toast } = useToast();
-
-  // Get current user session
-  const fetchCurrentUser = async () => {
-    try {
-      setIsInitializing(true);
-      const response = await apiRequest('GET', '/api/auth/session');
-      
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        setAccount(userData.walletAddress || `user-${userData.id}`);
+  
+  // Initialize the context - check if user is logged in
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await apiRequest('GET', '/api/auth/me');
         
-        // Fetch user wallet balance
-        await fetchWalletBalance(userData.id);
+        if (response.status === 200) {
+          const userData = await response.json();
+          setUser(userData);
+          setAccount(userData.walletAddress);
+          setIsLoggedIn(true);
+          
+          // Get wallet balance
+          if (userData.walletAddress) {
+            const balanceResponse = await apiRequest('GET', '/api/wallet/balance');
+            if (balanceResponse.status === 200) {
+              const balanceData = await balanceResponse.json();
+              setBalance(balanceData.balance || '0');
+            }
+          }
+        }
+      } catch (error) {
+        // Not logged in or session expired
+        console.log('Not logged in or session expired');
+      } finally {
+        setIsInitializing(false);
       }
-    } catch (err) {
-      console.error('Failed to fetch user session:', err);
-    } finally {
-      setIsInitializing(false);
-    }
-  };
-
-  // Fetch wallet balance
-  const fetchWalletBalance = async (userId: number) => {
-    try {
-      const response = await apiRequest('GET', `/api/users/${userId}/wallets/main/balance`);
-      
-      if (response.ok) {
-        const { balance, currency } = await response.json();
-        setBalance(balance);
-      }
-    } catch (err) {
-      console.error('Failed to fetch wallet balance:', err);
-    }
-  };
-
+    };
+    
+    checkLoginStatus();
+  }, []);
+  
   // Login user
   const loginUser = async (username: string, password: string) => {
     try {
-      setIsInitializing(true);
       setError(null);
       
       const response = await apiRequest('POST', '/api/auth/login', {
         username,
-        password
+        password,
       });
       
-      if (!response.ok) {
-        throw new Error('Invalid username or password');
+      if (response.status === 200) {
+        const userData = await response.json();
+        setUser(userData);
+        setAccount(userData.walletAddress);
+        setIsLoggedIn(true);
+        
+        // Get wallet balance
+        if (userData.walletAddress) {
+          const balanceResponse = await apiRequest('GET', '/api/wallet/balance');
+          if (balanceResponse.status === 200) {
+            const balanceData = await balanceResponse.json();
+            setBalance(balanceData.balance || '0');
+          }
+        }
+        
+        toast({
+          title: "Login Successful",
+          description: `Welcome back, ${userData.username}!`,
+        });
       }
-      
-      const userData = await response.json();
-      setUser(userData);
-      setAccount(userData.walletAddress || `user-${userData.id}`);
-      
-      // Fetch user wallet balance
-      await fetchWalletBalance(userData.id);
-      
-      toast({
-        title: "Login Successful",
-        description: `Welcome back, ${userData.username}!`,
-      });
-      
-    } catch (err: any) {
-      setError(err.message);
+    } catch (error: any) {
+      setError(error.message || 'Failed to login');
       toast({
         title: "Login Failed",
-        description: err.message,
+        description: error.message || "Invalid username or password",
         variant: "destructive",
       });
-    } finally {
-      setIsInitializing(false);
     }
   };
-
-  // Create account with optional basic KYC data
-  const createAccount = async (username: string, password: string, kycData?: any) => {
-    try {
-      setIsInitializing(true);
-      setError(null);
-      
-      // Prepare request body with username, password, and KYC data if provided
-      const requestBody: any = {
-        username,
-        password
-      };
-      
-      // Add KYC data if provided
-      if (kycData) {
-        requestBody.kycData = kycData;
-        // Set KYC status to BASIC_COMPLETED if this is basic KYC
-        if (kycData.kycLevel === 'BASIC') {
-          requestBody.kycStatus = 'BASIC_COMPLETED';
-        }
-      }
-      
-      const response = await apiRequest('POST', '/api/auth/register', requestBody);
-      
-      if (!response.ok) {
-        throw new Error('Failed to create account');
-      }
-      
-      const userData = await response.json();
-      setUser(userData);
-      setAccount(userData.walletAddress || `user-${userData.id}`);
-      
-      // Show appropriate message depending on KYC level
-      if (kycData?.kycLevel === 'BASIC') {
-        toast({
-          title: "Basic KYC Completed",
-          description: `Welcome, ${userData.username}! Your account has been created with basic verification.`,
-        });
-      } else {
-        toast({
-          title: "Account Created",
-          description: `Welcome, ${userData.username}! Your account is ready.`,
-        });
-      }
-      
-    } catch (err: any) {
-      setError(err.message);
-      toast({
-        title: "Registration Failed",
-        description: err.message,
-        variant: "destructive",
-      });
-    } finally {
-      setIsInitializing(false);
-    }
-  };
-
+  
   // Logout user
   const logoutUser = async () => {
     try {
       await apiRequest('POST', '/api/auth/logout');
-      
+    } catch (error) {
+      console.error('Error logging out:', error);
+    } finally {
       setUser(null);
       setAccount(null);
       setBalance('0');
-      
+      setIsLoggedIn(false);
       toast({
         title: "Logged Out",
-        description: "You have been logged out successfully",
+        description: "You have been successfully logged out.",
       });
-    } catch (err) {
-      console.error('Logout failed:', err);
     }
   };
-
-  useEffect(() => {
-    // Try to get current user session on component mount
-    fetchCurrentUser();
-  }, []);
-
+  
+  // Create account
+  const createAccount = async (username: string, password: string, kycData?: any) => {
+    try {
+      setError(null);
+      
+      // Register the user
+      const response = await apiRequest('POST', '/api/auth/register', {
+        username,
+        password,
+        kycData,
+      });
+      
+      if (response.status === 201) {
+        const userData = await response.json();
+        setUser(userData);
+        setAccount(userData.walletAddress);
+        setIsLoggedIn(true);
+        
+        toast({
+          title: "Account Created",
+          description: "Your account has been successfully created!",
+        });
+      }
+    } catch (error: any) {
+      setError(error.message || 'Failed to create account');
+      toast({
+        title: "Registration Failed",
+        description: error.message || "An error occurred during registration.",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+  
   return (
     <Web3Context.Provider
       value={{
         account,
         user,
         balance,
-        isLoggedIn: !!user,
+        isLoggedIn,
         isInitializing,
         error,
         loginUser,
         logoutUser,
-        createAccount
+        createAccount,
       }}
     >
       {children}
