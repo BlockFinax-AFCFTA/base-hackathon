@@ -52,7 +52,9 @@ export interface User {
 
 export enum KYCStatus {
   PENDING = 'PENDING',
-  VERIFIED = 'VERIFIED',
+  BASIC_COMPLETED = 'BASIC_COMPLETED',
+  ADVANCED_PENDING = 'ADVANCED_PENDING',
+  ADVANCED_VERIFIED = 'ADVANCED_VERIFIED',
   REJECTED = 'REJECTED'
 }
 
@@ -82,15 +84,34 @@ export const useKYC = (userId?: number) => {
   // Submit KYC data
   const submitKYCMutation = useMutation({
     mutationFn: async (kycData: KYCData) => {
-      const res = await apiRequest('POST', `/api/users/${currentUserId}/kyc`, kycData);
+      // Determine the KYC status based on the level
+      let kycStatus = KYCStatus.ADVANCED_PENDING; // Default for advanced verification
+      
+      if (kycData.kycLevel === 'BASIC') {
+        kycStatus = KYCStatus.BASIC_COMPLETED;
+      }
+      
+      const res = await apiRequest('POST', `/api/users/${currentUserId}/kyc`, {
+        kycData,
+        kycStatus
+      });
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['/api/users', currentUserId] });
-      toast({
-        title: "KYC Submitted",
-        description: "Your KYC information has been submitted successfully and is pending verification.",
-      });
+      
+      // Different messages depending on KYC level
+      if (variables.kycLevel === 'BASIC') {
+        toast({
+          title: "Basic Verification Complete",
+          description: "Your basic verification is complete. You can now access standard platform features.",
+        });
+      } else {
+        toast({
+          title: "Advanced Verification Submitted",
+          description: "Your advanced verification has been submitted and is pending review (1-3 business days).",
+        });
+      }
     },
     onError: (error: any) => {
       toast({

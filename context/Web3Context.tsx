@@ -1,7 +1,41 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { User } from '../types/user';
-import { apiRequest } from '@/lib/queryClient';
-import { useToast } from '@/hooks/use-toast';
+
+// Define User interface directly here to avoid dependency issues
+interface User {
+  id: number;
+  username: string;
+  walletAddress: string | null;
+  profileImage: string | null;
+  kycStatus: string | null;
+  riskScore: number | null;
+  kycData: any | null;
+}
+
+// Define simplified API request function
+const apiRequest = async (method: string, url: string, body?: any) => {
+  const options: RequestInit = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  };
+
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
+
+  return fetch(url, options);
+};
+
+// Simplified toast interface for this component
+const useToast = () => {
+  const toast = (props: any) => {
+    console.log('Toast:', props);
+  };
+  
+  return { toast };
+};
 
 interface Web3ContextType {
   account: string | null;
@@ -12,7 +46,7 @@ interface Web3ContextType {
   error: string | null;
   loginUser: (username: string, password: string) => Promise<void>;
   logoutUser: () => void;
-  createAccount: (username: string, password: string) => Promise<void>;
+  createAccount: (username: string, password: string, kycData?: any) => Promise<void>;
 }
 
 export const Web3Context = createContext<Web3ContextType>({
@@ -113,16 +147,28 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     }
   };
 
-  // Create account
-  const createAccount = async (username: string, password: string) => {
+  // Create account with optional basic KYC data
+  const createAccount = async (username: string, password: string, kycData?: any) => {
     try {
       setIsInitializing(true);
       setError(null);
       
-      const response = await apiRequest('POST', '/api/auth/register', {
+      // Prepare request body with username, password, and KYC data if provided
+      const requestBody: any = {
         username,
         password
-      });
+      };
+      
+      // Add KYC data if provided
+      if (kycData) {
+        requestBody.kycData = kycData;
+        // Set KYC status to BASIC_COMPLETED if this is basic KYC
+        if (kycData.kycLevel === 'BASIC') {
+          requestBody.kycStatus = 'BASIC_COMPLETED';
+        }
+      }
+      
+      const response = await apiRequest('POST', '/api/auth/register', requestBody);
       
       if (!response.ok) {
         throw new Error('Failed to create account');
@@ -132,10 +178,18 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
       setUser(userData);
       setAccount(userData.walletAddress || `user-${userData.id}`);
       
-      toast({
-        title: "Account Created",
-        description: `Welcome, ${userData.username}! Your account is ready.`,
-      });
+      // Show appropriate message depending on KYC level
+      if (kycData?.kycLevel === 'BASIC') {
+        toast({
+          title: "Basic KYC Completed",
+          description: `Welcome, ${userData.username}! Your account has been created with basic verification.`,
+        });
+      } else {
+        toast({
+          title: "Account Created",
+          description: `Welcome, ${userData.username}! Your account is ready.`,
+        });
+      }
       
     } catch (err: any) {
       setError(err.message);

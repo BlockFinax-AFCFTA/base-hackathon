@@ -1,10 +1,10 @@
 import React from 'react';
 import { 
+  Globe,
+  Landmark,
   BarChart3,
   TrendingUp,
   ShieldCheck,
-  Globe,
-  Landmark,
   BadgeDollarSign
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -27,15 +27,18 @@ const DashboardStats = () => {
     : 0;
 
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      <Card className="overflow-hidden border-none shadow-md">
-        <div className="bg-gradient-to-r from-primary to-primary/90 p-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      {/* Total Trade Volume */}
+      <Card className="overflow-hidden border border-gray-100 shadow-sm">
+        <div className="bg-blue-700 text-white p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-white/80">Total Trade Volume</p>
+              <p className="text-sm font-medium text-white/90">Total Trade Volume</p>
               <h3 className="mt-2 text-2xl font-bold text-white">{totalContractValue.toFixed(2)} USD</h3>
             </div>
-            <Globe className="h-8 w-8 text-white/90" />
+            <div className="bg-blue-600 rounded-full p-3">
+              <Globe className="h-6 w-6 text-white" />
+            </div>
           </div>
           <div className="mt-4 flex items-center text-sm text-white/80">
             <BarChart3 className="mr-2 h-4 w-4" />
@@ -44,14 +47,17 @@ const DashboardStats = () => {
         </div>
       </Card>
 
-      <Card className="overflow-hidden border-none shadow-md">
-        <div className="bg-gradient-to-r from-green-600 to-green-500 p-6">
+      {/* Active Trade Deals */}
+      <Card className="overflow-hidden border border-gray-100 shadow-sm">
+        <div className="bg-green-600 text-white p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-white/80">Active Trade Deals</p>
+              <p className="text-sm font-medium text-white/90">Active Trade Deals</p>
               <h3 className="mt-2 text-2xl font-bold text-white">{activeDeals}</h3>
             </div>
-            <Landmark className="h-8 w-8 text-white/90" />
+            <div className="bg-green-500 rounded-full p-3">
+              <Landmark className="h-6 w-6 text-white" />
+            </div>
           </div>
           <div className="mt-4 flex items-center text-sm text-white/80">
             <TrendingUp className="mr-2 h-4 w-4" />
@@ -60,14 +66,17 @@ const DashboardStats = () => {
         </div>
       </Card>
 
-      <Card className="overflow-hidden border-none shadow-md">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 p-6">
+      {/* Secured Transactions */}
+      <Card className="overflow-hidden border border-gray-100 shadow-sm">
+        <div className="bg-blue-600 text-white p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-white/80">Secured Transactions</p>
+              <p className="text-sm font-medium text-white/90">Secured Transactions</p>
               <h3 className="mt-2 text-2xl font-bold text-white">100%</h3>
             </div>
-            <BadgeDollarSign className="h-8 w-8 text-white/90" />
+            <div className="bg-blue-500 rounded-full p-3">
+              <BadgeDollarSign className="h-6 w-6 text-white" />
+            </div>
           </div>
           <div className="mt-4 flex items-center text-sm text-white/80">
             <ShieldCheck className="mr-2 h-4 w-4" />

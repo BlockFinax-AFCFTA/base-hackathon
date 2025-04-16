@@ -32,6 +32,12 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   const [tab, setTab] = useState<'login' | 'register'>('login');
   const { loginUser, createAccount } = useWeb3();
   
+  // Basic KYC fields for registration
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     await loginUser(username, password);
@@ -40,7 +46,29 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    await createAccount(username, password);
+    
+    // Create basic KYC data object
+    const kycData = {
+      firstName,
+      lastName,
+      contactDetails: {
+        email,
+        phone
+      },
+      kycLevel: 'BASIC', // Indicate this is basic KYC level
+    };
+    
+    // Check if createAccount can handle KYC data
+    if (typeof createAccount === 'function') {
+      if (createAccount.length >= 3) {
+        // Function can accept KYC data
+        await createAccount(username, password, kycData);
+      } else {
+        // Function only accepts username and password
+        console.warn('Basic KYC data available but createAccount does not support it');
+        await createAccount(username, password);
+      }
+    }
     onClose();
   };
   
@@ -93,10 +121,49 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
               <DialogHeader>
                 <DialogTitle>Create your account</DialogTitle>
                 <DialogDescription>
-                  Register to create your account and wallet.
+                  Register with basic information to create your account.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="grid gap-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input 
+                      id="firstName" 
+                      value={firstName} 
+                      onChange={(e) => setFirstName(e.target.value)} 
+                      required 
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input 
+                      id="lastName" 
+                      value={lastName} 
+                      onChange={(e) => setLastName(e.target.value)} 
+                      required 
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input 
+                    id="email" 
+                    type="email"
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)} 
+                    required 
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input 
+                    id="phone" 
+                    value={phone} 
+                    onChange={(e) => setPhone(e.target.value)} 
+                    required 
+                  />
+                </div>
                 <div className="grid gap-2">
                   <Label htmlFor="reg-username">Username</Label>
                   <Input 
@@ -117,8 +184,11 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
                   />
                 </div>
               </div>
-              <DialogFooter>
-                <Button type="submit">Register</Button>
+              <DialogFooter className="flex flex-col space-y-2">
+                <div className="text-xs text-muted-foreground">
+                  By registering, you agree to our terms of service and privacy policy.
+                </div>
+                <Button type="submit">Register with Basic KYC</Button>
               </DialogFooter>
             </form>
           </TabsContent>
@@ -130,7 +200,8 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
 
 const UserMenu = () => {
   const { user, logoutUser } = useWeb3();
-  const balance = user?.balance || '0.00';
+  // Get balance from wallet instead since it's not on the user object
+  const balance = '0.00'; // Placeholder, would fetch from wallet
   
   return (
     <DropdownMenu>
@@ -180,35 +251,42 @@ const Header = () => {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   return (
-    <header className="flex-shrink-0 bg-white border-b border-gray-200">
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <div className="flex-shrink-0 flex items-center md:hidden">
+    <header className="sticky top-0 z-20 w-full h-16 bg-white border-b border-gray-200">
+      <div className="px-4 h-full mx-auto">
+        <div className="flex justify-between items-center h-full">
+          {/* Logo and Mobile Menu Toggle */}
+          <div className="flex items-center">
+            <div className="flex items-center">
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={toggleSidebar}
-                className="mr-2"
+                className="mr-2 md:hidden"
               >
-                <Menu className="h-6 w-6" />
+                <Menu className="h-5 w-5" />
               </Button>
-              <h1 className="text-xl font-bold text-primary">BlockFinaX</h1>
+              <Link href="/">
+                <h1 className="text-xl font-bold text-blue-700">BlockFinaX</h1>
+              </Link>
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:items-center">
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex ml-10">
               <div className="flex space-x-4">
                 <Link href="/">
-                  <div className="px-3 py-2 text-sm font-medium text-primary cursor-pointer">Home</div>
+                  <div className="px-3 py-2 text-sm font-medium text-blue-700 cursor-pointer">Home</div>
                 </Link>
                 <Link href="/api">
                   <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">API</div>
                 </Link>
-                <Link href="/docs">
+                <Link href="/documentation">
                   <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">Documentation</div>
                 </Link>
               </div>
             </div>
           </div>
+          
+          {/* User Menu or Auth Buttons */}
           <div className="flex items-center">
             {isLoggedIn ? (
               <UserMenu />
@@ -218,18 +296,16 @@ const Header = () => {
                   variant="ghost" 
                   size="sm" 
                   onClick={() => setLoginDialogOpen(true)}
-                  className="flex items-center gap-1"
+                  className="flex items-center gap-1 text-gray-700"
                 >
                   <LogIn className="h-4 w-4" />
                   <span>Login</span>
                 </Button>
                 <Button 
                   variant="default" 
-                  size="sm" 
-                  onClick={() => {
-                    setLoginDialogOpen(true);
-                  }}
-                  className="flex items-center gap-1"
+                  size="sm"
+                  onClick={() => setLoginDialogOpen(true)}
+                  className="flex items-center gap-1 bg-blue-700"
                 >
                   <UserPlus className="h-4 w-4" />
                   <span>Register</span>

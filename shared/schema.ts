@@ -220,8 +220,10 @@ export const INVOICE_STATUS = {
 
 export const KYC_STATUS = {
   PENDING: "PENDING",
-  VERIFIED: "VERIFIED",
-  REJECTED: "REJECTED"
+  BASIC_COMPLETED: "BASIC_COMPLETED", // Basic KYC done during registration
+  ADVANCED_PENDING: "ADVANCED_PENDING", // Advanced KYC submitted but not verified
+  ADVANCED_VERIFIED: "ADVANCED_VERIFIED", // Advanced KYC verified for international trade
+  REJECTED: "REJECTED" // KYC rejected
 } as const;
 
 export const TRADE_FINANCE_TYPE = {
