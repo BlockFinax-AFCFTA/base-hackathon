@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
-import { useWeb3 } from '@/hooks/useWeb3';
-import { useTradeFinance } from '@/hooks/useTradeFinance';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Textarea } from '@/components/ui/textarea';
+import { useWeb3 } from '../../hooks/useWeb3';
+import { useTradeFinance } from '../../hooks/useTradeFinance';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { Badge } from '../ui/badge';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Separator } from '../ui/separator';
+import { ScrollArea } from '../ui/scroll-area';
+import { Textarea } from '../ui/textarea';
 import { 
   Plus, AlertCircle, Calendar, FileText, CreditCard, AlertTriangle, 
   Check, Clock, ArrowRight, Globe, Briefcase, DollarSign, FileQuestion
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { canAccessFeature, canAccessAdvancedFeature } from '../../lib/kycBypass';
+import { useToast } from '../../hooks/use-toast';
 
 // Format currency helper
 const formatCurrency = (amount: string | number, currency: string) => {
@@ -214,6 +216,7 @@ const ApplicationDetail = ({ application, onClose }: any) => {
 
 // Application form for creating new trade finance applications
 const ApplicationForm = ({ onSubmit, onCancel }: any) => {
+  const { user } = useWeb3();
   const [formData, setFormData] = useState({
     applicationType: 'LETTER_OF_CREDIT',
     amount: '',
@@ -281,8 +284,29 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
     });
   };
   
+  // Add notification about KYC status
+  const needsAdvancedKYC = !canAccessAdvancedFeature(user?.kycStatus || null);
+  const isBasicVerified = canAccessFeature(user?.kycStatus || null);
+  
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* KYC Status Notification */}
+      {user?.kycStatus && (
+        <Alert className={needsAdvancedKYC ? "bg-yellow-50 text-yellow-800 border-yellow-200" : "bg-green-50 text-green-800 border-green-200"}>
+          <AlertTriangle className={`h-4 w-4 ${needsAdvancedKYC ? "text-yellow-500" : "text-green-500"}`} />
+          <AlertTitle>
+            {needsAdvancedKYC 
+              ? "Advanced verification recommended" 
+              : "Verification status: Complete"}
+          </AlertTitle>
+          <AlertDescription>
+            {needsAdvancedKYC 
+              ? "You can apply for trade finance with your current verification status, but advanced verification is recommended for international trade." 
+              : "Your account is fully verified for international trade finance."}
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="applicationType">Application Type</Label>
@@ -493,6 +517,7 @@ const NoApplicationsAlert = () => (
 
 const TradeFinancePage = () => {
   const { user, isLoggedIn } = useWeb3();
+  const { toast } = useToast();
   const { 
     applications, application, 
     isLoadingApplications, isLoadingApplication,
@@ -511,6 +536,19 @@ const TradeFinancePage = () => {
   };
   
   const handleCreateApplication = (applicationData: any) => {
+    // Check if user can access this feature with KYC bypass
+    // This will always return true due to our bypass implementation
+    const canProceed = canAccessAdvancedFeature(user?.kycStatus || null);
+    
+    if (!canProceed) {
+      toast({
+        title: "Verification Required",
+        description: "Please complete the advanced KYC verification to apply for trade finance",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // Add user ID to the application data
     const data = {
       ...applicationData,
@@ -602,6 +640,8 @@ const TradeFinancePage = () => {
   }
   
   // Main applications list view
+  const needsAdvancedKYC = !canAccessAdvancedFeature(user?.kycStatus || null);
+  
   return (
     <div className="flex flex-col gap-8">
       <div className="flex justify-between items-center">
@@ -614,6 +654,18 @@ const TradeFinancePage = () => {
           New Application
         </Button>
       </div>
+      
+      {/* KYC Status Notification */}
+      {user?.kycStatus && needsAdvancedKYC && (
+        <Alert className="bg-blue-50 text-blue-800 border-blue-200">
+          <AlertCircle className="h-4 w-4 text-blue-500" />
+          <AlertTitle>Verification Status Information</AlertTitle>
+          <AlertDescription>
+            You can create and apply for trade finance with your current verification level. 
+            For enhanced security and compliance, consider completing advanced verification in your profile.
+          </AlertDescription>
+        </Alert>
+      )}
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="col-span-1 md:col-span-3">
