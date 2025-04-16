@@ -192,7 +192,7 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<string>('overview');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab}>
         <div className="flex justify-between items-center mb-4">
           <TabsList>

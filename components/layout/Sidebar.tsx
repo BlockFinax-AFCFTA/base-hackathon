@@ -30,7 +30,7 @@ const Sidebar = () => {
   );
 
   return (
-    <aside className="w-64 h-screen fixed left-0 top-0 bg-white border-r border-gray-200">
+    <aside className="w-64 h-[calc(100vh-4rem)] fixed bg-white border-r border-gray-200">
       <div className="h-16 flex items-center px-6 border-b border-gray-200">
         <h1 className="text-xl font-bold text-blue-700">BlockFinaX</h1>
       </div>
