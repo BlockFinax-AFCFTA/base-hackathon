@@ -1,12 +1,5 @@
 import React from 'react';
-import { 
-  BarChart3,
-  TrendingUp,
-  ShieldCheck,
-  Globe,
-  Landmark,
-  BadgeDollarSign
-} from 'lucide-react';
+import { Globe, Landmark, ShieldCheck } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { useContracts } from '@/hooks/useContracts';
 
@@ -27,52 +20,43 @@ const DashboardStats = () => {
     : 0;
 
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      <Card className="overflow-hidden border-none shadow-md">
-        <div className="bg-gradient-to-r from-primary to-primary/90 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-white/80">Total Trade Volume</p>
-              <h3 className="mt-2 text-2xl font-bold text-white">{totalContractValue.toFixed(2)} USD</h3>
-            </div>
-            <Globe className="h-8 w-8 text-white/90" />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <Card className="bg-blue-600 text-white p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-white/80">Total Trade Volume</p>
+            <h3 className="mt-2 text-2xl font-bold">{totalContractValue.toFixed(2)} USD</h3>
           </div>
-          <div className="mt-4 flex items-center text-sm text-white/80">
-            <BarChart3 className="mr-2 h-4 w-4" />
-            Global trade activity
-          </div>
+          <Globe className="h-8 w-8 text-white/90" />
+        </div>
+        <div className="mt-4 flex items-center text-sm text-white/80">
+          Global trade activity
         </div>
       </Card>
 
-      <Card className="overflow-hidden border-none shadow-md">
-        <div className="bg-gradient-to-r from-green-600 to-green-500 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-white/80">Active Trade Deals</p>
-              <h3 className="mt-2 text-2xl font-bold text-white">{activeDeals}</h3>
-            </div>
-            <Landmark className="h-8 w-8 text-white/90" />
+      <Card className="bg-green-600 text-white p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-white/80">Active Trade Deals</p>
+            <h3 className="mt-2 text-2xl font-bold">{activeDeals}</h3>
           </div>
-          <div className="mt-4 flex items-center text-sm text-white/80">
-            <TrendingUp className="mr-2 h-4 w-4" />
-            Current transactions
-          </div>
+          <Landmark className="h-8 w-8 text-white/90" />
+        </div>
+        <div className="mt-4 flex items-center text-sm text-white/80">
+          Current transactions
         </div>
       </Card>
 
-      <Card className="overflow-hidden border-none shadow-md">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-white/80">Secured Transactions</p>
-              <h3 className="mt-2 text-2xl font-bold text-white">100%</h3>
-            </div>
-            <BadgeDollarSign className="h-8 w-8 text-white/90" />
+      <Card className="bg-blue-600 text-white p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-white/80">Secured Transactions</p>
+            <h3 className="mt-2 text-2xl font-bold">100%</h3>
           </div>
-          <div className="mt-4 flex items-center text-sm text-white/80">
-            <ShieldCheck className="mr-2 h-4 w-4" />
-            Smart contract protected
-          </div>
+          <ShieldCheck className="h-8 w-8 text-white/90" />
+        </div>
+        <div className="mt-4 flex items-center text-sm text-white/80">
+          Smart contract protected
         </div>
       </Card>
     </div>
