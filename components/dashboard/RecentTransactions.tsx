@@ -1,137 +1,32 @@
 import React from 'react';
-import { ArrowDownLeft, ArrowUpRight, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
-import { formatDate, formatCurrency } from '../../lib/utils';
+import { Plus } from 'lucide-react';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Link } from 'wouter';
 
-type Transaction = {
-  id: number;
-  date: Date;
-  type: 'incoming' | 'outgoing';
-  status: 'completed' | 'pending' | 'failed';
-  amount: number;
-  currency: string;
-  description: string;
-  counterparty: string;
-};
-
-// Sample transaction data
-const transactions: Transaction[] = [
-  {
-    id: 1,
-    date: new Date('2025-04-15T10:30:00'),
-    type: 'incoming',
-    status: 'completed',
-    amount: 5000,
-    currency: 'USD',
-    description: 'Payment for contract #1234',
-    counterparty: 'ABC Corporation',
-  },
-  {
-    id: 2,
-    date: new Date('2025-04-14T15:45:00'),
-    type: 'outgoing',
-    status: 'completed',
-    amount: 2500,
-    currency: 'USD',
-    description: 'Supplier payment',
-    counterparty: 'XYZ Suppliers Ltd.',
-  },
-  {
-    id: 3,
-    date: new Date('2025-04-13T09:15:00'),
-    type: 'incoming',
-    status: 'pending',
-    amount: 7500,
-    currency: 'USD',
-    description: 'Invoice #9876 payment',
-    counterparty: 'Global Traders Inc.',
-  },
-  {
-    id: 4,
-    date: new Date('2025-04-12T11:20:00'),
-    type: 'outgoing',
-    status: 'failed',
-    amount: 1200,
-    currency: 'USD',
-    description: 'Service fee payment',
-    counterparty: 'Finance Partners LLC',
-  },
-  {
-    id: 5,
-    date: new Date('2025-04-11T14:50:00'),
-    type: 'incoming',
-    status: 'completed',
-    amount: 3200,
-    currency: 'USD',
-    description: 'Contract milestone payment',
-    counterparty: 'International Shipping Co.',
-  }
-];
-
-const TransactionIcon: React.FC<{ transaction: Transaction }> = ({ transaction }) => {
-  // Status-based icon
-  if (transaction.status === 'completed') {
-    return <CheckCircle className={`h-4 w-4 ${transaction.type === 'incoming' ? 'text-green-500' : 'text-primary'}`} />;
-  } else if (transaction.status === 'pending') {
-    return <Clock className="h-4 w-4 text-yellow-500" />;
-  } else if (transaction.status === 'failed') {
-    return <AlertTriangle className="h-4 w-4 text-red-500" />;
-  }
-  
-  // Type-based icon (fallback)
-  return transaction.type === 'incoming' 
-    ? <ArrowDownLeft className="h-4 w-4 text-green-500" /> 
-    : <ArrowUpRight className="h-4 w-4 text-red-500" />;
-};
-
-const RecentTransactions: React.FC = () => {
+const RecentTransactions = () => {
   return (
-    <div className="space-y-4">
-      {transactions.length === 0 ? (
-        <div className="text-center py-6 text-muted-foreground">
-          No transactions found
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {transactions.map((transaction) => (
-            <div 
-              key={transaction.id} 
-              className="flex justify-between items-center p-3 rounded-lg border hover:bg-accent/50 transition-colors"
-            >
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5">
-                  <TransactionIcon transaction={transaction} />
-                </div>
-                <div>
-                  <p className="font-medium text-sm">{transaction.description}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {transaction.counterparty} • {formatDate(transaction.date)}
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className={`font-medium ${
-                  transaction.type === 'incoming' ? 'text-green-600 dark:text-green-500' : ''
-                }`}>
-                  {transaction.type === 'incoming' ? '+' : '-'}
-                  {formatCurrency(transaction.amount, transaction.currency)}
-                </p>
-                <p className="text-xs capitalize text-muted-foreground">
-                  {transaction.status}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-      
-      <div className="flex justify-center mt-4">
-        <a 
-          href="/wallet" 
-          className="text-sm text-primary hover:underline"
-        >
-          View all transactions
-        </a>
-      </div>
+    <div className="mt-6">
+      <Card className="shadow-md">
+        <CardHeader className="flex flex-row items-center justify-between p-6">
+          <div>
+            <h3 className="text-lg font-medium">Transaction Ledger</h3>
+            <p className="text-sm text-gray-500">Recent escrow contract activities and settlements</p>
+          </div>
+          <Link href="/contracts/new">
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="h-4 w-4 mr-2" />
+              New Transaction
+            </Button>
+          </Link>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="flex flex-col items-center justify-center py-6">
+            <p className="text-gray-500">No transactions yet</p>
+            <p className="text-sm text-gray-400 mt-1">Your transaction history will appear here</p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

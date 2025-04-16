@@ -1,73 +1,73 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode, useEffect } from 'react';
+import { useLocation } from 'wouter'; // Using wouter for routing
+import { useMediaQuery } from '../hooks/use-mobile';
 
-// Define the shape of our context
+// Assume a basic implementation of useKYC hook.  Replace with your actual implementation.
+const useKYC = () => {
+  // Simulate fetching KYC data.  Replace with your actual data fetching logic.
+  const kycData = typeof window !== 'undefined' ? localStorage.getItem('kycData') : null;
+  const kycStatus = kycData ? 'completed' : 'pending';
+  return { kycData, kycStatus };
+};
+
 interface AppContextType {
   sidebarOpen: boolean;
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
-  isKYCCompleted: boolean;
-  kycStatus: string;
+  isKYCCompleted: boolean; // Added isKYCCompleted
+  kycStatus: string; //Added kycStatus
 }
 
-// Create the context with default values
 export const AppContext = createContext<AppContextType>({
   sidebarOpen: true,
   toggleSidebar: () => {},
   setSidebarOpen: () => {},
-  isKYCCompleted: false,
-  kycStatus: 'PENDING',
+  isKYCCompleted: false, // Added default value
+  kycStatus: 'pending', // Added default value
 });
 
-// Props for the provider component
 interface AppProviderProps {
   children: ReactNode;
 }
 
-// Provider component that wraps the app
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  // State for sidebar visibility
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  
-  // Allow access to all features regardless of actual KYC status
-  // But don't auto-verify users - let them complete KYC normally
-  const [isKYCCompleted, setIsKYCCompleted] = useState(false);
-  const [kycStatus, setKYCStatus] = useState('PENDING');
-  
-  // Toggle sidebar function
+  // Default to open on desktop, closed on mobile
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
+  const { kycData, kycStatus } = useKYC();
+  const [location, setLocation] = useLocation();
+
+  // Update sidebar state when screen size changes
+  useEffect(() => {
+    setSidebarOpen(!isMobile);
+  }, [isMobile]);
+
+  useEffect(() => {
+    // Close sidebar on mobile when navigating
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  }, [location, isMobile]);
+
+  useEffect(() => {
+    const protectedRoutes = ['/contracts', '/documents', '/trade-finance'];
+    if (protectedRoutes.some(route => location.startsWith(route)) && !kycData) {
+      setLocation('/kyc');
+    }
+  }, [location, kycData, setLocation]);
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  
-  // Check for mobile view and adjust sidebar
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
-    };
-    
-    // Run once on mount
-    handleResize();
-    
-    // Add event listener
-    window.addEventListener('resize', handleResize);
-    
-    // Clean up
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-  
+
   return (
     <AppContext.Provider
       value={{
         sidebarOpen,
         toggleSidebar,
         setSidebarOpen,
-        isKYCCompleted,
-        kycStatus,
+        isKYCCompleted: !!kycData,
+        kycStatus
       }}
     >
       {children}

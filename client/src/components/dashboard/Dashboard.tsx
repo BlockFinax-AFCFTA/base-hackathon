@@ -187,32 +187,29 @@ const RiskSummary = () => {
 };
 
 const Dashboard = () => {
-  const { isLoggedIn } = useWeb3();
+  const { isConnected } = useWeb3();
   const { contracts } = useContracts();
   const [activeTab, setActiveTab] = useState<string>('overview');
-
-  // Format date to match the screenshot
-  const formatDate = () => {
-    const date = new Date();
-    return `Apr ${date.getDate()}, ${date.getFullYear()}, ${(date.getHours() % 12 || 12).toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')} ${date.getHours() >= 12 ? 'PM' : 'AM'}`;
-  };
 
   return (
     <div className="space-y-6">
       <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab}>
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-4">
           <TabsList>
             <TabsTrigger value="overview">Financial Dashboard</TabsTrigger>
             <TabsTrigger value="risk">Risk Intelligence</TabsTrigger>
           </TabsList>
           <div className="text-sm text-gray-500">
-            Last updated: {formatDate()}
+            Last updated: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </div>
         </div>
         
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent value="overview" className="space-y-6 mt-0">
           <DashboardStats />
           <RecentTransactions />
+          <RiskSummary />
+          <ContractStatusOverview />
+          <QuickActions />
         </TabsContent>
         
         <TabsContent value="risk" className="mt-0">

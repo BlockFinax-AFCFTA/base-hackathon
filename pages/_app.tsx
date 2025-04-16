@@ -1,22 +1,21 @@
-import React from 'react';
-import { AppProps } from 'next/app';
-import Head from 'next/head';
-import Layout from '../components/layout/Layout';
-import '../styles/globals.css';
+import React from 'react'
+import type { AppProps } from 'next/app'
+import { QueryClientProvider } from "@tanstack/react-query"
+import { queryClient } from "../lib/queryClient"
+import { Web3Provider } from "../context/Web3Context"
+import { AppProvider } from "../context/AppContext"
+import { Toaster } from "../components/ui/toaster"
+import '../styles/globals.css'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <>
-      <Head>
-        <title>BlockFinaX | Secure Trade Platform</title>
-        <meta name="description" content="A blockchain-powered escrow platform for international trade" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </>
-  );
+    <Web3Provider>
+      <AppProvider>
+        <QueryClientProvider client={queryClient}>
+          <Component {...pageProps} />
+          <Toaster />
+        </QueryClientProvider>
+      </AppProvider>
+    </Web3Provider>
+  )
 }

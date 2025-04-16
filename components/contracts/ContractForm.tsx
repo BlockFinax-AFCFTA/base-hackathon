@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from '../ui/card';
-import { Input } from '../ui/input';
-import { Textarea } from '../ui/textarea';
-import { Label } from '../ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useWeb3 } from '../../hooks/useWeb3';
-import { useContracts } from '../../hooks/useContracts';
-import { useToast } from '../../hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useWeb3 } from '@/hooks/useWeb3';
+import { useContracts } from '@/hooks/useContracts';
+import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
-import { PartyRole, TradeTerms, Party } from '../../types/contract';
-import { canAccessFeature, canAccessAdvancedFeature } from '../../lib/kycBypass';
+import { PartyRole, TradeTerms, Party } from '@/types/contract';
 
 const ContractForm = () => {
-  const { account, user } = useWeb3();
+  const { account } = useWeb3();
   const { createContract, isCreatingContract } = useContracts();
   const { toast } = useToast();
   const [, navigate] = useLocation();
@@ -51,19 +50,6 @@ const ContractForm = () => {
       toast({
         title: "Wallet not connected",
         description: "Please connect your wallet to create a contract",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    // Use KYC bypass utility to check if user can proceed regardless of KYC status
-    // This will always return true but helps maintain the code structure
-    const canProceed = canAccessAdvancedFeature(user?.kycStatus || null);
-    
-    if (!canProceed) {
-      toast({
-        title: "Verification Required",
-        description: "Please complete the advanced KYC verification to create international trade contracts",
         variant: "destructive"
       });
       return;
@@ -147,14 +133,6 @@ const ContractForm = () => {
         <CardHeader>
           <h3 className="text-lg font-medium">Contract Details</h3>
           <p className="text-sm text-gray-500">Enter the basic information for your trade contract</p>
-          
-          {user?.kycStatus !== 'ADVANCED_VERIFIED' && (
-            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-md">
-              <p className="text-sm text-amber-800">
-                <strong>Note:</strong> Full KYC verification recommended but not required. Your current verification status: {user?.kycStatus || 'PENDING'}
-              </p>
-            </div>
-          )}
         </CardHeader>
         
         <CardContent className="space-y-4">

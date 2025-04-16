@@ -1,8 +1,8 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { apiRequest } from '../lib/queryClient';
-import { queryClient } from '../lib/queryClient';
-import { useWeb3 } from './useWeb3';
-import { useToast } from './use-toast';
+import { apiRequest } from '@/lib/queryClient';
+import { queryClient } from '@/lib/queryClient';
+import { useWeb3 } from '@/hooks/useWeb3';
+import { useToast } from '@/hooks/use-toast';
 
 export interface KYCData {
   firstName?: string;
@@ -38,7 +38,6 @@ export interface KYCData {
     companyRegistration?: string;
     taxCertificate?: string;
   };
-  kycLevel?: 'BASIC' | 'ADVANCED'; // Added this property for KYC level tracking
 }
 
 export interface User {
@@ -53,9 +52,7 @@ export interface User {
 
 export enum KYCStatus {
   PENDING = 'PENDING',
-  BASIC_COMPLETED = 'BASIC_COMPLETED',
-  ADVANCED_PENDING = 'ADVANCED_PENDING',
-  ADVANCED_VERIFIED = 'ADVANCED_VERIFIED',
+  VERIFIED = 'VERIFIED',
   REJECTED = 'REJECTED'
 }
 
@@ -85,34 +82,15 @@ export const useKYC = (userId?: number) => {
   // Submit KYC data
   const submitKYCMutation = useMutation({
     mutationFn: async (kycData: KYCData) => {
-      // Determine the KYC status based on the level
-      let kycStatus = KYCStatus.ADVANCED_PENDING; // Default for advanced verification
-      
-      if (kycData.kycLevel === 'BASIC') {
-        kycStatus = KYCStatus.BASIC_COMPLETED;
-      }
-      
-      const res = await apiRequest('POST', `/api/users/${currentUserId}/kyc`, {
-        kycData,
-        kycStatus
-      });
+      const res = await apiRequest('POST', `/api/users/${currentUserId}/kyc`, kycData);
       return res.json();
     },
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/users', currentUserId] });
-      
-      // Different messages depending on KYC level
-      if (variables.kycLevel === 'BASIC') {
-        toast({
-          title: "Basic Verification Complete",
-          description: "Your basic verification is complete. You can now access standard platform features.",
-        });
-      } else {
-        toast({
-          title: "Advanced Verification Submitted",
-          description: "Your advanced verification has been submitted and is pending review (1-3 business days).",
-        });
-      }
+      toast({
+        title: "KYC Submitted",
+        description: "Your KYC information has been submitted successfully and is pending verification.",
+      });
     },
     onError: (error: any) => {
       toast({

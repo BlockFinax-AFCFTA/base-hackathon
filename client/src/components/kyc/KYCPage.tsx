@@ -19,25 +19,11 @@ import {
 // KYC Status Badge component
 const KYCStatusBadge = ({ status }: { status: string }) => {
   switch(status) {
-    case KYCStatus.ADVANCED_VERIFIED:
+    case KYCStatus.VERIFIED:
       return (
         <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
           <CheckCircle className="h-3 w-3 mr-1" />
-          Fully Verified
-        </Badge>
-      );
-    case KYCStatus.BASIC_COMPLETED:
-      return (
-        <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-          <ShieldCheck className="h-3 w-3 mr-1" />
-          Basic Verification
-        </Badge>
-      );
-    case KYCStatus.ADVANCED_PENDING:
-      return (
-        <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-          <Clock className="h-3 w-3 mr-1" />
-          Advanced Pending
+          Verified
         </Badge>
       );
     case KYCStatus.REJECTED:
@@ -476,17 +462,17 @@ const KYCBusinessForm = ({ onSubmit, existingData = {} }: any) => {
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Business Address</h3>
         
+        <div className="space-y-2">
+          <Label htmlFor="street">Street Address</Label>
+          <Input 
+            id="street" 
+            value={formData.businessAddress.street}
+            onChange={(e) => handleAddressChange('street', e.target.value)}
+            required
+          />
+        </div>
+        
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="street">Street Address</Label>
-            <Input 
-              id="street" 
-              value={formData.businessAddress.street}
-              onChange={(e) => handleAddressChange('street', e.target.value)}
-              required
-            />
-          </div>
-          
           <div className="space-y-2">
             <Label htmlFor="city">City</Label>
             <Input 
@@ -496,9 +482,7 @@ const KYCBusinessForm = ({ onSubmit, existingData = {} }: any) => {
               required
             />
           </div>
-        </div>
-        
-        <div className="grid md:grid-cols-3 gap-4">
+          
           <div className="space-y-2">
             <Label htmlFor="state">State/Province</Label>
             <Input 
@@ -508,7 +492,9 @@ const KYCBusinessForm = ({ onSubmit, existingData = {} }: any) => {
               required
             />
           </div>
-          
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="postalCode">Postal Code</Label>
             <Input 
@@ -538,9 +524,9 @@ const KYCBusinessForm = ({ onSubmit, existingData = {} }: any) => {
         
         <div className="grid md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="business-email">Email Address</Label>
+            <Label htmlFor="email">Email Address</Label>
             <Input 
-              id="business-email" 
+              id="email" 
               type="email"
               value={formData.contactDetails.email}
               onChange={(e) => handleContactChange('email', e.target.value)}
@@ -549,9 +535,9 @@ const KYCBusinessForm = ({ onSubmit, existingData = {} }: any) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="business-phone">Phone Number</Label>
+            <Label htmlFor="phone">Phone Number</Label>
             <Input 
-              id="business-phone" 
+              id="phone" 
               value={formData.contactDetails.phone}
               onChange={(e) => handleContactChange('phone', e.target.value)}
               required
@@ -598,163 +584,208 @@ const KYCBusinessForm = ({ onSubmit, existingData = {} }: any) => {
   );
 };
 
-// KYC Status View component
+// KYC Status component (for when KYC has been submitted)
 const KYCStatusView = ({ kycData, kycStatus, riskScore }: any) => {
-  const isVerified = kycStatus === KYCStatus.ADVANCED_VERIFIED;
-  const isPending = kycStatus === KYCStatus.ADVANCED_PENDING;
+  const isIndividual = !!kycData?.firstName;
+  const isPending = kycStatus === KYCStatus.PENDING;
   const isRejected = kycStatus === KYCStatus.REJECTED;
+  const isVerified = kycStatus === KYCStatus.VERIFIED;
   
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Verification Details</h2>
-        <KYCStatusBadge status={kycStatus} />
-      </div>
-      
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Personal Information</h3>
-          <div className="grid grid-cols-2 gap-2">
-            <p className="text-sm font-medium">Name:</p>
-            <p className="text-sm">{kycData.firstName} {kycData.lastName}</p>
+      <div className="bg-muted p-4 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            {isVerified && <ShieldCheck className="w-8 h-8 text-green-500 mr-3" />}
+            {isPending && <Clock className="w-8 h-8 text-yellow-500 mr-3" />}
+            {isRejected && <ShieldX className="w-8 h-8 text-red-500 mr-3" />}
             
-            {kycData.dateOfBirth && (
-              <>
-                <p className="text-sm font-medium">Date of Birth:</p>
-                <p className="text-sm">{kycData.dateOfBirth}</p>
-              </>
-            )}
-            
-            {kycData.nationality && (
-              <>
-                <p className="text-sm font-medium">Nationality:</p>
-                <p className="text-sm">{kycData.nationality}</p>
-              </>
-            )}
-            
-            {kycData.residenceCountry && (
-              <>
-                <p className="text-sm font-medium">Country of Residence:</p>
-                <p className="text-sm">{kycData.residenceCountry}</p>
-              </>
-            )}
-            
-            {kycData.taxIdNumber && (
-              <>
-                <p className="text-sm font-medium">Tax ID:</p>
-                <p className="text-sm">{kycData.taxIdNumber}</p>
-              </>
-            )}
+            <div>
+              <h3 className="font-medium text-lg">
+                KYC {isVerified ? 'Verified' : isPending ? 'In Review' : 'Rejected'}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {isVerified && 'Your identity has been verified successfully.'}
+                {isPending && 'Your information is currently being reviewed.'}
+                {isRejected && 'Your KYC verification was not successful.'}
+              </p>
+            </div>
           </div>
           
-          {kycData.contactDetails && (
-            <>
-              <h3 className="text-lg font-medium mt-4">Contact Information</h3>
-              <div className="grid grid-cols-2 gap-2">
-                <p className="text-sm font-medium">Email:</p>
-                <p className="text-sm">{kycData.contactDetails.email}</p>
-                
-                <p className="text-sm font-medium">Phone:</p>
-                <p className="text-sm">{kycData.contactDetails.phone}</p>
-              </div>
-            </>
-          )}
-          
-          {/* Company info if it exists */}
-          {kycData.companyName && (
-            <>
-              <h3 className="text-lg font-medium mt-4">Company Information</h3>
-              <div className="grid grid-cols-2 gap-2">
-                <p className="text-sm font-medium">Company Name:</p>
-                <p className="text-sm">{kycData.companyName}</p>
-                
-                <p className="text-sm font-medium">Registration Number:</p>
-                <p className="text-sm">{kycData.companyRegistrationNumber}</p>
-                
-                <p className="text-sm font-medium">Business Type:</p>
-                <p className="text-sm">{kycData.companyType}</p>
-                
-                <p className="text-sm font-medium">Year Established:</p>
-                <p className="text-sm">{kycData.yearEstablished}</p>
-              </div>
-            </>
-          )}
-        </div>
-        
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Verification Status</h3>
-          
-          {isVerified && (
-            <Alert className="bg-green-50 border-green-200">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertTitle>Verification Complete</AlertTitle>
-              <AlertDescription>
-                Your identity has been successfully verified. You now have full access to all platform features.
-              </AlertDescription>
-            </Alert>
-          )}
-          
-          {isPending && (
-            <Alert className="bg-yellow-50 border-yellow-200">
-              <Clock className="h-4 w-4 text-yellow-600" />
-              <AlertTitle>Verification In Progress</AlertTitle>
-              <AlertDescription>
-                Your verification is being reviewed. This process usually takes 1-3 business days.
-              </AlertDescription>
-            </Alert>
-          )}
-          
-          {isRejected && (
-            <Alert className="bg-red-50 border-red-200">
-              <AlertCircle className="h-4 w-4 text-red-600" />
-              <AlertTitle>Verification Rejected</AlertTitle>
-              <AlertDescription>
-                Your verification was rejected. Please check your information and resubmit.
-              </AlertDescription>
-            </Alert>
-          )}
-          
-          {/* Identification Section */}
-          {kycData.idType && (
-            <>
-              <h3 className="text-lg font-medium mt-4">Identification</h3>
-              <div className="grid grid-cols-2 gap-2">
-                <p className="text-sm font-medium">ID Type:</p>
-                <p className="text-sm">
-                  {kycData.idType === 'passport' ? 'Passport' : 
-                   kycData.idType === 'drivingLicense' ? 'Driving License' : 
-                   kycData.idType === 'nationalId' ? 'National ID' : kycData.idType}
-                </p>
-                
-                <p className="text-sm font-medium">ID Number:</p>
-                <p className="text-sm">{kycData.idNumber}</p>
-                
-                <p className="text-sm font-medium">Expiry Date:</p>
-                <p className="text-sm">{kycData.idExpiryDate}</p>
-              </div>
-            </>
-          )}
-          
-          {/* Business Address if it exists */}
-          {kycData.businessAddress && kycData.businessAddress.street && (
-            <>
-              <h3 className="text-lg font-medium mt-4">Business Address</h3>
-              <div className="text-sm">
-                <p>{kycData.businessAddress.street}</p>
-                <p>{kycData.businessAddress.city}, {kycData.businessAddress.state} {kycData.businessAddress.postalCode}</p>
-                <p>{kycData.businessAddress.country}</p>
-              </div>
-            </>
-          )}
-          
-          {/* Risk score if available */}
-          {typeof riskScore === 'number' && (
-            <div className="mt-4">
-              <RiskScore score={riskScore} />
-            </div>
-          )}
+          <KYCStatusBadge status={kycStatus} />
         </div>
       </div>
+      
+      {isVerified && (
+        <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+          <div className="flex">
+            <UserCheck className="w-5 h-5 text-green-600 mr-2 flex-shrink-0" />
+            <div>
+              <p className="text-green-800">
+                Your identity has been verified and your account is fully activated.
+                You now have access to all platform features.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {isPending && (
+        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+          <div className="flex">
+            <Info className="w-5 h-5 text-yellow-600 mr-2 flex-shrink-0" />
+            <div>
+              <p className="text-yellow-800">
+                Your KYC verification is currently in progress. This process typically takes 1-3 business days.
+                We'll notify you once the verification is complete.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {isRejected && (
+        <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
+          <div className="flex">
+            <AlertCircle className="w-5 h-5 text-red-600 mr-2 flex-shrink-0" />
+            <div>
+              <p className="text-red-800 mb-2">
+                Your KYC verification was unsuccessful. This may be due to:
+              </p>
+              <ul className="list-disc list-inside text-red-800 text-sm">
+                <li>Unclear or invalid document images</li>
+                <li>Information mismatch between documents and provided data</li>
+                <li>Expired identification documents</li>
+              </ul>
+              <p className="text-red-800 mt-2">
+                Please resubmit your KYC information with valid documents.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <Separator />
+      
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-medium">KYC Information</h3>
+          <Badge variant="outline">
+            {isIndividual ? 'Individual' : 'Business'}
+          </Badge>
+        </div>
+        
+        {isIndividual ? (
+          <div className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Name</p>
+                <p className="font-medium">{kycData.firstName} {kycData.lastName}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-muted-foreground">Date of Birth</p>
+                <p className="font-medium">{kycData.dateOfBirth}</p>
+              </div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Nationality</p>
+                <p className="font-medium">{kycData.nationality}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-muted-foreground">Country of Residence</p>
+                <p className="font-medium">{kycData.residenceCountry}</p>
+              </div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">ID Type</p>
+                <p className="font-medium capitalize">{kycData.idType}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-muted-foreground">ID Number</p>
+                <p className="font-medium">{kycData.idNumber}</p>
+              </div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Email</p>
+                <p className="font-medium">{kycData.contactDetails?.email}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-muted-foreground">Phone</p>
+                <p className="font-medium">{kycData.contactDetails?.phone}</p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Company Name</p>
+                <p className="font-medium">{kycData.companyName}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-muted-foreground">Registration Number</p>
+                <p className="font-medium">{kycData.companyRegistrationNumber}</p>
+              </div>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Company Type</p>
+                <p className="font-medium capitalize">{kycData.companyType}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-muted-foreground">Business Category</p>
+                <p className="font-medium">{kycData.businessCategory}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-muted-foreground">Year Established</p>
+                <p className="font-medium">{kycData.yearEstablished}</p>
+              </div>
+            </div>
+            
+            <div>
+              <p className="text-sm text-muted-foreground">Business Address</p>
+              <p className="font-medium">
+                {kycData.businessAddress?.street}, {kycData.businessAddress?.city}, 
+                {kycData.businessAddress?.state} {kycData.businessAddress?.postalCode}, 
+                {kycData.businessAddress?.country}
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Email</p>
+                <p className="font-medium">{kycData.contactDetails?.email}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-muted-foreground">Phone</p>
+                <p className="font-medium">{kycData.contactDetails?.phone}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      {isVerified && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">Risk Assessment</h3>
+          <RiskScore score={riskScore} />
+        </div>
+      )}
       
       {isRejected && (
         <div className="flex justify-end mt-6">
@@ -801,101 +832,17 @@ const KYCPage = () => {
     );
   }
   
-  // In this revised version, we always show the KYC form first, regardless of state
-  // Only show status view if user has specifically viewed their verification status
-  const [viewMode, setViewMode] = useState<'form' | 'status'>(kycStatus === KYCStatus.ADVANCED_VERIFIED ? 'status' : 'form');
-  
-  // If user is not logged in, show login required message
-  if (!isLoggedIn) {
+  // If KYC has been submitted, show status view
+  if (kycData) {
     return (
       <div className="flex flex-col gap-8">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Identity Verification</h1>
-          <p className="text-muted-foreground">Verify your identity to use all platform features</p>
-        </div>
-        
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Login Required</CardTitle>
-            <CardDescription>
-              Please login to access identity verification.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex justify-center py-6">
-            <AlertCircle className="h-16 w-16 text-muted-foreground" />
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <Button onClick={() => window.location.href = '/'}>Go to Login</Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
-  
-  // If user wants to view their status and has KYC data
-  if (viewMode === 'status' && kycData) {
-    return (
-      <div className="flex flex-col gap-8">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">Verification Status</h1>
-            <p className="text-muted-foreground">View your current verification status</p>
-          </div>
-          <Button onClick={() => setViewMode('form')} variant="outline">
-            <FileText className="mr-2 h-4 w-4" />
-            Update Information
-          </Button>
+          <p className="text-muted-foreground">View your verification status</p>
         </div>
         
         <Card>
           <CardContent className="p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold">Current Status</h2>
-              <KYCStatusBadge status={kycStatus} />
-            </div>
-            
-            {kycStatus === KYCStatus.ADVANCED_VERIFIED && (
-              <Alert className="bg-green-50 border-green-200 mb-6">
-                <ShieldCheck className="h-4 w-4 text-green-600" />
-                <AlertTitle>Advanced Verification Complete</AlertTitle>
-                <AlertDescription>
-                  Your account has been fully verified for international trade activities. 
-                  You now have access to all platform features.
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {kycStatus === KYCStatus.BASIC_COMPLETED && (
-              <Alert className="bg-blue-50 border-blue-200 mb-6">
-                <Info className="h-4 w-4 text-blue-600" />
-                <AlertTitle>Basic Verification Completed</AlertTitle>
-                <AlertDescription>
-                  You've completed basic verification. To access advanced international trade features, 
-                  please complete the full verification process.
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {kycStatus === KYCStatus.REJECTED && (
-              <Alert className="bg-red-50 border-red-200 mb-6">
-                <AlertCircle className="h-4 w-4 text-red-600" />
-                <AlertTitle>Verification Rejected</AlertTitle>
-                <AlertDescription>
-                  Your verification was rejected. Please review your information and resubmit.
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {kycStatus === KYCStatus.ADVANCED_PENDING && (
-              <Alert className="bg-yellow-50 border-yellow-200 mb-6">
-                <Clock className="h-4 w-4 text-yellow-600" />
-                <AlertTitle>Verification In Progress</AlertTitle>
-                <AlertDescription>
-                  Your advanced verification is being reviewed. This process usually takes 1-3 business days.
-                </AlertDescription>
-              </Alert>
-            )}
-            
             <KYCStatusView 
               kycData={kycData} 
               kycStatus={kycStatus} 
@@ -907,22 +854,12 @@ const KYCPage = () => {
     );
   }
   
-  // Display form but with option to view status if user has submitted KYC
+  // KYC submission form
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Identity Verification</h1>
-          <p className="text-muted-foreground">Complete your KYC verification to use all platform features</p>
-        </div>
-        
-        {/* Show view status button if user has KYC data */}
-        {kycData && (
-          <Button onClick={() => setViewMode('status')} variant="outline">
-            <CheckCircle className="mr-2 h-4 w-4" />
-            View Status
-          </Button>
-        )}
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Identity Verification</h1>
+        <p className="text-muted-foreground">Complete your KYC verification to use all platform features</p>
       </div>
       
       <Card>
@@ -957,79 +894,21 @@ const KYCPage = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {/* Show verification status if user has already submitted KYC */}
-          {kycData && (
-            <div className="mb-6">
-              <Alert className={`
-                ${kycStatus === KYCStatus.ADVANCED_VERIFIED ? 'bg-green-50 border-green-200' : ''}
-                ${kycStatus === KYCStatus.BASIC_COMPLETED ? 'bg-blue-50 border-blue-200' : ''}
-                ${kycStatus === KYCStatus.ADVANCED_PENDING ? 'bg-yellow-50 border-yellow-200' : ''}
-                ${kycStatus === KYCStatus.REJECTED ? 'bg-red-50 border-red-200' : ''}
-              `}>
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-start">
-                    {kycStatus === KYCStatus.ADVANCED_VERIFIED && <ShieldCheck className="h-4 w-4 text-green-600 mt-0.5 mr-2" />}
-                    {kycStatus === KYCStatus.BASIC_COMPLETED && <Info className="h-4 w-4 text-blue-600 mt-0.5 mr-2" />}
-                    {kycStatus === KYCStatus.ADVANCED_PENDING && <Clock className="h-4 w-4 text-yellow-600 mt-0.5 mr-2" />}
-                    {kycStatus === KYCStatus.REJECTED && <AlertCircle className="h-4 w-4 text-red-600 mt-0.5 mr-2" />}
-                    <div>
-                      <AlertTitle>
-                        {kycStatus === KYCStatus.ADVANCED_VERIFIED && 'Verification Complete'}
-                        {kycStatus === KYCStatus.BASIC_COMPLETED && 'Basic Verification Only'}
-                        {kycStatus === KYCStatus.ADVANCED_PENDING && 'Verification In Progress'}
-                        {kycStatus === KYCStatus.REJECTED && 'Verification Rejected'}
-                      </AlertTitle>
-                      <AlertDescription className="text-xs">
-                        {kycStatus === KYCStatus.ADVANCED_VERIFIED && 'You can access all platform features.'}
-                        {kycStatus === KYCStatus.BASIC_COMPLETED && 'Please complete advanced verification for full access.'}
-                        {kycStatus === KYCStatus.ADVANCED_PENDING && 'Your submission is being reviewed (1-3 business days).'}
-                        {kycStatus === KYCStatus.REJECTED && 'Your information was rejected, please update and resubmit.'}
-                      </AlertDescription>
-                    </div>
-                  </div>
-                  <KYCStatusBadge status={kycStatus} />
-                </div>
-              </Alert>
-            </div>
-          )}
+          <div className="my-4">
+            <Alert>
+              <Shield className="h-4 w-4" />
+              <AlertTitle>Identity Verification Required</AlertTitle>
+              <AlertDescription>
+                To comply with regulations and enhance security, we require all users to complete identity verification.
+                This process is necessary for accessing all platform features.
+              </AlertDescription>
+            </Alert>
+          </div>
           
-          {/* Show standard alert for new users */}
-          {!kycData && (
-            <div className="my-4">
-              <Alert>
-                <Shield className="h-4 w-4" />
-                <AlertTitle>Identity Verification Required</AlertTitle>
-                <AlertDescription>
-                  To comply with regulations and enhance security, we require all users to complete identity verification.
-                  This process is necessary for accessing all platform features.
-                </AlertDescription>
-              </Alert>
-            </div>
-          )}
-          
-          {/* KYC Forms - prefill with existing data if available */}
           {kycType === 'individual' ? (
-            <KYCIndividualForm 
-              onSubmit={(formData: any) => {
-                const kycData = {
-                  ...formData,
-                  kycLevel: 'ADVANCED', // All form submissions go for advanced verification
-                };
-                submitKYCMutation.mutate(kycData);
-              }} 
-              existingData={kycData || {}} // Pre-fill with existing data if available
-            />
+            <KYCIndividualForm onSubmit={handleSubmitKYC} />
           ) : (
-            <KYCBusinessForm 
-              onSubmit={(formData: any) => {
-                const kycData = {
-                  ...formData,
-                  kycLevel: 'ADVANCED', // All form submissions go for advanced verification
-                };
-                submitKYCMutation.mutate(kycData);
-              }} 
-              existingData={kycData || {}} // Pre-fill with existing data if available
-            />
+            <KYCBusinessForm onSubmit={handleSubmitKYC} />
           )}
         </CardContent>
       </Card>

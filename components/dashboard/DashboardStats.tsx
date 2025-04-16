@@ -1,96 +1,64 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { ArrowUpRight, ArrowDownRight, CreditCard, ArrowRight, Wallet, BarChart, Users } from 'lucide-react';
+import { Globe, Landmark, ShieldCheck } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { useContracts } from '@/hooks/useContracts';
 
-const StatCard: React.FC<{
-  title: string;
-  value: string;
-  icon: React.ReactNode;
-  change?: {
-    value: string;
-    positive: boolean;
-  };
-  linkText?: string;
-  linkHref?: string;
-}> = ({ title, value, icon, change, linkText, linkHref }) => {
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <div className="h-8 w-8 rounded-full bg-primary/10 p-1.5 text-primary">{icon}</div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
-        {change && (
-          <p className="text-xs text-muted-foreground flex items-center mt-1">
-            {change.positive ? (
-              <ArrowUpRight className="mr-1 h-3 w-3 text-green-500" />
-            ) : (
-              <ArrowDownRight className="mr-1 h-3 w-3 text-red-500" />
-            )}
-            <span className={change.positive ? 'text-green-500' : 'text-red-500'}>
-              {change.value} since last month
-            </span>
-          </p>
-        )}
-        {linkText && linkHref && (
-          <a href={linkHref} className="text-xs text-primary flex items-center mt-2 hover:underline">
-            {linkText}
-            <ArrowRight className="ml-1 h-3 w-3" />
-          </a>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
+const DashboardStats = () => {
+  const { contracts, isLoadingContracts } = useContracts();
 
-const DashboardStats: React.FC = () => {
+  const totalContractValue = contracts && Array.isArray(contracts)
+    ? contracts.reduce((sum, contract) => {
+        const amount = contract.tradeTerms?.amount || 0;
+        return sum + amount;
+      }, 0)
+    : 0;
+
+  const activeDeals = contracts && Array.isArray(contracts)
+    ? contracts.filter(contract => 
+        ['FUNDED', 'GOODS_SHIPPED', 'GOODS_RECEIVED'].includes(contract.status)
+      ).length
+    : 0;
+
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <StatCard
-        title="Current Balance"
-        value="$15,231.89"
-        icon={<Wallet className="h-full w-full" />}
-        change={{
-          value: "+2.5%",
-          positive: true,
-        }}
-        linkText="View transactions"
-        linkHref="/wallet"
-      />
-      <StatCard
-        title="Active Contracts"
-        value="8"
-        icon={<CreditCard className="h-full w-full" />}
-        change={{
-          value: "+3",
-          positive: true,
-        }}
-        linkText="View contracts"
-        linkHref="/contracts"
-      />
-      <StatCard
-        title="Risk Score"
-        value="32/100"
-        icon={<BarChart className="h-full w-full" />}
-        change={{
-          value: "-5 points",
-          positive: true,
-        }}
-        linkText="View risk details"
-        linkHref="/risk"
-      />
-      <StatCard
-        title="Network Partners"
-        value="149"
-        icon={<Users className="h-full w-full" />}
-        change={{
-          value: "+12",
-          positive: true,
-        }}
-        linkText="View network"
-        linkHref="/network"
-      />
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <Card className="bg-blue-600 text-white p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-white/80">Total Trade Volume</p>
+            <h3 className="mt-2 text-2xl font-bold">{totalContractValue.toFixed(2)} USD</h3>
+          </div>
+          <Globe className="h-8 w-8 text-white/90" />
+        </div>
+        <div className="mt-4 flex items-center text-sm text-white/80">
+          Global trade activity
+        </div>
+      </Card>
+
+      <Card className="bg-green-600 text-white p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-white/80">Active Trade Deals</p>
+            <h3 className="mt-2 text-2xl font-bold">{activeDeals}</h3>
+          </div>
+          <Landmark className="h-8 w-8 text-white/90" />
+        </div>
+        <div className="mt-4 flex items-center text-sm text-white/80">
+          Current transactions
+        </div>
+      </Card>
+
+      <Card className="bg-blue-600 text-white p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-white/80">Secured Transactions</p>
+            <h3 className="mt-2 text-2xl font-bold">100%</h3>
+          </div>
+          <ShieldCheck className="h-8 w-8 text-white/90" />
+        </div>
+        <div className="mt-4 flex items-center text-sm text-white/80">
+          Smart contract protected
+        </div>
+      </Card>
     </div>
   );
 };

@@ -1,92 +1,57 @@
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-/**
- * Helper function to throw an error if the response is not ok
- * @param res The fetch response object
- * @throws Error with the response status text or a generic error message
- */
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    let errorMessage;
-    try {
-      const data = await res.json();
-      errorMessage = data.message || res.statusText || 'An error occurred';
-    } catch {
-      errorMessage = res.statusText || 'An error occurred';
-    }
-    
-    const error = new Error(errorMessage);
-    (error as any).status = res.status;
-    throw error;
+    const text = (await res.text()) || res.statusText;
+    throw new Error(`${res.status}: ${text}`);
   }
 }
 
-/**
- * Helper function to make API requests
- * @param method The HTTP method
- * @param url The API URL
- * @param body The request body
- * @returns The fetch promise
- */
 export async function apiRequest(
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+  method: string,
   url: string,
-  body?: any
+  data?: unknown | undefined,
 ): Promise<Response> {
-  const options: RequestInit = {
+  const res = await fetch(url, {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-  };
+    headers: data ? { "Content-Type": "application/json" } : {},
+    body: data ? JSON.stringify(data) : undefined,
+    credentials: "include",
+  });
 
-  if (body && method !== 'GET') {
-    options.body = JSON.stringify(body);
-  }
-
-  const res = await fetch(url, options);
-  
-  if (res.status === 401) {
-    // Let the consumer handle unauthorized errors
-    return res;
-  }
-  
   await throwIfResNotOk(res);
   return res;
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
-
-/**
- * Factory function to create a query function for React Query
- * @param options Options for the query function
- * @returns A query function for React Query
- */
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
-}) => (url: string) => Promise<T | null> = ({ on401 }) => async (url) => {
-  try {
-    const res = await apiRequest('GET', url);
-    
-    if (res.status === 401) {
-      if (on401 === 'throw') {
-        throw new Error('Unauthorized');
-      }
+}) => QueryFunction<T> =
+  ({ on401: unauthorizedBehavior }) =>
+  async ({ queryKey }) => {
+    const res = await fetch(queryKey[0] as string, {
+      credentials: "include",
+    });
+
+    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
       return null;
     }
-    
+
+    await throwIfResNotOk(res);
     return await res.json();
-  } catch (error) {
-    throw error;
-  }
-};
+  };
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      queryFn: getQueryFn({ on401: "throw" }),
+      refetchInterval: false,
       refetchOnWindowFocus: false,
-      retry: 1,
+      staleTime: Infinity,
+      retry: false,
+    },
+    mutations: {
+      retry: false,
     },
   },
 });
