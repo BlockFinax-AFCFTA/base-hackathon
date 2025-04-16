@@ -10,7 +10,9 @@ import {
   CheckCircle, 
   AlertCircle, 
   Clock, 
-  Upload 
+  Upload,
+  Info,
+  User
 } from 'lucide-react';
 
 import { useWeb3 } from '../hooks/useWeb3';
@@ -177,7 +179,7 @@ const KYCPage: NextPage = () => {
             <TabsTrigger value="basic">Basic Verification</TabsTrigger>
             <TabsTrigger 
               value="advanced" 
-              disabled={kycStatus !== KYCStatus.BASIC_COMPLETED && kycStatus !== KYCStatus.ADVANCED_PENDING && kycStatus !== KYCStatus.ADVANCED_VERIFIED}
+              // Allow access to advanced tab regardless of KYC status
             >
               Advanced Verification
             </TabsTrigger>
@@ -269,7 +271,7 @@ const KYCPage: NextPage = () => {
                     <Button 
                       type="submit" 
                       className="w-full" 
-                      disabled={submitKYCMutation.isPending || kycStatus === KYCStatus.BASIC_COMPLETED || kycStatus === KYCStatus.ADVANCED_PENDING || kycStatus === KYCStatus.ADVANCED_VERIFIED}
+                      disabled={submitKYCMutation.isPending}
                     >
                       {submitKYCMutation.isPending ? (
                         <>
@@ -649,7 +651,7 @@ const KYCPage: NextPage = () => {
                     <Button 
                       type="submit" 
                       className="w-full" 
-                      disabled={submitKYCMutation.isPending || kycStatus === KYCStatus.ADVANCED_VERIFIED}
+                      disabled={submitKYCMutation.isPending}
                     >
                       {submitKYCMutation.isPending ? (
                         <>
@@ -693,15 +695,15 @@ const KYCPage: NextPage = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className={`h-10 w-10 rounded-full flex items-center justify-center
-                    ${kycStatus === KYCStatus.BASIC_COMPLETED || kycStatus === KYCStatus.ADVANCED_PENDING || kycStatus === KYCStatus.ADVANCED_VERIFIED 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-gray-100 text-gray-500'}`
-                  }>
+                  <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                    kycStatus === KYCStatus.BASIC_COMPLETED || kycStatus === KYCStatus.ADVANCED_PENDING || kycStatus === KYCStatus.ADVANCED_VERIFIED 
+                      ? "bg-green-100 text-green-800" 
+                      : "bg-orange-100 text-orange-800"
+                  }`}>
                     {kycStatus === KYCStatus.BASIC_COMPLETED || kycStatus === KYCStatus.ADVANCED_PENDING || kycStatus === KYCStatus.ADVANCED_VERIFIED ? (
                       <CheckCircle className="h-5 w-5" />
                     ) : (
-                      <AlertCircle className="h-5 w-5" />
+                      <Clock className="h-5 w-5" />
                     )}
                   </div>
                   <div className="ml-4">
@@ -715,7 +717,7 @@ const KYCPage: NextPage = () => {
                   {kycStatus === KYCStatus.BASIC_COMPLETED || kycStatus === KYCStatus.ADVANCED_PENDING || kycStatus === KYCStatus.ADVANCED_VERIFIED ? (
                     <span className="text-green-600 font-medium">Completed</span>
                   ) : (
-                    <span className="text-muted-foreground">Incomplete</span>
+                    <span className="text-orange-600 font-medium">Pending</span>
                   )}
                 </div>
               </div>
@@ -724,13 +726,13 @@ const KYCPage: NextPage = () => {
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className={`h-10 w-10 rounded-full flex items-center justify-center
-                    ${kycStatus === KYCStatus.ADVANCED_VERIFIED 
-                      ? 'bg-green-100 text-green-800' 
+                  <div className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                    kycStatus === KYCStatus.ADVANCED_VERIFIED 
+                      ? "bg-green-100 text-green-800" 
                       : kycStatus === KYCStatus.ADVANCED_PENDING
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-gray-100 text-gray-500'}`
-                  }>
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-gray-100 text-gray-800"
+                  }`}>
                     {kycStatus === KYCStatus.ADVANCED_VERIFIED ? (
                       <CheckCircle className="h-5 w-5" />
                     ) : kycStatus === KYCStatus.ADVANCED_PENDING ? (
@@ -750,16 +752,31 @@ const KYCPage: NextPage = () => {
                   {kycStatus === KYCStatus.ADVANCED_VERIFIED ? (
                     <span className="text-green-600 font-medium">Verified</span>
                   ) : kycStatus === KYCStatus.ADVANCED_PENDING ? (
-                    <span className="text-yellow-600 font-medium">Pending Review</span>
+                    <span className="text-yellow-600 font-medium">Pending</span>
                   ) : (
-                    <span className="text-muted-foreground">
-                      {kycStatus === KYCStatus.BASIC_COMPLETED ? 'Not Started' : 'Complete Basic First'}
-                    </span>
+                    <span className="text-gray-600 font-medium">Not Started</span>
                   )}
                 </div>
               </div>
             </div>
           </CardContent>
+          <CardFooter className={`${
+            kycStatus === KYCStatus.ADVANCED_VERIFIED 
+              ? "bg-green-50 text-green-800" 
+              : "bg-blue-50 text-blue-800"
+          } border-t p-4`}>
+            {kycStatus === KYCStatus.ADVANCED_VERIFIED ? (
+              <>
+                <CheckCircle className="mr-2 h-5 w-5" />
+                <span>All verification checks completed successfully. You have full access to all platform features.</span>
+              </>
+            ) : (
+              <>
+                <AlertCircle className="mr-2 h-5 w-5" />
+                <span>Your verification is not complete, but you still have access to all platform features.</span>
+              </>
+            )}
+          </CardFooter>
         </Card>
       </div>
     </>

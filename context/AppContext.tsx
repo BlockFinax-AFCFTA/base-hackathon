@@ -28,7 +28,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   // State for sidebar visibility
   const [sidebarOpen, setSidebarOpen] = useState(true);
   
-  // State for KYC status (this would typically come from user data)
+  // Allow access to all features regardless of actual KYC status
+  // But don't auto-verify users - let them complete KYC normally
   const [isKYCCompleted, setIsKYCCompleted] = useState(false);
   const [kycStatus, setKYCStatus] = useState('PENDING');
   

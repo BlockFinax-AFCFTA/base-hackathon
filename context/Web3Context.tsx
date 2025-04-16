@@ -59,6 +59,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
         
         if (response.status === 200) {
           const userData = await response.json();
+          // Keep original KYC status for display purposes
           setUser(userData);
           setAccount(userData.walletAddress);
           setIsLoggedIn(true);
@@ -95,6 +96,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
       
       if (response.status === 200) {
         const userData = await response.json();
+        // Keep original KYC status for display purposes
         setUser(userData);
         setAccount(userData.walletAddress);
         setIsLoggedIn(true);
@@ -155,6 +157,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
       
       if (response.status === 201) {
         const userData = await response.json();
+        // Keep original KYC status for new users too
         setUser(userData);
         setAccount(userData.walletAddress);
         setIsLoggedIn(true);

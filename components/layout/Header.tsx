@@ -1,5 +1,6 @@
 import React from 'react';
-import Link from 'next/link';
+import type { LinkProps } from 'next/link';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { Menu, Bell, User, LogOut, ChevronDown } from 'lucide-react';
 import { useWeb3 } from '../../hooks/useWeb3';
@@ -16,6 +17,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import { KYCStatus } from '../../hooks/useKYC';
+import { getKYCStatusColor, getKYCStatusLabel } from '../../lib/kycBypass';
 
 const Header: React.FC = () => {
   const router = useRouter();
@@ -42,20 +44,13 @@ const Header: React.FC = () => {
     router.push('/');
   };
   
-  // Get KYC badge
+  // Show actual KYC badge with color from the KYC bypass utility
   const getKYCBadge = () => {
-    switch(kycStatus) {
-      case KYCStatus.ADVANCED_VERIFIED:
-        return <Badge className="ml-2 bg-green-100 text-green-800 hover:bg-green-100">Verified</Badge>;
-      case KYCStatus.BASIC_COMPLETED:
-        return <Badge className="ml-2 bg-blue-100 text-blue-800 hover:bg-blue-100">Basic KYC</Badge>;
-      case KYCStatus.ADVANCED_PENDING:
-        return <Badge className="ml-2 bg-yellow-100 text-yellow-800 hover:bg-yellow-100">Pending</Badge>;
-      case KYCStatus.REJECTED:
-        return <Badge className="ml-2 bg-red-100 text-red-800 hover:bg-red-100">Rejected</Badge>;
-      default:
-        return <Badge className="ml-2 bg-gray-100 text-gray-800 hover:bg-gray-100">Unverified</Badge>;
-    }
+    const colorClass = getKYCStatusColor(kycStatus);
+    const label = getKYCStatusLabel(kycStatus);
+    
+    // Display the badge with the appropriate color and label
+    return <Badge className={`ml-2 ${colorClass} hover:${colorClass}`}>{label}</Badge>;
   };
   
   return (
@@ -63,13 +58,15 @@ const Header: React.FC = () => {
       <div className="flex items-center justify-between px-4 h-16">
         {/* Left Section - Logo and Toggle */}
         <div className="flex items-center">
-          <Button variant="ghost" size="icon" onClick={toggleSidebar} className="mr-2 lg:hidden">
+          <Button variant="ghost" size="icon" onClick={() => toggleSidebar()} className="mr-2 lg:hidden">
             <Menu className="h-5 w-5" />
           </Button>
           
-          <Link href="/dashboard" className="flex items-center">
-            <span className="text-xl font-bold text-primary">BlockFinaX</span>
-          </Link>
+          <NextLink href="/dashboard">
+            <div className="flex items-center">
+              <span className="text-xl font-bold text-primary">BlockFinaX</span>
+            </div>
+          </NextLink>
         </div>
         
         {/* Right Section - Notifications & Profile */}
