@@ -72,22 +72,22 @@ const RiskScore = ({ score }: { score: number }) => {
 // KYC Individual Form component
 const KYCIndividualForm = ({ onSubmit, existingData = {} }: any) => {
   const [formData, setFormData] = useState({
-    firstName: existingData.firstName || '',
-    lastName: existingData.lastName || '',
-    dateOfBirth: existingData.dateOfBirth || '',
-    nationality: existingData.nationality || '',
-    residenceCountry: existingData.residenceCountry || '',
-    idType: existingData.idType || 'passport',
-    idNumber: existingData.idNumber || '',
-    idExpiryDate: existingData.idExpiryDate || '',
-    taxIdNumber: existingData.taxIdNumber || '',
+    firstName: '',
+    lastName: '',
+    dateOfBirth: '',
+    nationality: '',
+    residenceCountry: '',
+    idType: 'passport',
+    idNumber: '',
+    idExpiryDate: '',
+    taxIdNumber: '',
     contactDetails: {
-      email: existingData.contactDetails?.email || '',
-      phone: existingData.contactDetails?.phone || ''
+      email: '',
+      phone: ''
     },
     documentVerification: {
-      identityDocument: existingData.documentVerification?.identityDocument || '',
-      proofOfAddress: existingData.documentVerification?.proofOfAddress || ''
+      identityDocument: '',
+      proofOfAddress: ''
     }
   });
   
@@ -302,27 +302,27 @@ const KYCIndividualForm = ({ onSubmit, existingData = {} }: any) => {
 // KYC Business Form component
 const KYCBusinessForm = ({ onSubmit, existingData = {} }: any) => {
   const [formData, setFormData] = useState({
-    companyName: existingData.companyName || '',
-    companyRegistrationNumber: existingData.companyRegistrationNumber || '',
-    companyType: existingData.companyType || 'limited',
-    businessCategory: existingData.businessCategory || '',
-    yearEstablished: existingData.yearEstablished || '',
-    annualRevenue: existingData.annualRevenue || '',
-    employeeCount: existingData.employeeCount || '',
+    companyName: '',
+    companyRegistrationNumber: '',
+    companyType: 'limited',
+    businessCategory: '',
+    yearEstablished: '',
+    annualRevenue: '',
+    employeeCount: '',
     businessAddress: {
-      street: existingData.businessAddress?.street || '',
-      city: existingData.businessAddress?.city || '',
-      state: existingData.businessAddress?.state || '',
-      postalCode: existingData.businessAddress?.postalCode || '',
-      country: existingData.businessAddress?.country || ''
+      street: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      country: ''
     },
     contactDetails: {
-      email: existingData.contactDetails?.email || '',
-      phone: existingData.contactDetails?.phone || ''
+      email: '',
+      phone: ''
     },
     documentVerification: {
-      companyRegistration: existingData.documentVerification?.companyRegistration || '',
-      taxCertificate: existingData.documentVerification?.taxCertificate || ''
+      companyRegistration: '',
+      taxCertificate: ''
     }
   });
   
