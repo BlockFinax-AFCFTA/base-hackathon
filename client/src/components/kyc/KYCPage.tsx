@@ -801,9 +801,11 @@ const KYCPage = () => {
   const { kycUser, kycStatus, riskScore, kycData, submitKYCMutation } = useKYC();
   
   const [kycType, setKYCType] = useState<'individual' | 'business'>('individual');
+  const [submitted, setSubmitted] = useState(false);
   
   const handleSubmitKYC = (formData: any) => {
     submitKYCMutation.mutate(formData);
+    setSubmitted(true);
   };
   
   if (!isLoggedIn) {
@@ -832,8 +834,8 @@ const KYCPage = () => {
     );
   }
   
-  // If KYC has been submitted, show status view
-  if (kycData) {
+  // If KYC has been submitted and verified, show status view
+  if (submitted && kycData) {
     return (
       <div className="flex flex-col gap-8">
         <div>
