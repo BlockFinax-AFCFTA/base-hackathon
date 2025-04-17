@@ -33,12 +33,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const { kycData, kycStatus } = useKYC();
   const [location, setLocation] = useLocation();
 
+  // Removed KYC requirement for protected routes
   useEffect(() => {
-    const protectedRoutes = ['/contracts', '/documents', '/trade-finance'];
-    if (protectedRoutes.some(route => location.startsWith(route)) && !kycData) {
-      setLocation('/kyc');
-    }
-  }, [location, kycData, setLocation]);
+    // Add any other route protection logic here if needed
+  }, [location]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);

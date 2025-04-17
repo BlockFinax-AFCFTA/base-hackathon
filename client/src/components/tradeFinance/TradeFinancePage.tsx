@@ -109,7 +109,7 @@ const ApplicationCard = ({ application, onView }: any) => {
 // Application detail component
 const ApplicationDetail = ({ application, onClose }: any) => {
   if (!application) return null;
-  
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-start">
@@ -123,14 +123,14 @@ const ApplicationDetail = ({ application, onClose }: any) => {
         <div className="text-right">
           <p className="text-sm text-muted-foreground">Application Date</p>
           <p>{format(new Date(application.applicationDate), 'MMMM d, yyyy')}</p>
-          
+
           {application.approvalDate && (
             <>
               <p className="text-sm text-muted-foreground mt-2">Approval Date</p>
               <p>{format(new Date(application.approvalDate), 'MMMM d, yyyy')}</p>
             </>
           )}
-          
+
           {application.expiryDate && (
             <>
               <p className="text-sm text-muted-foreground mt-2">Expiry Date</p>
@@ -139,9 +139,9 @@ const ApplicationDetail = ({ application, onClose }: any) => {
           )}
         </div>
       </div>
-      
+
       <Separator />
-      
+
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <p className="font-medium mb-1">Applicant</p>
@@ -154,7 +154,7 @@ const ApplicationDetail = ({ application, onClose }: any) => {
           </div>
         )}
       </div>
-      
+
       <div className="p-4 bg-muted rounded-md">
         <h3 className="font-medium mb-3">Application Details</h3>
         <div className="grid gap-4">
@@ -172,7 +172,7 @@ const ApplicationDetail = ({ application, onClose }: any) => {
           </div>
         </div>
       </div>
-      
+
       {application.terms && (
         <div>
           <h3 className="font-medium mb-2">Terms and Conditions</h3>
@@ -186,7 +186,7 @@ const ApplicationDetail = ({ application, onClose }: any) => {
           </div>
         </div>
       )}
-      
+
       {application.supportingDocuments && application.supportingDocuments.length > 0 && (
         <div>
           <h3 className="font-medium mb-2">Supporting Documents</h3>
@@ -202,7 +202,7 @@ const ApplicationDetail = ({ application, onClose }: any) => {
           </div>
         </div>
       )}
-      
+
       <div className="flex justify-end space-x-3 mt-6">
         <Button variant="outline" onClick={onClose}>
           Close
@@ -229,13 +229,13 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
     },
     supportingDocuments: [] as string[]
   });
-  
+
   const applicationTypes = [
     { value: 'LETTER_OF_CREDIT', label: 'Letter of Credit' },
     { value: 'BANK_GUARANTEE', label: 'Bank Guarantee' },
     { value: 'FACTORING', label: 'Factoring' }
   ];
-  
+
   const handleTermChange = (key: string, value: string) => {
     setFormData({
       ...formData,
@@ -245,14 +245,14 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
       }
     });
   };
-  
+
   const handleAddDocument = () => {
     setFormData({
       ...formData,
       supportingDocuments: [...formData.supportingDocuments, '']
     });
   };
-  
+
   const handleDocumentChange = (index: number, value: string) => {
     const newDocs = [...formData.supportingDocuments];
     newDocs[index] = value;
@@ -261,7 +261,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
       supportingDocuments: newDocs
     });
   };
-  
+
   const handleRemoveDocument = (index: number) => {
     const newDocs = [...formData.supportingDocuments];
     newDocs.splice(index, 1);
@@ -270,7 +270,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
       supportingDocuments: newDocs
     });
   };
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({
@@ -280,7 +280,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
       expiryDate: new Date(formData.expiryDate)
     });
   };
-  
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid md:grid-cols-2 gap-4">
@@ -297,7 +297,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
             ))}
           </select>
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="contractId">Contract ID (Optional)</Label>
           <Input 
@@ -309,7 +309,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
           />
         </div>
       </div>
-      
+
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="amount">Amount</Label>
@@ -327,7 +327,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
             />
           </div>
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="currency">Currency</Label>
           <select
@@ -344,7 +344,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
           </select>
         </div>
       </div>
-      
+
       <div className="space-y-2">
         <Label htmlFor="expiryDate">Expiry Date</Label>
         <Input 
@@ -355,7 +355,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
           required
         />
       </div>
-      
+
       <div>
         <h3 className="text-lg font-medium mb-3">Terms & Conditions</h3>
         <div className="space-y-4 border rounded-lg p-4">
@@ -370,7 +370,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="issuingBank">Issuing Bank</Label>
               <Input 
@@ -382,7 +382,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
               />
             </div>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="applicableRules">Applicable Rules</Label>
@@ -397,7 +397,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
                 <option value="URDG 758">URDG 758</option>
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="partialShipment">Partial Shipment</Label>
               <select
@@ -410,7 +410,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
                 <option value="Not Allowed">Not Allowed</option>
               </select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="transferable">Transferable</Label>
               <select
@@ -426,7 +426,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
           </div>
         </div>
       </div>
-      
+
       <div>
         <div className="flex justify-between items-center mb-3">
           <h3 className="text-lg font-medium">Supporting Documents</h3>
@@ -435,7 +435,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
             Add Document
           </Button>
         </div>
-        
+
         {formData.supportingDocuments.length === 0 ? (
           <div className="border rounded-lg p-6 text-center text-muted-foreground">
             <FileQuestion className="h-8 w-8 mx-auto mb-2" />
@@ -468,7 +468,7 @@ const ApplicationForm = ({ onSubmit, onCancel }: any) => {
           </div>
         )}
       </div>
-      
+
       <div className="flex justify-end space-x-2">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
@@ -498,29 +498,29 @@ const TradeFinancePage = () => {
     isLoadingApplications, isLoadingApplication,
     createApplicationMutation, 
   } = useTradeFinance();
-  
+
   const [createMode, setCreateMode] = useState(false);
   const [selectedApplicationId, setSelectedApplicationId] = useState<number | null>(null);
-  
+
   const handleViewApplication = (applicationId: number) => {
     setSelectedApplicationId(applicationId);
   };
-  
+
   const handleCloseApplication = () => {
     setSelectedApplicationId(null);
   };
-  
+
   const handleCreateApplication = (applicationData: any) => {
     // Add user ID to the application data
     const data = {
       ...applicationData,
       userId: user?.id
     };
-    
+
     createApplicationMutation.mutate(data);
     setCreateMode(false);
   };
-  
+
   if (!isLoggedIn) {
     return (
       <div className="flex flex-col gap-8">
@@ -528,7 +528,7 @@ const TradeFinancePage = () => {
           <h1 className="text-2xl font-bold tracking-tight">Trade Finance</h1>
           <p className="text-muted-foreground">Apply for trade finance instruments</p>
         </div>
-        
+
         <Card className="w-full">
           <CardHeader>
             <CardTitle>Login Required</CardTitle>
@@ -546,7 +546,7 @@ const TradeFinancePage = () => {
       </div>
     );
   }
-  
+
   // Display application detail view if an application is selected
   if (selectedApplicationId && application && !createMode) {
     return (
@@ -561,7 +561,7 @@ const TradeFinancePage = () => {
             Back to Applications
           </Button>
         </div>
-        
+
         <Card>
           <CardContent className="p-6">
             <ApplicationDetail 
@@ -573,7 +573,7 @@ const TradeFinancePage = () => {
       </div>
     );
   }
-  
+
   // Display application form
   if (createMode) {
     return (
@@ -588,7 +588,7 @@ const TradeFinancePage = () => {
             Back to Applications
           </Button>
         </div>
-        
+
         <Card>
           <CardContent className="p-6">
             <ApplicationForm 
@@ -600,7 +600,7 @@ const TradeFinancePage = () => {
       </div>
     );
   }
-  
+
   // Main applications list view
   return (
     <div className="flex flex-col gap-8">
@@ -614,7 +614,7 @@ const TradeFinancePage = () => {
           New Application
         </Button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="col-span-1 md:col-span-3">
           <CardHeader>
@@ -631,7 +631,7 @@ const TradeFinancePage = () => {
                 <p className="text-sm text-muted-foreground">A bank guarantee that ensures sellers receive payment once they fulfill the terms of the agreement.</p>
                 <Button className="mt-4" variant="outline" size="sm" onClick={() => setCreateMode(true)}>Apply Now</Button>
               </div>
-              
+
               <div className="border rounded-lg p-4 flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-3">
                   <Globe className="h-6 w-6 text-green-600" />
@@ -640,7 +640,7 @@ const TradeFinancePage = () => {
                 <p className="text-sm text-muted-foreground">A promise from a bank ensuring that the liabilities of a debtor will be met in case of default.</p>
                 <Button className="mt-4" variant="outline" size="sm" onClick={() => setCreateMode(true)}>Apply Now</Button>
               </div>
-              
+
               <div className="border rounded-lg p-4 flex flex-col items-center text-center">
                 <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mb-3">
                   <Briefcase className="h-6 w-6 text-purple-600" />
@@ -653,10 +653,10 @@ const TradeFinancePage = () => {
           </CardContent>
         </Card>
       </div>
-      
+
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Your Applications</h2>
-        
+
         {isLoadingApplications ? (
           <p>Loading your applications...</p>
         ) : (
