@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Set up session middleware
 app.use(session({
-  secret: 'blockfinax-session-secret',
+  secret: process.env.SESSION_SECRET || 'dev-session-secret',
   resave: false,
   saveUninitialized: false,
   cookie: { 
@@ -69,7 +69,7 @@ app.use((req, res, next) => {
   }
 
   // Use environment port if specified, otherwise default to 5000
-  const port = process.env.PORT || 5000;
+  const port = process.env.PORT || 3000;
   server.listen({
     port,
     host: "0.0.0.0",
