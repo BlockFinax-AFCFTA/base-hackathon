@@ -56,9 +56,8 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Change port to 5001 due to port conflict with port 5000
-  // this serves both the API and the client.
-  const port = 5001;
+  // Use port 5000 for Autoscale deployment compatibility
+  const port = 5000;
   server.listen({
     port,
     host: "0.0.0.0",
