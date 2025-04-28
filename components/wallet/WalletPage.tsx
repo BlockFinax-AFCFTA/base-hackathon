@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useWeb3 } from '@/hooks/useWeb3';
 import { useWallet } from '@/hooks/useWallet';
+import { useContracts } from '@/hooks/useContracts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -293,22 +294,42 @@ const WithdrawDialog = ({ isOpen, onClose, onWithdraw, walletId, maxAmount }: an
   );
 };
 
-const TransferDialog = ({ isOpen, onClose, onTransfer, fromWalletId, availableWallets, maxAmount }: any) => {
+const TransferDialog = ({ isOpen, onClose, onTransfer, onFundEscrow, fromWalletId, availableWallets, maxAmount }: any) => {
+  const [transferType, setTransferType] = useState('wallet');
   const [amount, setAmount] = useState('');
   const [toWalletId, setToWalletId] = useState('');
+  const [selectedContractId, setSelectedContractId] = useState('');
   const [description, setDescription] = useState('');
+  const { contracts, isLoadingContracts } = useContracts();
+  
+  // Filter contracts that are awaiting funds
+  const awaitingFundsContracts = contracts && Array.isArray(contracts) 
+    ? contracts.filter((contract: any) => contract.status === 'AWAITING_FUNDS')
+    : [];
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onTransfer({ 
-      fromWalletId, 
-      toWalletId: parseInt(toWalletId), 
-      amount,
-      description 
-    });
+    
+    if (transferType === 'wallet') {
+      onTransfer({ 
+        fromWalletId, 
+        toWalletId: parseInt(toWalletId), 
+        amount,
+        description 
+      });
+    } else if (transferType === 'escrow' && selectedContractId) {
+      onFundEscrow({
+        contractId: parseInt(selectedContractId),
+        fromWalletId
+      });
+    }
+    
+    // Reset form
     setAmount('');
     setToWalletId('');
+    setSelectedContractId('');
     setDescription('');
+    setTransferType('wallet');
     onClose();
   };
   
@@ -317,79 +338,168 @@ const TransferDialog = ({ isOpen, onClose, onTransfer, fromWalletId, availableWa
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Transfer Funds</DialogTitle>
           <DialogDescription>
-            Transfer funds to another wallet.
+            Transfer funds to another wallet or fund a contract escrow.
           </DialogDescription>
         </DialogHeader>
+        
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="toWallet">Destination Wallet</Label>
-              <select
-                id="toWallet"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                value={toWalletId}
-                onChange={(e) => setToWalletId(e.target.value)}
-                required
-              >
-                <option value="">Select destination wallet</option>
-                {destinationWallets.map((wallet: any) => (
-                  <option key={wallet.id} value={wallet.id}>
-                    {wallet.walletType === 'MAIN' ? 'Main Wallet' : `Escrow Wallet (Contract #${wallet.contractId})`}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="transferAmount">Amount</Label>
-              <div className="flex items-center">
-                <DollarSign className="w-4 h-4 mr-2 text-muted-foreground" />
-                <Input
-                  id="transferAmount"
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  max={maxAmount}
-                  placeholder="0.00"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  required
-                />
+              <Label>Transfer Type</Label>
+              <div className="flex gap-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="wallet-transfer"
+                    name="transfer-type"
+                    value="wallet"
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    checked={transferType === 'wallet'}
+                    onChange={() => setTransferType('wallet')}
+                  />
+                  <Label htmlFor="wallet-transfer" className="text-sm font-normal">Wallet Transfer</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="escrow-funding"
+                    name="transfer-type"
+                    value="escrow"
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    checked={transferType === 'escrow'}
+                    onChange={() => setTransferType('escrow')}
+                  />
+                  <Label htmlFor="escrow-funding" className="text-sm font-normal">Fund Contract Escrow</Label>
+                </div>
               </div>
-              {maxAmount && (
-                <p className="text-xs text-muted-foreground">
-                  Max amount: {formatCurrency(maxAmount, 'USD')}
-                </p>
-              )}
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="description">Description (Optional)</Label>
-              <Input
-                id="description"
-                placeholder="Payment for services..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
+            
+            {transferType === 'wallet' ? (
+              <div className="grid gap-2">
+                <Label htmlFor="toWallet">Destination Wallet</Label>
+                <select
+                  id="toWallet"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={toWalletId}
+                  onChange={(e) => setToWalletId(e.target.value)}
+                  required={transferType === 'wallet'}
+                >
+                  <option value="">Select destination wallet</option>
+                  {destinationWallets.map((wallet: any) => (
+                    <option key={wallet.id} value={wallet.id}>
+                      {wallet.walletType === 'MAIN' ? 'Main Wallet' : `Escrow Wallet (Contract #${wallet.contractId})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div className="grid gap-2">
+                <Label htmlFor="contract">Awaiting Funds Contracts</Label>
+                {isLoadingContracts ? (
+                  <div className="text-sm text-muted-foreground py-2">Loading contracts...</div>
+                ) : awaitingFundsContracts.length === 0 ? (
+                  <div className="text-sm text-muted-foreground py-2">No contracts awaiting funds found.</div>
+                ) : (
+                  <select
+                    id="contract"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    value={selectedContractId}
+                    onChange={(e) => setSelectedContractId(e.target.value)}
+                    required={transferType === 'escrow'}
+                  >
+                    <option value="">Select contract to fund</option>
+                    {awaitingFundsContracts.map((contract: any) => (
+                      <option key={contract.id} value={contract.id}>
+                        {contract.title} - {contract.tradeTerms?.amount} {contract.tradeTerms?.currency}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            )}
+            
+            {transferType === 'wallet' && (
+              <>
+                <div className="grid gap-2">
+                  <Label htmlFor="transferAmount">Amount</Label>
+                  <div className="flex items-center">
+                    <DollarSign className="w-4 h-4 mr-2 text-muted-foreground" />
+                    <Input
+                      id="transferAmount"
+                      type="number"
+                      step="0.01"
+                      min="0.01"
+                      max={maxAmount}
+                      placeholder="0.00"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      required={transferType === 'wallet'}
+                    />
+                  </div>
+                  {maxAmount && (
+                    <p className="text-xs text-muted-foreground">
+                      Max amount: {formatCurrency(maxAmount, 'USD')}
+                    </p>
+                  )}
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="description">Description (Optional)</Label>
+                  <Input
+                    id="description"
+                    placeholder="Payment for services..."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </div>
+              </>
+            )}
+            
+            {transferType === 'escrow' && selectedContractId && (
+              <div className="mt-2">
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <div className="ml-2">
+                    <p className="text-sm font-medium">Funding Contract Escrow</p>
+                    <p className="text-xs text-muted-foreground">
+                      This will transfer the full contract amount to the escrow wallet. The contract will become active once funded.
+                    </p>
+                  </div>
+                </Alert>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit">Transfer</Button>
+            <Button 
+              type="submit" 
+              disabled={(transferType === 'wallet' && (!toWalletId || !amount)) || 
+                       (transferType === 'escrow' && !selectedContractId)}
+            >
+              {transferType === 'wallet' ? 'Transfer' : 'Fund Escrow'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
-};
 
 const EnhancedWalletPage = () => {
   const { user, isLoggedIn } = useWeb3();
-  const { wallets, userTransactions, depositMutation, withdrawMutation, transferMutation, isLoadingWallets } = useWallet();
+  const { 
+    wallets, 
+    userTransactions, 
+    depositMutation, 
+    withdrawMutation, 
+    transferMutation, 
+    fundEscrowMutation,
+    isLoadingWallets 
+  } = useWallet();
   
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
   const [withdrawDialogOpen, setWithdrawDialogOpen] = useState(false);
@@ -439,6 +549,13 @@ const EnhancedWalletPage = () => {
       amount: data.amount,
       currency: 'USD',
       description: data.description
+    });
+  };
+  
+  const submitFundEscrow = (data: any) => {
+    fundEscrowMutation.mutate({
+      contractId: data.contractId,
+      fromWalletId: data.fromWalletId
     });
   };
   
@@ -565,7 +682,8 @@ const EnhancedWalletPage = () => {
       <TransferDialog 
         isOpen={transferDialogOpen} 
         onClose={() => setTransferDialogOpen(false)} 
-        onTransfer={submitTransfer} 
+        onTransfer={submitTransfer}
+        onFundEscrow={submitFundEscrow}
         fromWalletId={selectedWalletId} 
         availableWallets={wallets} 
         maxAmount={selectedWallet?.balance} 
