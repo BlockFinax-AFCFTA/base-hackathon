@@ -788,7 +788,10 @@ const EnhancedWalletPage = () => {
     );
   }
   
-  // Add sample escrow wallets for demonstration
+  // Create mock data for demonstration - directly in the component
+  const mainWallet = wallets.find((w: any) => w.walletType === 'MAIN');
+  
+  // Demo escrow wallets
   const mockEscrowWallets = [
     {
       id: 1001,
@@ -812,11 +815,11 @@ const EnhancedWalletPage = () => {
     }
   ];
   
-  // Sample transactions with documents for the transactions tab
+  // Demo transactions with documents
   const mockTransactions = [
     {
       id: 5001,
-      fromWalletId: 1,
+      fromWalletId: mainWallet?.id || 1,
       toWalletId: 1001,
       amount: '5000.00',
       currency: 'USD',
@@ -888,7 +891,7 @@ const EnhancedWalletPage = () => {
     },
     {
       id: 5003,
-      fromWalletId: 1,
+      fromWalletId: mainWallet?.id || 1,
       toWalletId: 1002,
       amount: '8500.00',
       currency: 'USD',
@@ -912,10 +915,6 @@ const EnhancedWalletPage = () => {
       ]
     }
   ];
-  
-  const mainWallet = wallets.find((w: any) => w.walletType === 'MAIN');
-  // Combine real escrow wallets with mock ones
-  const escrowWallets = [...wallets.filter((w: any) => w.walletType === 'ESCROW'), ...mockEscrowWallets];
   
   return (
     <div className="flex flex-col gap-8">
@@ -952,8 +951,9 @@ const EnhancedWalletPage = () => {
             
             <div>
               <h2 className="text-xl font-semibold mb-4">Escrow Wallets</h2>
-              {escrowWallets.length > 0 ? (
-                escrowWallets.map((wallet: any) => (
+              {/* Always show mock escrow wallets for demonstration */}
+              <div className="space-y-4">
+                {mockEscrowWallets.map((wallet: any) => (
                   <WalletCard 
                     key={wallet.id} 
                     wallet={wallet} 
@@ -961,14 +961,8 @@ const EnhancedWalletPage = () => {
                     onWithdraw={handleWithdraw}
                     onTransfer={handleTransfer}
                   />
-                ))
-              ) : (
-                <Card>
-                  <CardContent className="p-6">
-                    <p>No escrow wallets found.</p>
-                  </CardContent>
-                </Card>
-              )}
+                ))}
+              </div>
             </div>
           </div>
         </TabsContent>
