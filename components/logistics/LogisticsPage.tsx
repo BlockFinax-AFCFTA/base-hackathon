@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
@@ -54,6 +54,9 @@ const LogisticsPage: React.FC = () => {
   const { user } = useContext(Web3Context);
   const userId = user?.id;
   const { toast } = useToast();
+  
+  // Tab state
+  const [activeTab, setActiveTab] = useState<string>("track");
   
   // State for booking form
   const [origin, setOrigin] = useState('');
@@ -175,7 +178,7 @@ const LogisticsPage: React.FC = () => {
       setBookingConfirmOpen(false);
       setBookingSuccessOpen(true);
       
-      // Reset form
+      // Reset form and collapse it
       setOrigin('');
       setDestination('');
       setShipmentDate('');
@@ -184,9 +187,13 @@ const LogisticsPage: React.FC = () => {
       setSpecialRequirements('');
       setSelectedProviderId(null);
       
-      // Refresh data
-      refetchLogistics();
+      // Collapse the form and refresh data
       setShowingOffers(false);
+      
+      // Switch to tracking tab
+      setActiveTab("track");
+      
+      refetchLogistics();
       
       toast({
         title: "Booking successful",
@@ -355,7 +362,11 @@ const LogisticsPage: React.FC = () => {
         Book and track shipments across your supply chain with our logistics network.
       </p>
       
-      <Tabs defaultValue="track" className="w-full">
+      <Tabs 
+        value={activeTab} 
+        onValueChange={setActiveTab}
+        className="w-full"
+      >
         <TabsList className="mb-6">
           <TabsTrigger value="track">Track Shipments</TabsTrigger>
           <TabsTrigger value="book">Find & Book</TabsTrigger>
@@ -1070,7 +1081,7 @@ const LogisticsPage: React.FC = () => {
               onClick={() => {
                 setBookingSuccessOpen(false);
                 // Switch to the tracking tab
-                document.querySelector('button[value="track"]')?.click();
+                setActiveTab("track");
               }}
             >
               Go to Tracking
