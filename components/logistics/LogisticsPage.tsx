@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Separator } from "../ui/separator";
-import { Loader2, Search, Truck, MapPin, ArrowRight, Globe, Mail, Phone, Calendar, Award, Leaf, Building2, Ship, Check, Users, MapPinned } from 'lucide-react';
+import { Loader2, Search, Truck, MapPin, ArrowRight, Globe, Mail, Phone, Calendar, Award, 
+         Leaf, Building2, Ship, Check, Users, MapPinned, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Logistics, LogisticsProvider, LOGISTICS_STATUS, LOGISTICS_TYPE } from '../../shared/schema';
 import { Web3Context } from '../../context/Web3Context';
 import { useContext } from 'react';
 import { apiRequest } from '../../lib/queryClient';
 import { format } from 'date-fns';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "../ui/dialog";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Badge } from "../ui/badge";
+import { useToast } from "../../hooks/use-toast";
 
 // Define milestone type for improved readability
 interface Milestone {
@@ -49,6 +53,7 @@ interface ExtendedLogistics {
 const LogisticsPage: React.FC = () => {
   const { user } = useContext(Web3Context);
   const userId = user?.id;
+  const { toast } = useToast();
   
   // State for booking form
   const [origin, setOrigin] = useState('');
@@ -63,6 +68,13 @@ const LogisticsPage: React.FC = () => {
   const [filteredOffers, setFilteredOffers] = useState<LogisticsProvider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<LogisticsProvider | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  
+  // Booking process state
+  const [isBookingInProgress, setIsBookingInProgress] = useState(false);
+  const [bookingConfirmOpen, setBookingConfirmOpen] = useState(false);
+  const [bookingSuccessOpen, setBookingSuccessOpen] = useState(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [createdBooking, setCreatedBooking] = useState<ExtendedLogistics | null>(null);
   
   // Fetch logistics data
   const { 
@@ -91,17 +103,47 @@ const LogisticsPage: React.FC = () => {
     }
   });
   
-  // Handle booking submission
+  // Start booking process - show confirmation dialog
+  const startBookingProcess = () => {
+    if (!userId || !selectedProviderId) {
+      toast({
+        title: "Booking error",
+        description: "Please select a logistics provider first",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const provider = providers?.find(p => p.id === selectedProviderId);
+    if (!provider) {
+      toast({
+        title: "Provider not found",
+        description: "The selected provider could not be found",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setSelectedProvider(provider);
+    setBookingConfirmOpen(true);
+  };
+  
+  // Handle booking submission after confirmation
   const handleBookLogistics = async () => {
     if (!userId || !selectedProviderId) return;
     
     try {
+      setIsBookingInProgress(true);
+      setBookingError(null);
+      
       const provider = providers?.find(p => p.id === selectedProviderId);
       if (!provider) return;
       
       const shipmentDateObj = new Date(shipmentDate);
       const estimatedDeliveryDate = new Date(shipmentDateObj);
       estimatedDeliveryDate.setDate(estimatedDeliveryDate.getDate() + provider.estimatedDays);
+      
+      const trackingId = `BFX-${Date.now().toString().slice(-8)}`;
       
       const bookingData = {
         userId,
@@ -115,7 +157,7 @@ const LogisticsPage: React.FC = () => {
         weight,
         specialRequirements,
         provider: provider.name,
-        trackingId: `BFX-${Date.now().toString().slice(-8)}`,
+        trackingId,
         contractId: null,
         milestones: [
           {
@@ -126,7 +168,12 @@ const LogisticsPage: React.FC = () => {
         ]
       };
       
-      await apiRequest('POST', '/api/logistics', bookingData);
+      const response = await apiRequest('POST', '/api/logistics', bookingData);
+      const createdBooking = await response.json();
+      
+      setCreatedBooking(createdBooking);
+      setBookingConfirmOpen(false);
+      setBookingSuccessOpen(true);
       
       // Reset form
       setOrigin('');
@@ -139,9 +186,18 @@ const LogisticsPage: React.FC = () => {
       
       // Refresh data
       refetchLogistics();
+      setShowingOffers(false);
+      
+      toast({
+        title: "Booking successful",
+        description: `Your shipment has been booked with ${provider.name}. Tracking ID: ${trackingId}`,
+      });
       
     } catch (error) {
       console.error('Failed to book logistics:', error);
+      setBookingError("Failed to create booking. Please try again.");
+    } finally {
+      setIsBookingInProgress(false);
     }
   };
   
