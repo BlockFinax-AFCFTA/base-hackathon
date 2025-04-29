@@ -5,7 +5,6 @@ import { Button } from '../ui/button';
 import { Plus, Globe, Activity, ShieldCheck, Languages } from 'lucide-react';
 import { TranslationDemo } from '../ui/TranslationDemo';
 import { useLanguage } from '../../context/LanguageContext';
-import { Trans } from '../../hooks/useTranslation';
 
 const DashboardContent = () => {
   const formatDate = () => {

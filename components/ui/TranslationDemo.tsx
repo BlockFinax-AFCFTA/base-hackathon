@@ -11,12 +11,10 @@ import { Switch } from './switch';
  * Component to demonstrate the translation capabilities
  */
 export function TranslationDemo() {
-  const { language, translate, translateDynamic } = useLanguage();
+  const { language, translate } = useLanguage();
   const [text, setText] = useState<string>('This is a test of the OpenAI-enhanced translation system. It is designed to provide accurate translations for complex sentences and phrases that go beyond simple word-by-word translation.');
   const [useAI, setUseAI] = useState<boolean>(true);
-  const [translatedText, setTranslatedText] = useState<string>('');
-  const [isTranslating, setIsTranslating] = useState<boolean>(false);
-
+  
   const examples = [
     'This is a test of the OpenAI-enhanced translation system.',
     'International trade requires clear communication across language barriers.',
@@ -25,26 +23,6 @@ export function TranslationDemo() {
     'Risk assessment shows a medium probability of supply chain disruption in the eastern shipping routes.'
   ];
 
-  // Translate the text
-  React.useEffect(() => {
-    const translateText = async () => {
-      if (language === 'en') return;
-      
-      setIsTranslating(true);
-      try {
-        const result = await translateDynamic(text);
-        setTranslatedText(result);
-      } catch (error) {
-        console.error('Error translating text:', error);
-        setTranslatedText(text);
-      } finally {
-        setIsTranslating(false);
-      }
-    };
-    
-    translateText();
-  }, [text, language, useAI]);
-
   const handleExampleClick = (example: string) => {
     setText(example);
   };
@@ -52,9 +30,9 @@ export function TranslationDemo() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>{translate('translation.demo')}</CardTitle>
+        <CardTitle>Translation Demo</CardTitle>
         <CardDescription>
-          {translate('translation.testSystem')}
+          Test the AI-enhanced translation system with your own text
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -66,23 +44,19 @@ export function TranslationDemo() {
               onCheckedChange={setUseAI}
             />
             <Label htmlFor="ai-mode">
-              {useAI ? (
-                translate('translation.usingAI')
-              ) : (
-                translate('translation.usingDict')
-              )}
+              {useAI ? "Using AI Translation (OpenAI)" : "Using Dictionary Translation"}
             </Label>
           </div>
 
           <Tabs defaultValue="input">
             <TabsList className="mb-4">
-              <TabsTrigger value="input">{translate('translation.inputText')}</TabsTrigger>
-              <TabsTrigger value="examples">{translate('translation.examples')}</TabsTrigger>
+              <TabsTrigger value="input">Input Text</TabsTrigger>
+              <TabsTrigger value="examples">Examples</TabsTrigger>
             </TabsList>
             
             <TabsContent value="input" className="space-y-4">
               <div>
-                <Label htmlFor="text-input">{translate('translation.enterEnglish')}</Label>
+                <Label htmlFor="text-input">Enter English text to translate</Label>
                 <Textarea 
                   id="text-input"
                   value={text}
@@ -114,11 +88,15 @@ export function TranslationDemo() {
                 <span>Translated Text ({language}):</span>
               </h3>
               <div className="p-3 bg-card rounded-md">
-                {isTranslating ? (
-                  <p className="text-gray-400">Translating...</p>
-                ) : (
-                  <p>{translatedText}</p>
-                )}
+                <p>
+                  This feature is currently in development. When completed, you'll be able to:
+                  <ul className="list-disc ml-5 mt-2">
+                    <li>Translate complex business documents</li>
+                    <li>Communicate with international partners seamlessly</li>
+                    <li>Understand contract terms in your preferred language</li>
+                    <li>Switch between AI-powered and dictionary-based translation</li>
+                  </ul>
+                </p>
               </div>
             </div>
           )}
@@ -126,7 +104,7 @@ export function TranslationDemo() {
           {language === 'en' && (
             <div className="mt-6 p-4 border rounded-md bg-muted/20">
               <p className="text-muted-foreground">
-                {translate('translation.selectLanguage')}
+                Please select a language other than English to see the translation
               </p>
             </div>
           )}
