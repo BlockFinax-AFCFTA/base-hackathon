@@ -46,18 +46,23 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 
-// Sample data
+// Sample data - African countries
 const COUNTRIES = [
-  { code: 'US', name: 'United States' },
-  { code: 'CA', name: 'Canada' },
-  { code: 'CN', name: 'China' },
-  { code: 'JP', name: 'Japan' },
-  { code: 'GB', name: 'United Kingdom' },
-  { code: 'DE', name: 'Germany' },
-  { code: 'FR', name: 'France' },
-  { code: 'IN', name: 'India' },
-  { code: 'BR', name: 'Brazil' },
-  { code: 'AU', name: 'Australia' },
+  { code: 'NG', name: 'Nigeria' },
+  { code: 'ZA', name: 'South Africa' },
+  { code: 'EG', name: 'Egypt' },
+  { code: 'KE', name: 'Kenya' },
+  { code: 'GH', name: 'Ghana' },
+  { code: 'ET', name: 'Ethiopia' },
+  { code: 'TZ', name: 'Tanzania' },
+  { code: 'CD', name: 'DR Congo' },
+  { code: 'UG', name: 'Uganda' },
+  { code: 'MA', name: 'Morocco' },
+  { code: 'CM', name: 'Cameroon' },
+  { code: 'CI', name: 'Côte d\'Ivoire' },
+  { code: 'SN', name: 'Senegal' },
+  { code: 'RW', name: 'Rwanda' },
+  { code: 'ZW', name: 'Zimbabwe' },
 ];
 
 const PRODUCT_CATEGORIES = [
@@ -87,9 +92,9 @@ const RegulatoryAITabContent: React.FC = () => {
   const getMockAnalysisData = () => {
     // Generate different responses based on product and countries
     const restrictionLevel = 
-      (productCategory === 'Chemicals & Pharmaceuticals' || destinationCountry === 'CN') 
+      (productCategory === 'Chemicals & Pharmaceuticals' || destinationCountry === 'EG' || destinationCountry === 'MA') 
         ? 'HIGH' 
-        : (productCategory === 'Electronics & Technology' || destinationCountry === 'RU') 
+        : (productCategory === 'Electronics & Technology' || destinationCountry === 'ZA' || destinationCountry === 'NG') 
           ? 'MEDIUM' 
           : 'LOW';
     
@@ -166,7 +171,7 @@ const RegulatoryAITabContent: React.FC = () => {
           },
           {
             category: "Value Added Tax",
-            rate: destinationCountry === 'GB' ? "20%" : destinationCountry === 'DE' || destinationCountry === 'FR' ? "19%" : "10-17%",
+            rate: destinationCountry === 'ZA' ? "15%" : destinationCountry === 'EG' ? "14%" : destinationCountry === 'KE' ? "16%" : "10-18%",
             notes: "Applied to the customs value plus import duty"
           },
           restrictionLevel === 'HIGH' ? {
@@ -182,13 +187,13 @@ const RegulatoryAITabContent: React.FC = () => {
       },
       regulations: [
         {
-          name: `${destinationCountry === 'US' ? 'Export Administration Regulations (EAR)' : 'Export Control Law'}`,
+          name: `${destinationCountry === 'ZA' ? 'International Trade Administration Act' : destinationCountry === 'NG' ? 'Nigerian Export Promotion Council Act' : destinationCountry === 'KE' ? 'Export Processing Zones Act' : 'African Export Control Regulations'}`,
           description: `Governs the export of dual-use items from ${COUNTRIES.find(c => c.code === originCountry)?.name}`,
-          authority: destinationCountry === 'US' ? "Bureau of Industry and Security" : "Department of Commerce",
+          authority: destinationCountry === 'ZA' ? "Department of Trade, Industry and Competition" : destinationCountry === 'NG' ? "Nigerian Export Promotion Council" : "Ministry of Trade and Industry",
           link: "#"
         },
         {
-          name: `${destinationCountry === 'GB' ? 'UK Trade Tariff' : destinationCountry === 'CN' ? 'Import and Export Tariff of China' : 'Customs Code'}`,
+          name: `${destinationCountry === 'EG' ? 'Egyptian Customs Law' : destinationCountry === 'GH' ? 'Ghana Customs Act' : destinationCountry === 'SN' ? 'Senegalese Customs Code' : 'African Union Customs Code'}`,
           description: `Comprehensive system of import duties for ${COUNTRIES.find(c => c.code === destinationCountry)?.name}`,
           authority: "Customs Administration",
           link: "#"
@@ -397,8 +402,8 @@ const RegulatoryAITabContent: React.FC = () => {
         <CardContent>
           <div className="space-y-4">
             <p>
-              Our Export Regulatory Assistant helps traders navigate the complex landscape of international export regulations 
-              by providing guidance tailored to specific products and destinations.
+              Our Export Regulatory Assistant helps traders navigate the complex landscape of African trade regulations 
+              by providing guidance tailored to specific products and destinations across African countries.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
