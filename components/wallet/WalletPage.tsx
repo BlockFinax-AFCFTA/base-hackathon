@@ -222,16 +222,12 @@ const TransactionList = ({ transactions }: any) => {
     }
   ];
   
-  // Add escrow transactions to the transactions list if they don't exist
+  // Always add the sample escrow transactions to demonstrate the feature
+  // In a real implementation, these would come from the API
   const enhancedTransactions = [...transactions];
   
-  if (!enhancedTransactions.some(tx => tx.id === 1)) {
-    enhancedTransactions.unshift(escrowTransactions[0]);
-  }
-  
-  if (!enhancedTransactions.some(tx => tx.id === 2)) {
-    enhancedTransactions.unshift(escrowTransactions[1]);
-  }
+  // Add the escrow transactions to the beginning of the list
+  enhancedTransactions.unshift(...escrowTransactions);
   
   const handleViewDocument = (document: any) => {
     setSelectedDocument(document);
