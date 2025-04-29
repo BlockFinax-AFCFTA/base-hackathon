@@ -2,7 +2,8 @@ import React from 'react';
 import { Link, useLocation } from 'wouter';
 import { 
   Home, FileText, Upload, Wallet, 
-  CreditCard, Globe, UserCheck, Receipt
+  CreditCard, Globe, UserCheck, Receipt,
+  Truck
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -70,6 +71,12 @@ const Sidebar = () => {
           icon={<Upload className="h-5 w-5" />} 
           label="Documents" 
           active={isGroupActive(["/documents"])} 
+        />
+        <NavItem 
+          href="/logistics" 
+          icon={<Truck className="h-5 w-5" />} 
+          label="Logistics" 
+          active={isGroupActive(["/logistics"])} 
         />
         <NavItem 
           href="/kyc" 

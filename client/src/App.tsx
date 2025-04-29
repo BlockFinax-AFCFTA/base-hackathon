@@ -7,10 +7,12 @@ import HomePage from "@/pages/HomePage";
 import ContractsPage from "@/pages/ContractsPage";
 import DocumentsPage from "@/pages/DocumentsPage";
 import WalletPage from "@/pages/WalletPage";
+import LogisticsPage from "../../pages/LogisticsPage";
 import Layout from "@/components/layout/Layout";
 import { useWeb3 } from "./hooks/useWeb3";
 import { AppProvider } from "./context/AppContext";
 import { Web3Provider } from "./context/Web3Context";
+import { LanguageProvider } from "../../context/LanguageContext";
 
 // Import new components
 import EnhancedWalletPage from "@/components/wallet/WalletPage";
@@ -19,12 +21,12 @@ import TradeFinancePage from "@/components/tradeFinance/TradeFinancePage";
 import KYCPage from "@/components/kyc/KYCPage";
 
 // Auth-protected route component
-const PrivateRoute = ({ component: Component, ...rest }: { component: React.ComponentType<any>, path: string }) => {
+const PrivateRoute = ({ component: Component, path, ...rest }: { component: React.ComponentType<any>, path: string }) => {
   const { isLoggedIn } = useWeb3();
   
   return (
     <Route
-      path={rest.path}
+      path={path}
       {...rest}
       component={(params: any) => 
         isLoggedIn ? (
@@ -62,6 +64,9 @@ function Router() {
         {/* Trade Finance routes */}
         <PrivateRoute path="/trade-finance" component={TradeFinancePage} />
         
+        {/* Logistics routes */}
+        <PrivateRoute path="/logistics" component={LogisticsPage} />
+        
         {/* KYC & Passport routes */}
         <PrivateRoute path="/kyc" component={KYCPage} />
         <PrivateRoute path="/passport" component={KYCPage} />
@@ -83,14 +88,16 @@ function Router() {
 
 function App() {
   return (
-    <AppProvider>
-      <Web3Provider>
-        <QueryClientProvider client={queryClient}>
-          <Router />
-          <Toaster />
-        </QueryClientProvider>
-      </Web3Provider>
-    </AppProvider>
+    <LanguageProvider>
+      <AppProvider>
+        <Web3Provider>
+          <QueryClientProvider client={queryClient}>
+            <Router />
+            <Toaster />
+          </QueryClientProvider>
+        </Web3Provider>
+      </AppProvider>
+    </LanguageProvider>
   );
 }
 

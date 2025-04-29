@@ -4,6 +4,9 @@ import { Link } from 'wouter';
 import { Button } from '../ui/button';
 import { useWeb3 } from '../../hooks/useWeb3';
 import { useAppContext } from '../../hooks/useAppContext';
+import { useLanguage } from '../../context/LanguageContext';
+import { LanguageSelector } from '../ui/language-selector';
+import { Translate } from '../ui/translation';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { 
   DropdownMenu, 
@@ -201,7 +204,9 @@ const Header = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-3">
+            <LanguageSelector />
+            
             {isLoggedIn ? (
               <UserMenu />
             ) : (
@@ -213,7 +218,7 @@ const Header = () => {
                   className="flex items-center gap-1 text-gray-700"
                 >
                   <LogIn className="h-4 w-4" />
-                  <span>Login</span>
+                  <span><Translate text="$actions.login" /></span>
                 </Button>
                 <Button 
                   variant="default" 
@@ -224,7 +229,7 @@ const Header = () => {
                   className="flex items-center gap-1 bg-blue-700 text-white"
                 >
                   <UserPlus className="h-4 w-4" />
-                  <span>Register</span>
+                  <span><Translate text="$actions.register" /></span>
                 </Button>
                 
                 <LoginDialog 
