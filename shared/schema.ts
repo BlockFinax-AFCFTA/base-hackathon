@@ -280,6 +280,15 @@ export const logisticsProviders = pgTable("logistics_providers", {
   basePrice: decimal("base_price", { precision: 10, scale: 2 }).notNull(),
   currency: text("currency").notNull().default("USD"),
   estimatedDays: integer("estimated_days").notNull(),
+  // Additional profile fields
+  address: text("address"),
+  website: text("website"),
+  contactEmail: text("contact_email"),
+  contactPhone: text("contact_phone"),
+  yearEstablished: integer("year_established"),
+  fleetSize: integer("fleet_size"),
+  certificates: jsonb("certificates"),
+  sustainabilityRating: decimal("sustainability_rating", { precision: 3, scale: 1 }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

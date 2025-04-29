@@ -150,7 +150,57 @@ const LogisticsPage: React.FC = () => {
   
   // Search and filter available offers
   const searchOffers = () => {
-    if (!providers || providers.length === 0) return;
+    console.log("Searching offers...");
+    
+    // If there are no providers in database yet, create mock providers for demo
+    if (!providers || providers.length === 0) {
+      const mockProviders: LogisticsProvider[] = [
+        {
+          id: 1,
+          name: "FastShip Global",
+          logo: "",
+          rating: "4.8",
+          specialties: ["General", "Oversized"],
+          description: "Leading global logistics provider with extensive network",
+          basePrice: "1250",
+          currency: "USD",
+          estimatedDays: 7,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: 2,
+          name: "CoolFreight",
+          logo: "",
+          rating: "4.5",
+          specialties: ["Refrigerated", "General"],
+          description: "Specialized in temperature-controlled shipping worldwide",
+          basePrice: "1400",
+          currency: "USD",
+          estimatedDays: 8,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: 3,
+          name: "CargoSafe Express",
+          logo: "",
+          rating: "4.7",
+          specialties: ["General", "Hazardous"],
+          description: "Secure and efficient shipping for all cargo types",
+          basePrice: "1150",
+          currency: "USD",
+          estimatedDays: 6,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ];
+      
+      setFilteredOffers(mockProviders);
+      setShowingOffers(true);
+      console.log("Using demo providers:", mockProviders);
+      return;
+    }
     
     // Apply filtering based on cargo type and other criteria
     const filtered = providers.filter(provider => {
@@ -170,6 +220,8 @@ const LogisticsPage: React.FC = () => {
     // Sort by price, estimated days, or rating
     // By default, sort by estimated delivery time
     const sorted = [...filtered].sort((a, b) => a.estimatedDays - b.estimatedDays);
+    
+    console.log("Filtered providers:", sorted);
     
     // Update state
     setFilteredOffers(sorted);
