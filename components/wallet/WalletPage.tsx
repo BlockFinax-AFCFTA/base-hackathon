@@ -11,7 +11,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Wallet, CreditCard, ArrowUpRight, ArrowDownLeft, AlertCircle, RefreshCw, DollarSign, Send } from 'lucide-react';
+import { Wallet, CreditCard, ArrowUpRight, ArrowDownLeft, AlertCircle, RefreshCw, DollarSign, Send, 
+  File, FileText, FileSpreadsheet, Image, Building2, Globe, Mail, Phone, Calendar, Ship, Users } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
@@ -86,6 +87,10 @@ const WalletCard = ({ wallet, onDeposit, onWithdraw, onTransfer }: any) => {
 };
 
 const TransactionList = ({ transactions }: any) => {
+  const [selectedTransaction, setSelectedTransaction] = useState<number | null>(null);
+  const [documentDetailsOpen, setDocumentDetailsOpen] = useState<boolean>(false);
+  const [selectedDocument, setSelectedDocument] = useState<any>(null);
+  
   if (!transactions || transactions.length === 0) {
     return (
       <Alert className="mb-6">
@@ -144,47 +149,311 @@ const TransactionList = ({ transactions }: any) => {
         return <Badge variant="outline">{status}</Badge>;
     }
   };
+  
+  // Sample documents for escrow transactions - in a real app, these would come from the API
+  const escrowTransactions = [
+    {
+      id: 1, 
+      txType: 'ESCROW_LOCK', 
+      amount: '5000.00', 
+      currency: 'USD', 
+      status: 'COMPLETED', 
+      contractId: 123,
+      description: 'Contract #123 escrow funding',
+      createdAt: new Date('2025-04-10'),
+      documents: [
+        { 
+          id: 1, 
+          name: 'Purchase Agreement.pdf', 
+          fileType: 'application/pdf', 
+          fileSize: 2457600, 
+          url: '#', 
+          uploadedBy: 1, 
+          isVerified: true,
+          createdAt: new Date('2025-04-09'),
+          contractId: 123
+        },
+        { 
+          id: 2, 
+          name: 'Proof of Payment.jpg', 
+          fileType: 'image/jpeg', 
+          fileSize: 1048576, 
+          url: '#', 
+          uploadedBy: 1, 
+          isVerified: true,
+          createdAt: new Date('2025-04-10'),
+          contractId: 123
+        }
+      ]
+    },
+    {
+      id: 2, 
+      txType: 'ESCROW_RELEASE', 
+      amount: '5000.00', 
+      currency: 'USD', 
+      status: 'COMPLETED', 
+      contractId: 123,
+      description: 'Contract #123 escrow release to seller',
+      createdAt: new Date('2025-04-20'),
+      documents: [
+        { 
+          id: 3, 
+          name: 'Delivery Confirmation.pdf', 
+          fileType: 'application/pdf', 
+          fileSize: 1245184, 
+          url: '#', 
+          uploadedBy: 2, 
+          isVerified: true,
+          createdAt: new Date('2025-04-18'),
+          contractId: 123
+        },
+        { 
+          id: 4, 
+          name: 'Quality Inspection Report.pdf', 
+          fileType: 'application/pdf', 
+          fileSize: 3670016, 
+          url: '#', 
+          uploadedBy: 3, 
+          isVerified: true,
+          createdAt: new Date('2025-04-19'),
+          contractId: 123
+        }
+      ]
+    }
+  ];
+  
+  // Add escrow transactions to the transactions list if they don't exist
+  const enhancedTransactions = [...transactions];
+  
+  if (!enhancedTransactions.some(tx => tx.id === 1)) {
+    enhancedTransactions.unshift(escrowTransactions[0]);
+  }
+  
+  if (!enhancedTransactions.some(tx => tx.id === 2)) {
+    enhancedTransactions.unshift(escrowTransactions[1]);
+  }
+  
+  const handleViewDocument = (document: any) => {
+    setSelectedDocument(document);
+    setDocumentDetailsOpen(true);
+  };
+  
+  const fileIcon = (fileType: string) => {
+    if (fileType.includes('pdf')) {
+      return <File className="h-4 w-4 text-red-500" />;
+    } else if (fileType.includes('image')) {
+      return <Image className="h-4 w-4 text-blue-500" />;
+    } else if (fileType.includes('excel') || fileType.includes('sheet')) {
+      return <FileSpreadsheet className="h-4 w-4 text-green-500" />;
+    } else if (fileType.includes('word') || fileType.includes('document')) {
+      return <FileText className="h-4 w-4 text-blue-500" />;
+    } else {
+      return <File className="h-4 w-4 text-gray-500" />;
+    }
+  };
+  
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + ' bytes';
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    else return (bytes / 1048576).toFixed(1) + ' MB';
+  };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Transaction History</CardTitle>
-        <CardDescription>Your recent wallet activity</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[400px]">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Type</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead className="text-right">Details</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {transactions.map((tx: any) => (
-                <TableRow key={tx.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center">
-                      {getTransactionTypeIcon(tx.txType)}
-                      <span className="ml-2">{getTransactionTypeLabel(tx.txType)}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{formatCurrency(tx.amount, tx.currency)}</TableCell>
-                  <TableCell>{getTransactionStatusBadge(tx.status)}</TableCell>
-                  <TableCell>{format(new Date(tx.createdAt), 'MMM d, yyyy')}</TableCell>
-                  <TableCell className="text-right">
-                    <p className="text-xs text-muted-foreground">{tx.description || '-'}</p>
-                  </TableCell>
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>Transaction History</CardTitle>
+          <CardDescription>Your recent wallet activity</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ScrollArea className="h-[400px]">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Type</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead className="text-right">Details</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </ScrollArea>
-      </CardContent>
-    </Card>
+              </TableHeader>
+              <TableBody>
+                {enhancedTransactions.map((tx: any) => (
+                  <React.Fragment key={tx.id}>
+                    <TableRow 
+                      className={`cursor-pointer ${selectedTransaction === tx.id ? 'bg-primary/5' : 'hover:bg-muted/50'}`}
+                      onClick={() => setSelectedTransaction(selectedTransaction === tx.id ? null : tx.id)}
+                    >
+                      <TableCell className="font-medium">
+                        <div className="flex items-center">
+                          {getTransactionTypeIcon(tx.txType)}
+                          <span className="ml-2">{getTransactionTypeLabel(tx.txType)}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>{formatCurrency(tx.amount, tx.currency)}</TableCell>
+                      <TableCell>{getTransactionStatusBadge(tx.status)}</TableCell>
+                      <TableCell>{format(new Date(tx.createdAt), 'MMM d, yyyy')}</TableCell>
+                      <TableCell className="text-right">
+                        <p className="text-xs text-muted-foreground">{tx.description || '-'}</p>
+                      </TableCell>
+                    </TableRow>
+                    
+                    {/* Expandable row with transaction details */}
+                    {selectedTransaction === tx.id && (
+                      <TableRow>
+                        <TableCell colSpan={5} className="bg-muted/30 p-4">
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="text-sm font-medium mb-2">Transaction Details</h4>
+                              <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                  <p className="text-muted-foreground">Transaction ID</p>
+                                  <p className="font-mono">{tx.id}</p>
+                                </div>
+                                {tx.contractId && (
+                                  <div>
+                                    <p className="text-muted-foreground">Contract ID</p>
+                                    <p className="font-mono">{tx.contractId}</p>
+                                  </div>
+                                )}
+                                {tx.fromWalletId && (
+                                  <div>
+                                    <p className="text-muted-foreground">From Wallet</p>
+                                    <p className="font-mono">{tx.fromWalletId}</p>
+                                  </div>
+                                )}
+                                {tx.toWalletId && (
+                                  <div>
+                                    <p className="text-muted-foreground">To Wallet</p>
+                                    <p className="font-mono">{tx.toWalletId}</p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            
+                            {/* Show associated documents if they exist */}
+                            {tx.documents && tx.documents.length > 0 && (
+                              <div>
+                                <h4 className="text-sm font-medium mb-2">Associated Documents</h4>
+                                <div className="border rounded-md overflow-hidden">
+                                  <Table>
+                                    <TableHeader>
+                                      <TableRow>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Size</TableHead>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="w-[100px]">Actions</TableHead>
+                                      </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                      {tx.documents.map((doc: any) => (
+                                        <TableRow key={doc.id}>
+                                          <TableCell>
+                                            <div className="flex items-center">
+                                              {fileIcon(doc.fileType)}
+                                              <span className="ml-2">{doc.name}</span>
+                                            </div>
+                                          </TableCell>
+                                          <TableCell>{formatFileSize(doc.fileSize)}</TableCell>
+                                          <TableCell>{format(new Date(doc.createdAt), 'MMM d, yyyy')}</TableCell>
+                                          <TableCell>
+                                            {doc.isVerified ? (
+                                              <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300">Verified</Badge>
+                                            ) : (
+                                              <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-300">Pending</Badge>
+                                            )}
+                                          </TableCell>
+                                          <TableCell>
+                                            <Button 
+                                              variant="ghost" 
+                                              size="sm" 
+                                              onClick={(e) => {
+                                                e.stopPropagation(); 
+                                                handleViewDocument(doc);
+                                              }}
+                                            >
+                                              View
+                                            </Button>
+                                          </TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </React.Fragment>
+                ))}
+              </TableBody>
+            </Table>
+          </ScrollArea>
+        </CardContent>
+      </Card>
+      
+      {/* Document details dialog */}
+      <Dialog open={documentDetailsOpen} onOpenChange={setDocumentDetailsOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-auto">
+          {selectedDocument && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{selectedDocument.name}</DialogTitle>
+                <DialogDescription>
+                  {selectedDocument.isVerified ? 'This document has been verified.' : 'This document is awaiting verification.'}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-4">
+                <div className="border rounded-md p-4 bg-gray-50">
+                  <div className="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                      <p className="text-muted-foreground">File Type</p>
+                      <p>{selectedDocument.fileType}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Size</p>
+                      <p>{formatFileSize(selectedDocument.fileSize)}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Uploaded</p>
+                      <p>{format(new Date(selectedDocument.createdAt), 'MMM d, yyyy')}</p>
+                    </div>
+                    {selectedDocument.contractId && (
+                      <div>
+                        <p className="text-muted-foreground">Contract ID</p>
+                        <p className="font-mono">{selectedDocument.contractId}</p>
+                      </div>
+                    )}
+                    {selectedDocument.invoiceId && (
+                      <div>
+                        <p className="text-muted-foreground">Invoice ID</p>
+                        <p className="font-mono">{selectedDocument.invoiceId}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Placeholder for document preview - in a real app, you would integrate a viewer */}
+                <div className="border rounded-md p-8 h-[400px] flex flex-col items-center justify-center">
+                  <div className="text-center p-4">
+                    <div className="flex justify-center mb-4">
+                      {fileIcon(selectedDocument.fileType)}
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{selectedDocument.name}</h3>
+                    <p className="text-muted-foreground mb-4">Document preview would appear here.</p>
+                    <Button>Download Document</Button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
