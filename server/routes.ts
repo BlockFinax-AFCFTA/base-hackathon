@@ -19,6 +19,7 @@ import {
   LOGISTICS_TYPE
 } from "@shared/schema";
 import { z } from "zod";
+import regulatoryAIRouter from "./routes/regulatoryAI";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
@@ -1256,6 +1257,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to create logistics provider" });
     }
   });
+
+  // Register the regulatory AI router
+  app.use('/api/regulatory', regulatoryAIRouter);
 
   const httpServer = createServer(app);
   

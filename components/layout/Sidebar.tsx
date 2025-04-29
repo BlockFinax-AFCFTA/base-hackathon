@@ -3,7 +3,7 @@ import { Link, useLocation } from 'wouter';
 import { 
   Home, FileText, Upload, Wallet, 
   CreditCard, Globe, UserCheck, Receipt,
-  Truck
+  Truck, BookOpen
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -83,6 +83,12 @@ const Sidebar = () => {
           icon={<UserCheck className="h-5 w-5" />} 
           label="Identity Verification" 
           active={isGroupActive(["/kyc"])} 
+        />
+        <NavItem 
+          href="/regulatory-ai" 
+          icon={<BookOpen className="h-5 w-5" />} 
+          label="Regulatory AI" 
+          active={isGroupActive(["/regulatory-ai"])} 
         />
       </nav>
     </aside>

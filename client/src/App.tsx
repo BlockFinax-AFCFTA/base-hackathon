@@ -19,6 +19,7 @@ import EnhancedWalletPage from "@/components/wallet/WalletPage";
 import InvoicePage from "@/components/invoice/InvoicePage";
 import TradeFinancePage from "@/components/tradeFinance/TradeFinancePage";
 import KYCPage from "@/components/kyc/KYCPage";
+import RegulatoryAIPage from "../../pages/RegulatoryAIPage";
 
 // Auth-protected route component
 const PrivateRoute = ({ component: Component, path, ...rest }: { component: React.ComponentType<any>, path: string }) => {
@@ -70,6 +71,9 @@ function Router() {
         {/* KYC & Passport routes */}
         <PrivateRoute path="/kyc" component={KYCPage} />
         <PrivateRoute path="/passport" component={KYCPage} />
+        
+        {/* Regulatory AI routes */}
+        <PrivateRoute path="/regulatory-ai" component={RegulatoryAIPage} />
         
         {/* Other routes */}
         <Route path="/api">
