@@ -254,10 +254,17 @@ const RegulatoryAITabContent: React.FC = () => {
   // Form View
   const renderFormView = () => (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-      <Card className="md:col-span-5 xl:col-span-4">
+      <Card className="md:col-span-5 xl:col-span-4 shadow-lg border-2 border-primary/10 bg-gradient-to-b from-white to-primary/5">
         <CardHeader className="pb-2">
-          <CardTitle>Export Compliance Check</CardTitle>
-          <CardDescription>Verify regulatory requirements for your exports</CardDescription>
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-primary/10 rounded-full">
+              <Globe className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <CardTitle>Export Compliance Check</CardTitle>
+              <CardDescription>Verify regulatory requirements for your exports</CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -373,12 +380,19 @@ const RegulatoryAITabContent: React.FC = () => {
         </CardFooter>
       </Card>
       
-      <Card className="md:col-span-7 xl:col-span-8">
+      <Card className="md:col-span-7 xl:col-span-8 shadow-md border border-blue-100 bg-blue-50/30">
         <CardHeader className="pb-2">
-          <CardTitle>About Export Regulatory Assistant</CardTitle>
-          <CardDescription>
-            AI-powered guidance for navigating international trade regulations
-          </CardDescription>
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-blue-100 rounded-full">
+              <BookOpen className="h-5 w-5 text-blue-600" />
+            </div>
+            <div>
+              <CardTitle>About Export Regulatory Assistant</CardTitle>
+              <CardDescription>
+                AI-powered guidance for navigating international trade regulations
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -474,14 +488,20 @@ const RegulatoryAITabContent: React.FC = () => {
           </div>
         </div>
         
-        <Card>
+        <Card className="shadow-lg border-2 border-primary/10 overflow-hidden">
+          <div className="h-2 bg-gradient-to-r from-primary via-primary/70 to-blue-400"></div>
           <CardHeader>
             <div className="flex items-start justify-between">
-              <div>
-                <CardTitle className="text-2xl">Export Compliance Analysis</CardTitle>
-                <CardDescription className="mt-1">
-                  {product} from {COUNTRIES.find(c => c.code === originCountry)?.name} to {COUNTRIES.find(c => c.code === destinationCountry)?.name}
-                </CardDescription>
+              <div className="flex items-start space-x-3">
+                <div className="p-2.5 bg-primary/10 rounded-full">
+                  <Globe className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <CardTitle className="text-2xl">Export Compliance Analysis</CardTitle>
+                  <CardDescription className="mt-1">
+                    {product} from {COUNTRIES.find(c => c.code === originCountry)?.name} to {COUNTRIES.find(c => c.code === destinationCountry)?.name}
+                  </CardDescription>
+                </div>
               </div>
               {analysisResult.restrictionLevel && (
                 <Badge className={`
@@ -499,11 +519,23 @@ const RegulatoryAITabContent: React.FC = () => {
           </CardHeader>
           <CardContent>
             <Tabs value={currentTab} onValueChange={setCurrentTab}>
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="requirements">Requirements</TabsTrigger>
-                <TabsTrigger value="documentation">Documentation</TabsTrigger>
-                <TabsTrigger value="tariffs">Tariffs & Duties</TabsTrigger>
-                <TabsTrigger value="regulations">Regulations</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-4 p-1 bg-primary/5 rounded-md">
+                <TabsTrigger value="requirements" className="font-medium text-sm">
+                  <Check className="h-4 w-4 mr-2" />
+                  Requirements
+                </TabsTrigger>
+                <TabsTrigger value="documentation" className="font-medium text-sm">
+                  <Book className="h-4 w-4 mr-2" />
+                  Documentation
+                </TabsTrigger>
+                <TabsTrigger value="tariffs" className="font-medium text-sm">
+                  <Download className="h-4 w-4 mr-2" />
+                  Tariffs & Duties
+                </TabsTrigger>
+                <TabsTrigger value="regulations" className="font-medium text-sm">
+                  <AlertCircle className="h-4 w-4 mr-2" />
+                  Regulations
+                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="requirements" className="mt-6">

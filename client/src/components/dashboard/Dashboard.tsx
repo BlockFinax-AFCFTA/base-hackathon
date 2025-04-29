@@ -5,7 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 import { useWeb3 } from '@/hooks/useWeb3';
-import { Plus, Upload, Check, LineChart, AlertTriangle, ArrowRight } from 'lucide-react';
+import { 
+  Plus, Upload, Check, LineChart, 
+  AlertTriangle, ArrowRight, CreditCard,
+  Globe, Clock
+} from 'lucide-react';
 import { useContracts } from '@/hooks/useContracts';
 import { 
   Tabs, 
@@ -195,13 +199,25 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab}>
-        <div className="flex justify-between items-center mb-4">
-          <TabsList>
-            <TabsTrigger value="overview">Financial Dashboard</TabsTrigger>
-            <TabsTrigger value="risk">Risk Intelligence</TabsTrigger>
-            <TabsTrigger value="regulatory">Regulatory AI</TabsTrigger>
-          </TabsList>
-          <div className="text-sm text-gray-500">
+        <div className="flex justify-between items-center mb-6">
+          <div className="bg-primary/5 p-1 rounded-lg border border-primary/10">
+            <TabsList className="bg-transparent">
+              <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
+                <CreditCard className="h-4 w-4 mr-2" />
+                Financial Dashboard
+              </TabsTrigger>
+              <TabsTrigger value="risk" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
+                <LineChart className="h-4 w-4 mr-2" />
+                Risk Intelligence
+              </TabsTrigger>
+              <TabsTrigger value="regulatory" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
+                <Globe className="h-4 w-4 mr-2" />
+                Regulatory AI
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          <div className="text-sm text-gray-500 flex items-center bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm">
+            <Clock className="h-4 w-4 mr-2 text-gray-400" />
             Last updated: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </div>
         </div>
