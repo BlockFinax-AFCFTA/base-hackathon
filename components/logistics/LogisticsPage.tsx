@@ -6,13 +6,14 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Separator } from "../ui/separator";
-import { Loader2, Search, Truck, MapPin, ArrowRight } from 'lucide-react';
+import { Loader2, Search, Truck, MapPin, ArrowRight, Globe, Mail, Phone, Calendar, Award, Leaf, Building2, Ship, Check, Users, MapPinned } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Logistics, LogisticsProvider, LOGISTICS_STATUS, LOGISTICS_TYPE } from '../../shared/schema';
 import { Web3Context } from '../../context/Web3Context';
 import { useContext } from 'react';
 import { apiRequest } from '../../lib/queryClient';
 import { format } from 'date-fns';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 
 // Define milestone type for improved readability
 interface Milestone {
@@ -60,6 +61,8 @@ const LogisticsPage: React.FC = () => {
   const [trackingId, setTrackingId] = useState('');
   const [showingOffers, setShowingOffers] = useState(false);
   const [filteredOffers, setFilteredOffers] = useState<LogisticsProvider[]>([]);
+  const [selectedProvider, setSelectedProvider] = useState<LogisticsProvider | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   
   // Fetch logistics data
   const { 
@@ -165,6 +168,14 @@ const LogisticsPage: React.FC = () => {
           basePrice: "1250",
           currency: "USD",
           estimatedDays: 7,
+          address: "123 Shipping Lane, Rotterdam, Netherlands",
+          website: "fastshipglobal.com",
+          contactEmail: "info@fastshipglobal.com",
+          contactPhone: "+31 20 555 1234",
+          yearEstablished: 2005,
+          fleetSize: 75,
+          certificates: ["ISO 9001", "ISO 14001", "C-TPAT"],
+          sustainabilityRating: "4.2",
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -178,6 +189,14 @@ const LogisticsPage: React.FC = () => {
           basePrice: "1400",
           currency: "USD",
           estimatedDays: 8,
+          address: "456 Cold Storage Blvd, Hamburg, Germany",
+          website: "coolfreight.com",
+          contactEmail: "service@coolfreight.com",
+          contactPhone: "+49 40 555 6789",
+          yearEstablished: 2010,
+          fleetSize: 55,
+          certificates: ["ISO 9001", "HACCP", "GDP"],
+          sustainabilityRating: "3.8",
           createdAt: new Date(),
           updatedAt: new Date()
         },
@@ -191,6 +210,14 @@ const LogisticsPage: React.FC = () => {
           basePrice: "1150",
           currency: "USD",
           estimatedDays: 6,
+          address: "789 Secure Way, Singapore",
+          website: "cargosafeexpress.com",
+          contactEmail: "operations@cargosafeexpress.com",
+          contactPhone: "+65 6555 9876",
+          yearEstablished: 2008,
+          fleetSize: 90,
+          certificates: ["ISO 9001", "ISO 14001", "OHSAS 18001"],
+          sustainabilityRating: "4.5",
           createdAt: new Date(),
           updatedAt: new Date()
         }
@@ -624,7 +651,7 @@ const LogisticsPage: React.FC = () => {
                           <p className="text-gray-500 text-sm">Specialties:</p>
                           <div className="flex flex-wrap gap-1 mt-1">
                             {provider.specialties && Array.isArray(provider.specialties) && 
-                              provider.specialties.map((specialty, idx) => (
+                              provider.specialties.map((specialty: string, idx: number) => (
                                 <span 
                                   key={idx}
                                   className="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-xs"
@@ -635,6 +662,17 @@ const LogisticsPage: React.FC = () => {
                             }
                           </div>
                         </div>
+                        
+                        <Button 
+                          className="w-full mt-4" 
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedProvider(provider);
+                            setDetailsOpen(true);
+                          }}
+                        >
+                          View Details
+                        </Button>
                       </CardContent>
                     </Card>
                   ))}
@@ -644,6 +682,155 @@ const LogisticsPage: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Provider details dialog */}
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="max-w-3xl">
+          {selectedProvider && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl">{selectedProvider.name}</DialogTitle>
+                <DialogDescription className="text-base">
+                  {selectedProvider.description}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="grid grid-cols-2 gap-8 mt-4">
+                <div>
+                  <h3 className="font-semibold text-lg mb-4">Company Information</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-start">
+                      <Building2 className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Address</p>
+                        <p className="text-gray-600">{selectedProvider.address || 'Not provided'}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <Globe className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Website</p>
+                        <p className="text-blue-600 hover:underline">
+                          {selectedProvider.website || 'Not provided'}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <Mail className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Email</p>
+                        <p className="text-gray-600">{selectedProvider.contactEmail || 'Not provided'}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <Phone className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Phone</p>
+                        <p className="text-gray-600">{selectedProvider.contactPhone || 'Not provided'}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <Calendar className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Established</p>
+                        <p className="text-gray-600">{selectedProvider.yearEstablished || 'Not provided'}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="font-semibold text-lg mb-4">Service Information</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-start">
+                      <Ship className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Specialties</p>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {Array.isArray(selectedProvider.specialties) ? (
+                            selectedProvider.specialties.map((specialty, idx) => (
+                              <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+                                {specialty}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-gray-600">No specialties listed</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <Users className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Fleet Size</p>
+                        <p className="text-gray-600">{selectedProvider.fleetSize ? `${selectedProvider.fleetSize} vehicles` : 'Not provided'}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <Award className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Certifications</p>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {Array.isArray(selectedProvider.certificates) && selectedProvider.certificates.length > 0 ? (
+                            selectedProvider.certificates.map((cert, idx) => (
+                              <span key={idx} className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs flex items-center">
+                                <Check className="h-3 w-3 mr-1" />
+                                {cert}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-gray-600">No certifications listed</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <Leaf className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Sustainability Rating</p>
+                        <p className="text-gray-600">{selectedProvider.sustainabilityRating ? `${selectedProvider.sustainabilityRating}/5.0` : 'Not rated'}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <MapPinned className="h-5 w-5 text-gray-400 mr-3 mt-0.5" />
+                      <div>
+                        <p className="font-medium">Delivery Estimate</p>
+                        <p className="text-gray-600">{selectedProvider.estimatedDays} days (average)</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-medium">Base Price</p>
+                    <p className="text-2xl font-bold">{selectedProvider.basePrice} {selectedProvider.currency}</p>
+                  </div>
+                  <Button onClick={() => {
+                    setDetailsOpen(false);
+                    // Auto-select this provider
+                    setSelectedProviderId(selectedProvider.id);
+                  }}>
+                    Select Provider
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
