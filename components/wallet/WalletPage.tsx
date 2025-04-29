@@ -150,84 +150,8 @@ const TransactionList = ({ transactions }: any) => {
     }
   };
   
-  // Sample documents for escrow transactions - in a real app, these would come from the API
-  const escrowTransactions = [
-    {
-      id: 1, 
-      txType: 'ESCROW_LOCK', 
-      amount: '5000.00', 
-      currency: 'USD', 
-      status: 'COMPLETED', 
-      contractId: 123,
-      description: 'Contract #123 escrow funding',
-      createdAt: new Date('2025-04-10'),
-      documents: [
-        { 
-          id: 1, 
-          name: 'Purchase Agreement.pdf', 
-          fileType: 'application/pdf', 
-          fileSize: 2457600, 
-          url: '#', 
-          uploadedBy: 1, 
-          isVerified: true,
-          createdAt: new Date('2025-04-09'),
-          contractId: 123
-        },
-        { 
-          id: 2, 
-          name: 'Proof of Payment.jpg', 
-          fileType: 'image/jpeg', 
-          fileSize: 1048576, 
-          url: '#', 
-          uploadedBy: 1, 
-          isVerified: true,
-          createdAt: new Date('2025-04-10'),
-          contractId: 123
-        }
-      ]
-    },
-    {
-      id: 2, 
-      txType: 'ESCROW_RELEASE', 
-      amount: '5000.00', 
-      currency: 'USD', 
-      status: 'COMPLETED', 
-      contractId: 123,
-      description: 'Contract #123 escrow release to seller',
-      createdAt: new Date('2025-04-20'),
-      documents: [
-        { 
-          id: 3, 
-          name: 'Delivery Confirmation.pdf', 
-          fileType: 'application/pdf', 
-          fileSize: 1245184, 
-          url: '#', 
-          uploadedBy: 2, 
-          isVerified: true,
-          createdAt: new Date('2025-04-18'),
-          contractId: 123
-        },
-        { 
-          id: 4, 
-          name: 'Quality Inspection Report.pdf', 
-          fileType: 'application/pdf', 
-          fileSize: 3670016, 
-          url: '#', 
-          uploadedBy: 3, 
-          isVerified: true,
-          createdAt: new Date('2025-04-19'),
-          contractId: 123
-        }
-      ]
-    }
-  ];
-  
-  // Always add the sample escrow transactions to demonstrate the feature
-  // In a real implementation, these would come from the API
-  const enhancedTransactions = [...transactions];
-  
-  // Add the escrow transactions to the beginning of the list
-  enhancedTransactions.unshift(...escrowTransactions);
+  // Use transactions passed from EnhancedWalletPage component which includes the mock transactions
+  const enhancedTransactions = transactions || [];
   
   const handleViewDocument = (document: any) => {
     setSelectedDocument(document);
@@ -888,6 +812,107 @@ const EnhancedWalletPage = () => {
     }
   ];
   
+  // Sample transactions with documents for the transactions tab
+  const mockTransactions = [
+    {
+      id: 5001,
+      fromWalletId: 1,
+      toWalletId: 1001,
+      amount: '5000.00',
+      currency: 'USD',
+      txType: 'ESCROW_LOCK',
+      status: 'COMPLETED',
+      contractId: 123,
+      description: 'Contract #123 escrow funding',
+      createdAt: new Date('2025-04-10'),
+      documents: [
+        { 
+          id: 1, 
+          name: 'Purchase Agreement.pdf', 
+          fileType: 'application/pdf', 
+          fileSize: 2457600, 
+          url: '#', 
+          uploadedBy: user?.id || 1, 
+          isVerified: true,
+          createdAt: new Date('2025-04-09'),
+          contractId: 123
+        },
+        { 
+          id: 2, 
+          name: 'Proof of Payment.jpg', 
+          fileType: 'image/jpeg', 
+          fileSize: 1048576, 
+          url: '#', 
+          uploadedBy: user?.id || 1, 
+          isVerified: true,
+          createdAt: new Date('2025-04-10'),
+          contractId: 123
+        }
+      ]
+    },
+    {
+      id: 5002,
+      fromWalletId: 1001,
+      toWalletId: 2,
+      amount: '5000.00',
+      currency: 'USD',
+      txType: 'ESCROW_RELEASE',
+      status: 'COMPLETED',
+      contractId: 123,
+      description: 'Contract #123 escrow release to seller',
+      createdAt: new Date('2025-04-20'),
+      documents: [
+        { 
+          id: 3, 
+          name: 'Delivery Confirmation.pdf', 
+          fileType: 'application/pdf', 
+          fileSize: 1245184, 
+          url: '#', 
+          uploadedBy: 2, 
+          isVerified: true,
+          createdAt: new Date('2025-04-18'),
+          contractId: 123
+        },
+        { 
+          id: 4, 
+          name: 'Quality Inspection Report.pdf', 
+          fileType: 'application/pdf', 
+          fileSize: 3670016, 
+          url: '#', 
+          uploadedBy: 3, 
+          isVerified: true,
+          createdAt: new Date('2025-04-19'),
+          contractId: 123
+        }
+      ]
+    },
+    {
+      id: 5003,
+      fromWalletId: 1,
+      toWalletId: 1002,
+      amount: '8500.00',
+      currency: 'USD',
+      txType: 'ESCROW_LOCK',
+      status: 'COMPLETED',
+      contractId: 456,
+      description: 'Contract #456 escrow funding',
+      createdAt: new Date('2025-04-15'),
+      documents: [
+        { 
+          id: 5, 
+          name: 'Sales Contract.pdf', 
+          fileType: 'application/pdf', 
+          fileSize: 3211264, 
+          url: '#', 
+          uploadedBy: user?.id || 1, 
+          isVerified: true,
+          createdAt: new Date('2025-04-14'),
+          contractId: 456
+        }
+      ]
+    }
+  ];
+  
   const mainWallet = wallets.find((w: any) => w.walletType === 'MAIN');
   // Combine real escrow wallets with mock ones
   const escrowWallets = [...wallets.filter((w: any) => w.walletType === 'ESCROW'), ...mockEscrowWallets];
@@ -949,7 +974,8 @@ const EnhancedWalletPage = () => {
         </TabsContent>
         
         <TabsContent value="transactions" className="mt-4">
-          <TransactionList transactions={userTransactions} />
+          {/* Combine real transactions with mock transactions for demonstration */}
+          <TransactionList transactions={[...userTransactions, ...mockTransactions]} />
         </TabsContent>
       </Tabs>
       
