@@ -109,21 +109,21 @@ export class MemStorage implements IStorage {
     });
   }
   
-  // Document Access helpers
-  private getDocumentsByInvoiceId(invoiceId: number): Promise<Document[]> {
+  // Document Access methods
+  getDocumentsByInvoiceId(invoiceId: number): Promise<Document[]> {
     return Promise.resolve(Array.from(this.documents.values()).filter(
       doc => doc.invoiceId === invoiceId
     ));
   }
   
-  private getAccessibleDocuments(userId: number): Promise<Document[]> {
+  getAccessibleDocuments(userId: number): Promise<Document[]> {
     return Promise.resolve(Array.from(this.documents.values()).filter(doc => {
       if (!doc.access || (doc.access as any[]).length === 0) return true; // Public document
       return (doc.access as any[]).includes(userId);
     }));
   }
   
-  private updateDocument(id: number, documentData: Partial<Document>): Promise<Document | undefined> {
+  updateDocument(id: number, documentData: Partial<Document>): Promise<Document | undefined> {
     const document = this.documents.get(id);
     if (!document) return Promise.resolve(undefined);
     
@@ -132,7 +132,7 @@ export class MemStorage implements IStorage {
     return Promise.resolve(updatedDocument);
   }
   
-  private grantDocumentAccess(id: number, userIds: number[]): Promise<Document | undefined> {
+  grantDocumentAccess(id: number, userIds: number[]): Promise<Document | undefined> {
     const document = this.documents.get(id);
     if (!document) return Promise.resolve(undefined);
     
@@ -142,7 +142,7 @@ export class MemStorage implements IStorage {
     return this.updateDocument(id, { access: newAccess });
   }
   
-  private revokeDocumentAccess(id: number, userIds: number[]): Promise<Document | undefined> {
+  revokeDocumentAccess(id: number, userIds: number[]): Promise<Document | undefined> {
     const document = this.documents.get(id);
     if (!document) return Promise.resolve(undefined);
     

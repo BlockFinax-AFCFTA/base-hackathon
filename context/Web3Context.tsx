@@ -1,7 +1,17 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { User } from '../types/user';
-import { apiRequest } from '@/lib/queryClient';
-import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '../lib/queryClient';
+import { useToast } from '../hooks/use-toast';
+
+// Define User interface inline to avoid import issues
+interface User {
+  id: number;
+  username: string;
+  walletAddress: string | null;
+  profileImage: string | null;
+  kycStatus: string | null;
+  riskScore: number | null;
+  kycData: any;
+}
 
 interface Web3ContextType {
   account: string | null;
