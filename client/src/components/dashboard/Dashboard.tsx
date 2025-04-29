@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DashboardStats from './DashboardStats';
 import RecentTransactions from './RecentTransactions';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 import { useWeb3 } from '@/hooks/useWeb3';
@@ -14,6 +14,7 @@ import {
   TabsTrigger 
 } from "@/components/ui/tabs";
 import RiskDashboard from '../risk/RiskDashboard';
+import RegulatoryAIWidget from './RegulatoryAIWidget';
 
 const ContractStatusOverview = () => {
   const { contracts, isLoadingContracts } = useContracts();
@@ -187,7 +188,7 @@ const RiskSummary = () => {
 };
 
 const Dashboard = () => {
-  const { isConnected } = useWeb3();
+  const { isLoggedIn } = useWeb3();
   const { contracts } = useContracts();
   const [activeTab, setActiveTab] = useState<string>('overview');
 
@@ -198,6 +199,7 @@ const Dashboard = () => {
           <TabsList>
             <TabsTrigger value="overview">Financial Dashboard</TabsTrigger>
             <TabsTrigger value="risk">Risk Intelligence</TabsTrigger>
+            <TabsTrigger value="regulatory">Regulatory AI</TabsTrigger>
           </TabsList>
           <div className="text-sm text-gray-500">
             Last updated: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
