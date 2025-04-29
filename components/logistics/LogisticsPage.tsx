@@ -51,8 +51,13 @@ interface ExtendedLogistics {
 }
 
 const LogisticsPage: React.FC = () => {
-  const { user } = useContext(Web3Context);
+  const { user, isLoggedIn, isInitializing } = useContext(Web3Context);
+  console.log("User context:", { user, isLoggedIn, isInitializing });
+  
+  // Ensure the user ID is properly set
   const userId = user?.id;
+  console.log("User ID:", userId);
+  
   const { toast } = useToast();
   
   // Tab state
@@ -108,7 +113,11 @@ const LogisticsPage: React.FC = () => {
   
   // Start booking process - show confirmation dialog
   const startBookingProcess = () => {
-    if (!userId || !selectedProviderId) {
+    console.log("Starting booking process...");
+    console.log("User ID:", userId);
+    console.log("Selected provider ID:", selectedProviderId);
+    
+    if (!selectedProviderId) {
       toast({
         title: "Booking error",
         description: "Please select a logistics provider first",
@@ -117,7 +126,18 @@ const LogisticsPage: React.FC = () => {
       return;
     }
     
+    if (!userId) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to book a shipment",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     const provider = providers?.find(p => p.id === selectedProviderId);
+    console.log("Found provider:", provider);
+    
     if (!provider) {
       toast({
         title: "Provider not found",
@@ -129,6 +149,7 @@ const LogisticsPage: React.FC = () => {
     
     setSelectedProvider(provider);
     setBookingConfirmOpen(true);
+    console.log("Booking dialog opened");
   };
   
   // Handle booking submission after confirmation
