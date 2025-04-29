@@ -198,6 +198,8 @@ const Dashboard = () => {
           <TabsList>
             <TabsTrigger value="overview">Financial Dashboard</TabsTrigger>
             <TabsTrigger value="risk">Risk Intelligence</TabsTrigger>
+            <TabsTrigger value="translation">Translation Demo</TabsTrigger>
+            <TabsTrigger value="logistics">Logistics</TabsTrigger>
           </TabsList>
           <div className="text-sm text-gray-500">
             Last updated: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
@@ -214,6 +216,53 @@ const Dashboard = () => {
         
         <TabsContent value="risk" className="mt-0">
           <RiskDashboard />
+        </TabsContent>
+        
+        <TabsContent value="translation" className="mt-0">
+          <div className="space-y-4">
+            <Card className="bg-white shadow-md">
+              <CardHeader className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg leading-6 font-medium text-primary">Translation Demo</h3>
+                <p className="mt-1 max-w-2xl text-sm text-gray-500">Test our AI-powered translation system</p>
+              </CardHeader>
+              <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
+                <div className="p-6 bg-blue-50 rounded-lg text-center">
+                  <h3 className="text-lg font-medium mb-2">AI-Powered Translation System</h3>
+                  <p className="mb-4">Switch languages using the language selector in the top-right corner of the page</p>
+                  <div className="flex justify-center">
+                    <Button variant="outline" className="mx-1">English</Button>
+                    <Button variant="outline" className="mx-1">Español</Button>
+                    <Button variant="outline" className="mx-1">中文</Button>
+                    <Button variant="outline" className="mx-1">Français</Button>
+                    <Button variant="outline" className="mx-1">العربية</Button>
+                    <Button variant="outline" className="mx-1">Русский</Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="logistics" className="mt-0">
+          <div className="space-y-4">
+            <Card className="bg-white shadow-md">
+              <CardHeader className="px-4 py-5 sm:px-6">
+                <h3 className="text-lg leading-6 font-medium text-primary">Logistics Management</h3>
+                <p className="mt-1 max-w-2xl text-sm text-gray-500">Track shipments and manage logistics</p>
+              </CardHeader>
+              <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
+                <div className="p-6 bg-blue-50 rounded-lg text-center">
+                  <h3 className="text-lg font-medium mb-2">Logistics Dashboard</h3>
+                  <p className="mb-4">View the full logistics dashboard by clicking the button below or selecting "Logistics" from the sidebar</p>
+                  <div className="flex justify-center">
+                    <Link href="/logistics">
+                      <Button>Go to Logistics Dashboard</Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

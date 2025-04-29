@@ -69,8 +69,8 @@ app.use((req, res, next) => {
       serveStatic(app);
     }
 
-    // Use environment port if specified, otherwise default to 5050
-    const port = process.env.PORT || 5050;
+    // Use environment port if specified, otherwise default to 3334
+    const port = process.env.PORT || 3334;
     server.listen({
       port,
       host: "0.0.0.0",
