@@ -864,8 +864,33 @@ const EnhancedWalletPage = () => {
     );
   }
   
+  // Add sample escrow wallets for demonstration
+  const mockEscrowWallets = [
+    {
+      id: 1001,
+      userId: user?.id || 1,
+      walletType: 'ESCROW',
+      contractId: 123,
+      balance: '5000.00',
+      currency: 'USD',
+      createdAt: new Date('2025-04-10'),
+      updatedAt: new Date('2025-04-10')
+    },
+    {
+      id: 1002,
+      userId: user?.id || 1,
+      walletType: 'ESCROW',
+      contractId: 456,
+      balance: '8500.00',
+      currency: 'USD',
+      createdAt: new Date('2025-04-15'),
+      updatedAt: new Date('2025-04-15')
+    }
+  ];
+  
   const mainWallet = wallets.find((w: any) => w.walletType === 'MAIN');
-  const escrowWallets = wallets.filter((w: any) => w.walletType === 'ESCROW');
+  // Combine real escrow wallets with mock ones
+  const escrowWallets = [...wallets.filter((w: any) => w.walletType === 'ESCROW'), ...mockEscrowWallets];
   
   return (
     <div className="flex flex-col gap-8">
