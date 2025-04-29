@@ -58,6 +58,8 @@ const LogisticsPage: React.FC = () => {
   const [specialRequirements, setSpecialRequirements] = useState('');
   const [selectedProviderId, setSelectedProviderId] = useState<number | null>(null);
   const [trackingId, setTrackingId] = useState('');
+  const [showingOffers, setShowingOffers] = useState(false);
+  const [filteredOffers, setFilteredOffers] = useState<LogisticsProvider[]>([]);
   
   // Fetch logistics data
   const { 
@@ -144,6 +146,40 @@ const LogisticsPage: React.FC = () => {
   const handleTrackSearch = () => {
     // Filter logistics data by tracking ID
     // This is client-side filtering, as we already have the data
+  };
+  
+  // Search and filter available offers
+  const searchOffers = () => {
+    if (!providers || providers.length === 0) return;
+    
+    // Apply filtering based on cargo type and other criteria
+    const filtered = providers.filter(provider => {
+      // Check if this provider can handle the selected cargo type
+      if (provider.specialties && Array.isArray(provider.specialties)) {
+        // If the provider has cargo specialties defined, ensure they can handle this type
+        if (provider.specialties.length > 0 && 
+            !provider.specialties.some(s => s.includes(cargoType))) {
+          return false;
+        }
+      }
+      
+      // Add more filtering criteria here as needed
+      return true;
+    });
+    
+    // Sort by price, estimated days, or rating
+    // By default, sort by estimated delivery time
+    const sorted = [...filtered].sort((a, b) => a.estimatedDays - b.estimatedDays);
+    
+    // Update state
+    setFilteredOffers(sorted);
+    setShowingOffers(true);
+  };
+  
+  // Reset search form
+  const resetSearch = () => {
+    setShowingOffers(false);
+    setFilteredOffers([]);
   };
   
   const filteredLogistics = trackingId 
@@ -358,45 +394,79 @@ const LogisticsPage: React.FC = () => {
                     />
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="provider">Select Provider</Label>
-                    <Select
-                      onValueChange={(value) => setSelectedProviderId(Number(value))}
-                      value={selectedProviderId?.toString() || ""}
+                  {!showingOffers ? (
+                    <Button 
+                      className="w-full mt-4" 
+                      onClick={searchOffers}
+                      disabled={
+                        !origin || !destination || !shipmentDate || !cargoType || 
+                        !weight || isProvidersLoading
+                      }
                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a provider" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {isProvidersLoading ? (
-                          <div className="flex items-center justify-center p-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span className="ml-2">Loading...</span>
-                          </div>
-                        ) : (
-                          providers?.map((provider) => (
-                            <SelectItem 
+                      Find Available Offers
+                    </Button>
+                  ) : (
+                    <div className="space-y-4 mt-4">
+                      <div className="flex justify-between items-center">
+                        <h3 className="font-medium">Available Offers</h3>
+                        <Button variant="ghost" size="sm" onClick={resetSearch}>
+                          Back to Search
+                        </Button>
+                      </div>
+                      
+                      {filteredOffers.length === 0 ? (
+                        <div className="text-center py-4">
+                          <p>No matching providers found for your shipment requirements.</p>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {filteredOffers.map((provider) => (
+                            <div 
                               key={provider.id} 
-                              value={provider.id.toString()}
+                              className={`p-3 border rounded-md ${
+                                selectedProviderId === provider.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-200'
+                              } cursor-pointer transition-colors`}
+                              onClick={() => setSelectedProviderId(provider.id)}
                             >
-                              {provider.name} ({provider.estimatedDays} days)
-                            </SelectItem>
-                          ))
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <Button 
-                    className="w-full mt-4" 
-                    onClick={handleBookLogistics}
-                    disabled={
-                      !origin || !destination || !shipmentDate || !cargoType || 
-                      !weight || !selectedProviderId || isProvidersLoading
-                    }
-                  >
-                    Book Shipment
-                  </Button>
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                  <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <img 
+                                      src={provider.logo}
+                                      alt={provider.name}
+                                      className="h-5 w-5 object-contain"
+                                      onError={(e) => {
+                                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/40?text=' + provider.name.charAt(0);
+                                      }}
+                                    />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-medium">{provider.name}</h4>
+                                    <div className="flex text-xs text-yellow-500">
+                                      {'★'.repeat(Math.floor(Number(provider.rating)))}
+                                      {'☆'.repeat(5 - Math.floor(Number(provider.rating)))}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <p className="font-bold">{provider.basePrice} {provider.currency}</p>
+                                  <p className="text-xs text-gray-500">{provider.estimatedDays} days delivery</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          
+                          <Button 
+                            className="w-full mt-4" 
+                            onClick={handleBookLogistics}
+                            disabled={!selectedProviderId}
+                          >
+                            Book with Selected Provider
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
