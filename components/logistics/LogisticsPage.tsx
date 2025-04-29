@@ -629,7 +629,7 @@ const LogisticsPage: React.FC = () => {
                           
                           <Button 
                             className="w-full mt-4" 
-                            onClick={handleBookLogistics}
+                            onClick={startBookingProcess}
                             disabled={!selectedProviderId}
                           >
                             Book with Selected Provider
@@ -921,6 +921,161 @@ const LogisticsPage: React.FC = () => {
               </div>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+      
+      {/* Booking confirmation dialog */}
+      <Dialog open={bookingConfirmOpen} onOpenChange={setBookingConfirmOpen}>
+        <DialogContent>
+          {selectedProvider && (
+            <>
+              <DialogHeader>
+                <DialogTitle>Confirm Booking</DialogTitle>
+                <DialogDescription>
+                  Please review your booking details before confirming
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-4 my-4">
+                {bookingError && (
+                  <Alert variant="destructive" className="mb-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{bookingError}</AlertDescription>
+                  </Alert>
+                )}
+                
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <div className="flex justify-between mb-2">
+                    <h3 className="font-medium">Provider</h3>
+                    <p>{selectedProvider.name}</p>
+                  </div>
+                  <div className="flex items-center text-yellow-500 text-sm mb-2">
+                    {'★'.repeat(Math.floor(Number(selectedProvider.rating)))}
+                    {'☆'.repeat(5 - Math.floor(Number(selectedProvider.rating)))}
+                    <span className="text-gray-600 ml-1">({selectedProvider.rating})</span>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <h3 className="font-medium text-sm text-gray-500">From</h3>
+                    <p>{origin}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-sm text-gray-500">To</h3>
+                    <p>{destination}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-sm text-gray-500">Shipment Date</h3>
+                    <p>{format(new Date(shipmentDate), 'MMM dd, yyyy')}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-sm text-gray-500">Estimated Delivery</h3>
+                    <p>{format(new Date(new Date(shipmentDate).setDate(new Date(shipmentDate).getDate() + selectedProvider.estimatedDays)), 'MMM dd, yyyy')}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-sm text-gray-500">Cargo Type</h3>
+                    <p>{cargoType}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-sm text-gray-500">Weight</h3>
+                    <p>{weight}</p>
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-gray-50 rounded-lg mt-4">
+                  <div className="flex justify-between">
+                    <h3 className="font-medium">Total Price</h3>
+                    <p className="font-bold">{selectedProvider.basePrice} {selectedProvider.currency}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setBookingConfirmOpen(false)}
+                  disabled={isBookingInProgress}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleBookLogistics} 
+                  disabled={isBookingInProgress}
+                >
+                  {isBookingInProgress ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Confirm Booking'
+                  )}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+      
+      {/* Booking success dialog */}
+      <Dialog open={bookingSuccessOpen} onOpenChange={setBookingSuccessOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center text-green-600">
+              <CheckCircle2 className="mr-2 h-5 w-5" />
+              Booking Successful
+            </DialogTitle>
+            <DialogDescription>
+              Your shipment has been booked successfully
+            </DialogDescription>
+          </DialogHeader>
+          
+          {createdBooking && (
+            <div className="my-6 space-y-4">
+              <div className="p-4 border rounded-lg">
+                <p className="font-medium">Tracking ID</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-xl font-mono">{createdBooking.trackingId}</p>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="h-8 px-2"
+                    onClick={() => {
+                      navigator.clipboard.writeText(createdBooking.trackingId || '');
+                      toast({
+                        title: "Copied to clipboard",
+                        description: "Tracking ID has been copied to your clipboard",
+                      });
+                    }}
+                  >
+                    Copy
+                  </Button>
+                </div>
+              </div>
+              
+              <Alert>
+                <CheckCircle2 className="h-4 w-4" />
+                <AlertTitle>Shipment Confirmed</AlertTitle>
+                <AlertDescription>
+                  You can track your shipment at any time on the "Track Shipments" tab
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button 
+              onClick={() => {
+                setBookingSuccessOpen(false);
+                // Switch to the tracking tab
+                document.querySelector('button[value="track"]')?.click();
+              }}
+            >
+              Go to Tracking
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
