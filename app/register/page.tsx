@@ -50,7 +50,7 @@ export default function RegisterPage() {
         title: 'Account created',
         description: 'Redirecting to dashboard...',
       })
-      router.push('/dashboard')
+      router.push('/')
     } catch (error) {
       toast({
         variant: 'destructive',

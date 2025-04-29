@@ -3,8 +3,13 @@ import {
   Wallet, InsertWallet, Transaction, InsertTransaction, 
   Invoice, InsertInvoice, TradeFinanceApplication, InsertTradeFinanceApplication
 } from "@shared/schema";
+import session from "express-session";
+import createMemoryStore from "memorystore";
 
 export interface IStorage {
+  // Session storage
+  sessionStore: session.Store;
+  
   // User methods
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
@@ -77,6 +82,8 @@ export class MemStorage implements IStorage {
   private transactionId: number;
   private invoiceId: number;
   private tradeFinanceApplicationId: number;
+  
+  public sessionStore: session.Store;
 
   constructor() {
     this.users = new Map();
@@ -94,6 +101,12 @@ export class MemStorage implements IStorage {
     this.transactionId = 1;
     this.invoiceId = 1;
     this.tradeFinanceApplicationId = 1;
+    
+    // Create memory store for sessions
+    const MemoryStore = createMemoryStore(session);
+    this.sessionStore = new MemoryStore({
+      checkPeriod: 86400000, // Prune expired entries every 24h
+    });
   }
   
   // Document Access helpers

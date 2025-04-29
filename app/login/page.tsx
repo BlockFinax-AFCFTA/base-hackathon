@@ -37,9 +37,9 @@ export default function LoginPage() {
       await loginUser(formData.username, formData.password)
       toast({
         title: 'Login successful',
-        description: 'Redirecting to dashboard...',
+        description: 'Redirecting to home page...',
       })
-      router.push('/dashboard')
+      router.push('/')
     } catch (error) {
       toast({
         variant: 'destructive',

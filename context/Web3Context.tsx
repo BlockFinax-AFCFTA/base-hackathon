@@ -121,7 +121,12 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
       
       const response = await apiRequest('POST', '/api/auth/register', {
         username,
-        password
+        password,
+        walletAddress: null,
+        profileImage: null,
+        kycStatus: "PENDING",
+        riskScore: 0,
+        kycData: {}
       });
       
       if (!response.ok) {
