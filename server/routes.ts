@@ -1111,7 +1111,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Logistics Providers routes
   app.get("/api/logistics-providers", async (req, res) => {
     try {
-      const providers = await storage.getLogisticsProviders();
+      let providers = await storage.getLogisticsProviders();
+      
+      // If no providers exist, seed some sample providers
+      if (providers.length === 0) {
+        const sampleProviders = [
+          {
+            name: "GlobalFreight Express",
+            logo: "https://via.placeholder.com/50?text=GF",
+            rating: "4.8",
+            specialties: ["General Cargo", "Express Shipping", "International"],
+            description: "Leading global logistics provider with an extensive network covering 120+ countries",
+            basePrice: "1450",
+            currency: "USD",
+            estimatedDays: 6,
+            address: "88 Shipping Plaza, Rotterdam, Netherlands",
+            website: "globalfreightexpress.com",
+            contactEmail: "info@globalfreightexpress.com",
+            contactPhone: "+31 10 555 7890",
+            yearEstablished: 1998,
+            fleetSize: 120,
+            certificates: ["ISO 9001", "ISO 14001", "C-TPAT"],
+            sustainabilityRating: "4.5"
+          },
+          {
+            name: "Arctic Refrigerated Logistics",
+            logo: "https://via.placeholder.com/50?text=AR",
+            rating: "4.6",
+            specialties: ["Temperature Controlled", "Perishables", "Pharmaceutical"],
+            description: "Specialized in temperature-controlled shipping for sensitive cargo worldwide",
+            basePrice: "1800",
+            currency: "USD",
+            estimatedDays: 7,
+            address: "45 Cold Chain Blvd, Hamburg, Germany",
+            website: "arcticlogistics.com",
+            contactEmail: "service@arcticlogistics.com",
+            contactPhone: "+49 40 555 1234",
+            yearEstablished: 2005,
+            fleetSize: 85,
+            certificates: ["ISO 9001", "HACCP", "GDP", "CEIV Pharma"],
+            sustainabilityRating: "4.2"
+          },
+          {
+            name: "OceanRoute Shipping",
+            logo: "https://via.placeholder.com/50?text=OR",
+            rating: "4.7",
+            specialties: ["Sea Freight", "Container Shipping", "Bulk Cargo"],
+            description: "Specialized marine logistics company with a fleet of cargo vessels for reliable ocean transport",
+            basePrice: "1250",
+            currency: "USD",
+            estimatedDays: 12,
+            address: "Port Complex 22, Singapore",
+            website: "oceanroute.com",
+            contactEmail: "bookings@oceanroute.com",
+            contactPhone: "+65 6123 4567",
+            yearEstablished: 1986,
+            fleetSize: 42,
+            certificates: ["ISO 9001", "ISO 14001", "ISPS Code"],
+            sustainabilityRating: "3.8"
+          },
+          {
+            name: "SilkRoad Express",
+            logo: "https://via.placeholder.com/50?text=SR",
+            rating: "4.5",
+            specialties: ["Rail Freight", "Asia-Europe Routes", "High Value"],
+            description: "Specializing in rail transport along the historic Silk Road economic belt",
+            basePrice: "1350",
+            currency: "USD",
+            estimatedDays: 10,
+            address: "88 Railway Square, Xi'an, China",
+            website: "silkroadexpress.com",
+            contactEmail: "info@silkroadexpress.com",
+            contactPhone: "+86 29 8888 7777",
+            yearEstablished: 2013,
+            fleetSize: 75,
+            certificates: ["ISO 9001", "AEO"],
+            sustainabilityRating: "4.0"
+          },
+          {
+            name: "AeroFast Cargo",
+            logo: "https://via.placeholder.com/50?text=AF",
+            rating: "4.9",
+            specialties: ["Air Freight", "Express Delivery", "Time-Critical"],
+            description: "Premium air freight services with guaranteed delivery times",
+            basePrice: "2250",
+            currency: "USD",
+            estimatedDays: 3,
+            address: "Terminal 5, Schiphol Airport, Amsterdam",
+            website: "aerofastcargo.com",
+            contactEmail: "express@aerofastcargo.com",
+            contactPhone: "+31 20 123 4567",
+            yearEstablished: 2001,
+            fleetSize: 35,
+            certificates: ["ISO 9001", "IATA CEIV"],
+            sustainabilityRating: "3.5"
+          }
+        ];
+        
+        // Add providers to database
+        for (const provider of sampleProviders) {
+          await storage.createLogisticsProvider(provider);
+        }
+        
+        // Fetch again to get the created providers with IDs
+        providers = await storage.getLogisticsProviders();
+      }
+      
       res.json(providers);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch logistics providers" });
