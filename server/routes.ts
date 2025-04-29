@@ -19,7 +19,7 @@ import {
   LOGISTICS_TYPE
 } from "@shared/schema";
 import { z } from "zod";
-import regulatoryAIRouter from "./routes/regulatoryAI";
+import { analyzeExportRequirements } from "./routes/regulatoryAI";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
@@ -1258,8 +1258,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Register the regulatory AI router
-  app.use('/api/regulatory', regulatoryAIRouter);
+  // Register the regulatory AI endpoint
+  app.post('/api/regulatory-ai/analyze', analyzeExportRequirements);
 
   const httpServer = createServer(app);
   

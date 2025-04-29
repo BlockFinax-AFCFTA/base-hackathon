@@ -1,71 +1,98 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import OpenAI from 'openai';
 
-const router = Router();
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-// Define the prompt for regulatory guidelines
-const systemPrompt = `You are an expert in international trade regulations and compliance. 
-Your role is to help exporters understand the regulatory requirements for their specific products when exporting 
-to different countries.
+// the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+const MODEL = 'gpt-4o';
 
-For each query, provide detailed information about:
-1. Required export documentation and licenses
-2. Product-specific certifications or standards
-3. Customs duties and tariffs
-4. Import restrictions or prohibitions in the destination country
-5. Labeling and packaging requirements
-6. Any other relevant regulatory considerations
-
-Format your response in a structured way, with clear sections, and provide actionable guidance.
-Ensure your information is accurate and up-to-date as of your last training data.`;
-
-router.post('/analyze', async (req: Request, res: Response) => {
+export const analyzeExportRequirements = async (req: Request, res: Response) => {
   try {
-    const { product, originCountry, destinationCountry, productCategory } = req.body;
+    const { product, originCountry, destinationCountry, productCategory, additionalDetails } = req.body;
 
-    if (!product || !originCountry || !destinationCountry) {
+    if (!product || !originCountry || !destinationCountry || !productCategory) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const userPrompt = `Please provide regulatory guidance for exporting the following:
-    
-Product: ${product}
-Product Category: ${productCategory || 'Not specified'}
-Origin Country: ${originCountry}
-Destination Country: ${destinationCountry}
+    // Generate the prompt for the OpenAI API
+    const prompt = `
+      I need a comprehensive export compliance analysis for the following scenario:
 
-Focus on the most important regulations and compliance requirements for this specific export scenario.`;
+      Product: ${product}
+      Origin Country: ${originCountry}
+      Destination Country: ${destinationCountry}
+      Product Category: ${productCategory}
+      Additional Details: ${additionalDetails || 'None provided'}
 
-    // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt }
-      ],
-      temperature: 0.5,
-    });
-
-    const analysis = response.choices[0].message.content;
-
-    res.json({
-      analysis,
-      metadata: {
-        product,
-        originCountry,
-        destinationCountry,
-        productCategory,
-        timestamp: new Date().toISOString()
+      Please provide a detailed analysis in JSON format with the following structure:
+      {
+        "summary": "A brief overview of the export situation",
+        "restrictionLevel": "HIGH/MEDIUM/LOW",
+        "keyRequirements": ["List of key requirements for this export"],
+        "restrictions": ["List of any restrictions or barriers"],
+        "requiredDocuments": [
+          {
+            "name": "Document name",
+            "description": "What this document is",
+            "mandatory": boolean,
+            "notes": "Any additional notes"
+          }
+        ],
+        "tariffs": {
+          "overview": "Brief overview of tariff situation",
+          "estimatedRates": [
+            {
+              "category": "Type of tariff",
+              "rate": "Estimated rate",
+              "notes": "Additional notes"
+            }
+          ]
+        },
+        "regulations": [
+          {
+            "name": "Regulation name",
+            "description": "Description of the regulation",
+            "authority": "Governing authority",
+            "link": "Link to official information (if available)"
+          }
+        ]
       }
+
+      Base your response on known international trade regulations, customs requirements, and export control laws.
+      For the restrictionLevel, use HIGH if there are significant barriers or restrictions, MEDIUM for moderate requirements, and LOW for minimal restrictions.
+    `;
+
+    // Call OpenAI API for analysis
+    const response = await openai.chat.completions.create({
+      model: MODEL,
+      messages: [
+        { 
+          role: 'system', 
+          content: 'You are an expert in international trade regulations, customs procedures, and export compliance. Provide accurate, detailed guidance on export requirements between countries.'
+        },
+        { role: 'user', content: prompt }
+      ],
+      response_format: { type: 'json_object' },
+      temperature: 0.2, // Lower temperature for more factual responses
     });
-  } catch (error: any) {
-    console.error('Error in regulatory AI analysis:', error);
-    res.status(500).json({ 
-      error: 'Failed to analyze regulatory requirements',
-      details: error.message
+
+    const analysisContent = response.choices[0].message.content;
+    
+    if (!analysisContent) {
+      throw new Error('Failed to generate analysis');
+    }
+
+    // Parse the JSON response
+    const analysisData = JSON.parse(analysisContent);
+
+    return res.status(200).json(analysisData);
+  } catch (error) {
+    console.error('Error analyzing export requirements:', error);
+    return res.status(500).json({ 
+      error: 'Failed to analyze export requirements',
+      details: error.message 
     });
   }
-});
-
-export default router;
+};

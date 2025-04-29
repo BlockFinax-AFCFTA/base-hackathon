@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Book, BookOpen, Globe, ArrowRight, Loader2 } from 'lucide-react';
+import { Link } from 'wouter';
+import { Loader2, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -17,8 +18,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Link } from 'wouter';
+import { useToast } from '@/hooks/use-toast';
 
+// Sample data
 const COUNTRIES = [
   { code: 'US', name: 'United States' },
   { code: 'CA', name: 'Canada' },
@@ -42,56 +44,68 @@ const PRODUCT_CATEGORIES = [
 ];
 
 const RegulatoryAIWidget: React.FC = () => {
+  const { toast } = useToast();
+  
   const [product, setProduct] = useState('');
   const [originCountry, setOriginCountry] = useState('');
   const [destinationCountry, setDestinationCountry] = useState('');
   const [productCategory, setProductCategory] = useState('');
-
+  
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  
+  // Handle quick analyze button
+  const handleQuickAnalyze = () => {
+    if (!product || !originCountry || !destinationCountry || !productCategory) {
+      toast({
+        title: 'Missing information',
+        description: 'Please fill in all required fields to proceed with analysis',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    // Navigate to the full regulatory AI page with query parameters
+    const queryParams = new URLSearchParams({
+      product,
+      origin: originCountry,
+      destination: destinationCountry,
+      category: productCategory
+    }).toString();
+    
+    window.location.href = `/regulatory-ai?${queryParams}`;
+  };
+  
   return (
-    <Card className="col-span-full xl:col-span-4 h-full">
+    <Card className="md:col-span-4 xl:col-span-4">
       <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <BookOpen className="h-5 w-5 mr-2 text-primary" />
-            <CardTitle>Export Regulatory Assistant</CardTitle>
-          </div>
-          <Link href="/regulatory-ai">
-            <Button variant="ghost" size="sm" className="text-xs">
-              View Full Tool
-              <ArrowRight className="ml-1 h-3.5 w-3.5" />
-            </Button>
-          </Link>
-        </div>
-        <CardDescription>
-          Get quick regulatory guidance for exporting your products
-        </CardDescription>
+        <CardTitle>Quick Export Check</CardTitle>
+        <CardDescription>Verify regulatory requirements for your exports</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div>
-            <label htmlFor="product" className="text-sm font-medium">
-              Product
+            <label htmlFor="product-quick" className="text-sm font-medium block mb-1">
+              Product Name
             </label>
             <Input
-              id="product"
-              placeholder="e.g. Medical Equipment, Coffee Beans"
+              id="product-quick"
+              placeholder="e.g. Coffee Beans"
               value={product}
               onChange={(e) => setProduct(e.target.value)}
-              className="mt-1"
             />
           </div>
           
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="origin" className="text-sm font-medium">
+              <label htmlFor="origin-quick" className="text-sm font-medium block mb-1">
                 Origin
               </label>
               <Select
                 value={originCountry}
                 onValueChange={setOriginCountry}
               >
-                <SelectTrigger id="origin" className="mt-1">
-                  <SelectValue placeholder="Select country" />
+                <SelectTrigger id="origin-quick">
+                  <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
                   {COUNTRIES.map((country) => (
@@ -104,15 +118,15 @@ const RegulatoryAIWidget: React.FC = () => {
             </div>
             
             <div>
-              <label htmlFor="destination" className="text-sm font-medium">
+              <label htmlFor="destination-quick" className="text-sm font-medium block mb-1">
                 Destination
               </label>
               <Select
                 value={destinationCountry}
                 onValueChange={setDestinationCountry}
               >
-                <SelectTrigger id="destination" className="mt-1">
-                  <SelectValue placeholder="Select country" />
+                <SelectTrigger id="destination-quick">
+                  <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
                   {COUNTRIES.map((country) => (
@@ -126,15 +140,15 @@ const RegulatoryAIWidget: React.FC = () => {
           </div>
           
           <div>
-            <label htmlFor="category" className="text-sm font-medium">
+            <label htmlFor="category-quick" className="text-sm font-medium block mb-1">
               Category
             </label>
             <Select
               value={productCategory}
               onValueChange={setProductCategory}
             >
-              <SelectTrigger id="category" className="mt-1">
-                <SelectValue placeholder="Select category" />
+              <SelectTrigger id="category-quick">
+                <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent>
                 {PRODUCT_CATEGORIES.map((category) => (
@@ -147,13 +161,24 @@ const RegulatoryAIWidget: React.FC = () => {
           </div>
         </div>
       </CardContent>
-      <CardFooter>
-        <Link href={`/regulatory-ai?product=${encodeURIComponent(product)}&origin=${originCountry}&destination=${destinationCountry}&category=${encodeURIComponent(productCategory)}`}>
-          <Button className="w-full">
-            <Globe className="mr-2 h-4 w-4" />
-            Analyze Export Requirements
-          </Button>
-        </Link>
+      <CardFooter className="pt-0">
+        <Button 
+          className="w-full justify-between" 
+          onClick={handleQuickAnalyze}
+          disabled={isAnalyzing}
+        >
+          {isAnalyzing ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Analyzing...
+            </>
+          ) : (
+            <>
+              Analyze Export Requirements
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </>
+          )}
+        </Button>
       </CardFooter>
     </Card>
   );
