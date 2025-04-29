@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DashboardStats from './DashboardStats';
 import RecentTransactions from './RecentTransactions';
-import { Card, CardContent, CardHeader } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { Link } from 'wouter';
 import { useWeb3 } from '../../hooks/useWeb3';

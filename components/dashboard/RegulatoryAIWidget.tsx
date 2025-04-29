@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Book, BookOpen, Globe, ArrowRight, Loader2 } from 'lucide-react';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../components/ui/select';
+} from '../ui/select';
 import {
   Card,
   CardContent,
@@ -17,7 +16,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '../../components/ui/card';
+} from '../ui/card';
 import { Link } from 'wouter';
 
 const COUNTRIES = [
