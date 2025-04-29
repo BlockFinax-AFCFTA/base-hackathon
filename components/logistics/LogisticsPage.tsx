@@ -1,494 +1,494 @@
-import React, { useState } from 'react';
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
-} from '../ui/tabs';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from '../ui/card';
-import { 
-  Truck, 
-  PackageSearch, 
-  MapPin, 
-  Calendar, 
-  MessageSquare, 
-  Shield, 
-  ThumbsUp,
-  Star,
-  Search
-} from 'lucide-react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Separator } from '../ui/separator';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select';
-import { Badge } from '../ui/badge';
-
-const LogisticsProviderCard = ({ 
-  name, 
-  logo, 
-  rating, 
-  specialties, 
-  description 
-}: { 
-  name: string; 
-  logo: React.ReactNode; 
-  rating: number; 
-  specialties: string[]; 
-  description: string; 
-}) => {
-  return (
-    <Card className="mb-4">
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-full mr-3">
-              {logo}
-            </div>
-            <div>
-              <CardTitle className="text-lg">{name}</CardTitle>
-              <div className="flex items-center mt-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    className={`h-4 w-4 ${i < rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
-                  />
-                ))}
-                <span className="ml-1 text-sm text-gray-600">{rating.toFixed(1)}</span>
-              </div>
-            </div>
-          </div>
-          <Button variant="outline" size="sm">View Details</Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-gray-600 mb-3">{description}</p>
-        <div className="flex flex-wrap gap-2">
-          {specialties.map((specialty, index) => (
-            <Badge key={index} variant="outline" className="bg-blue-50">
-              {specialty}
-            </Badge>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-const BookingForm = () => {
-  const [step, setStep] = useState(1);
-  
-  return (
-    <div className="space-y-4">
-      {step === 1 && (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="origin">Origin</Label>
-              <div className="flex">
-                <div className="bg-gray-100 p-2 flex items-center rounded-l-md border border-r-0 border-input">
-                  <MapPin className="h-4 w-4 text-gray-500" />
-                </div>
-                <Input id="origin" placeholder="Enter origin city/port" className="rounded-l-none" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="destination">Destination</Label>
-              <div className="flex">
-                <div className="bg-gray-100 p-2 flex items-center rounded-l-md border border-r-0 border-input">
-                  <MapPin className="h-4 w-4 text-gray-500" />
-                </div>
-                <Input id="destination" placeholder="Enter destination city/port" className="rounded-l-none" />
-              </div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="shipment-date">Shipment Date</Label>
-              <div className="flex">
-                <div className="bg-gray-100 p-2 flex items-center rounded-l-md border border-r-0 border-input">
-                  <Calendar className="h-4 w-4 text-gray-500" />
-                </div>
-                <Input id="shipment-date" type="date" className="rounded-l-none" />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="cargo-type">Cargo Type</Label>
-              <Select>
-                <SelectTrigger id="cargo-type">
-                  <SelectValue placeholder="Select cargo type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="general">General Cargo</SelectItem>
-                  <SelectItem value="container">Container</SelectItem>
-                  <SelectItem value="bulk">Bulk Cargo</SelectItem>
-                  <SelectItem value="perishable">Perishable Goods</SelectItem>
-                  <SelectItem value="hazardous">Hazardous Materials</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="weight">Weight (kg)</Label>
-              <Input id="weight" type="number" placeholder="Enter weight" />
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="special-requirements">Special Requirements</Label>
-            <Input id="special-requirements" placeholder="Any special handling instructions or requirements" />
-          </div>
-          
-          <div className="pt-4 flex justify-end">
-            <Button onClick={() => setStep(2)}>Continue to Provider Selection</Button>
-          </div>
-        </>
-      )}
-      
-      {step === 2 && (
-        <>
-          <h3 className="text-lg font-medium mb-4">Select Logistics Provider</h3>
-          
-          <div className="space-y-4">
-            {logisticsProviders.map((provider, index) => (
-              <div key={index} className="border rounded-md p-4 flex items-center">
-                <input 
-                  type="radio" 
-                  id={`provider-${index}`} 
-                  name="provider" 
-                  className="h-4 w-4 text-primary border-gray-300 focus:ring-primary mr-3"
-                />
-                <label htmlFor={`provider-${index}`} className="flex-grow cursor-pointer">
-                  <div className="flex items-center">
-                    <div className="p-2 bg-blue-100 rounded-full mr-3">
-                      {provider.logo}
-                    </div>
-                    <div>
-                      <h4 className="font-medium">{provider.name}</h4>
-                      <div className="flex items-center mt-1">
-                        <span className="text-sm text-green-600 font-medium">$245.00</span>
-                        <span className="mx-2 text-gray-400">|</span>
-                        <span className="text-sm text-gray-600">Est. delivery: 5-7 days</span>
-                      </div>
-                    </div>
-                  </div>
-                </label>
-              </div>
-            ))}
-          </div>
-          
-          <div className="pt-4 flex justify-between">
-            <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-            <Button onClick={() => setStep(3)}>Continue to Summary</Button>
-          </div>
-        </>
-      )}
-      
-      {step === 3 && (
-        <>
-          <Card>
-            <CardHeader>
-              <CardTitle>Booking Summary</CardTitle>
-              <CardDescription>Review your shipment details before confirming</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Origin</h4>
-                    <p>Shanghai, China</p>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Destination</h4>
-                    <p>Hamburg, Germany</p>
-                  </div>
-                </div>
-                
-                <Separator />
-                
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Shipment Date</h4>
-                    <p>May 15, 2025</p>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Cargo Type</h4>
-                    <p>Container</p>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-medium text-gray-500">Weight</h4>
-                    <p>2,500 kg</p>
-                  </div>
-                </div>
-                
-                <Separator />
-                
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500">Logistics Provider</h4>
-                  <div className="flex items-center mt-1">
-                    <div className="p-2 bg-blue-100 rounded-full mr-3">
-                      <Truck className="h-5 w-5 text-blue-700" />
-                    </div>
-                    <div>
-                      <p className="font-medium">OceanSpeed Logistics</p>
-                      <p className="text-sm text-gray-600">Premium container shipping service</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <Separator />
-                
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500">Pricing Details</h4>
-                  <div className="mt-2 space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Base shipping cost</span>
-                      <span>$200.00</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Insurance</span>
-                      <span>$35.00</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Handling fees</span>
-                      <span>$10.00</span>
-                    </div>
-                    <Separator />
-                    <div className="flex justify-between font-medium">
-                      <span>Total</span>
-                      <span>$245.00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
-              <Button>Confirm Booking</Button>
-            </CardFooter>
-          </Card>
-        </>
-      )}
-    </div>
-  );
-};
-
-const TrackingSection = () => {
-  return (
-    <div className="space-y-6">
-      <div className="bg-white p-4 rounded-md border border-gray-200">
-        <h3 className="text-lg font-medium mb-4">Track Your Shipment</h3>
-        <div className="flex space-x-2">
-          <div className="flex-grow">
-            <Input placeholder="Enter tracking number, booking reference, or container ID" />
-          </div>
-          <Button>
-            <Search className="h-4 w-4 mr-2" />
-            Track
-          </Button>
-        </div>
-      </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Shipments</CardTitle>
-          <CardDescription>Track your ongoing shipments</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {recentShipments.length === 0 ? (
-            <div className="text-center py-8">
-              <PackageSearch className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-              <p className="text-gray-500">No recent shipments found</p>
-              <p className="text-sm text-gray-400 mt-1">Your tracked shipments will appear here</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {recentShipments.map((shipment, index) => (
-                <div key={index} className="border rounded-md p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <div className="flex items-center">
-                        <h4 className="font-medium text-gray-900">{shipment.reference}</h4>
-                        <Badge className="ml-2" variant={shipment.statusColor as any}>
-                          {shipment.status}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-1">{shipment.route}</p>
-                    </div>
-                    <Button size="sm" variant="outline">View Details</Button>
-                  </div>
-                  <div className="mt-4">
-                    <div className="relative">
-                      <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200"></div>
-                      <div className="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-primary" style={{ width: `${shipment.progress}%` }}></div>
-                      <div className="relative flex justify-between">
-                        {shipment.milestones.map((milestone, idx) => (
-                          <div key={idx} className="flex flex-col items-center">
-                            <div className={`w-4 h-4 rounded-full mb-2 z-10 ${
-                              milestone.completed ? 'bg-primary' : 'bg-gray-200'
-                            }`}></div>
-                            <span className="text-xs text-gray-600">{milestone.label}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
-// Sample data 
-const logisticsProviders = [
-  {
-    name: "OceanSpeed Logistics",
-    logo: <Truck className="h-5 w-5 text-blue-700" />,
-    rating: 4.7,
-    specialties: ["Container Shipping", "Customs Clearance", "Door-to-Door"],
-    description: "Global leader in container shipping with services to over 120 countries. Specializing in timely deliveries and excellent tracking capabilities."
-  },
-  {
-    name: "AirFreight Express",
-    logo: <Truck className="h-5 w-5 text-purple-700" />,
-    rating: 4.5,
-    specialties: ["Air Freight", "Express Delivery", "Temperature Controlled"],
-    description: "Premium air freight services with specialized handling for time-sensitive and perishable goods. Global network with 24/7 customer support."
-  },
-  {
-    name: "GlobalTrade Shipping",
-    logo: <Truck className="h-5 w-5 text-green-700" />,
-    rating: 4.3,
-    specialties: ["Bulk Cargo", "Project Cargo", "Heavy Lift"],
-    description: "Specialized in handling oversized and project cargo with decades of experience in complex logistics solutions and freight forwarding."
-  },
-  {
-    name: "EcoFreight Solutions",
-    logo: <Truck className="h-5 w-5 text-teal-700" />,
-    rating: 4.8,
-    specialties: ["Sustainable Shipping", "Carbon Neutral", "Green Logistics"],
-    description: "Environmentally conscious logistics provider offering carbon-neutral shipping options and sustainable supply chain solutions globally."
-  },
-];
-
-const recentShipments = [
-  {
-    reference: "SHP-20250421-001",
-    status: "In Transit",
-    statusColor: "warning",
-    route: "Shanghai, China → Hamburg, Germany",
-    progress: 60,
-    milestones: [
-      { label: "Picked Up", completed: true },
-      { label: "Departed", completed: true },
-      { label: "In Transit", completed: true },
-      { label: "Customs", completed: false },
-      { label: "Delivered", completed: false }
-    ]
-  },
-  {
-    reference: "SHP-20250415-002",
-    status: "Customs Clearance",
-    statusColor: "warning",
-    route: "New York, USA → Rotterdam, Netherlands",
-    progress: 75,
-    milestones: [
-      { label: "Picked Up", completed: true },
-      { label: "Departed", completed: true },
-      { label: "In Transit", completed: true },
-      { label: "Customs", completed: true },
-      { label: "Delivered", completed: false }
-    ]
-  }
-];
+import React, { useState, useEffect } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Separator } from "../ui/separator";
+import { Loader2, Search, Truck, MapPin, Calendar, Package, ArrowRight } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { Logistics, LogisticsProvider, LOGISTICS_STATUS, LOGISTICS_TYPE } from '../../shared/schema';
+import { Web3Context } from '../../context/Web3Context';
+import { useContext } from 'react';
+import { apiRequest } from '../../lib/queryClient';
+import { format } from 'date-fns';
 
 const LogisticsPage: React.FC = () => {
-  return (
-    <div className="container py-6">
-      <div className="flex items-center mb-6">
-        <Truck className="h-6 w-6 text-primary mr-2" />
-        <h1 className="text-2xl font-bold">Logistics</h1>
-      </div>
+  const { user } = useContext(Web3Context);
+  const userId = user?.id;
+  
+  // State for booking form
+  const [origin, setOrigin] = useState('');
+  const [destination, setDestination] = useState('');
+  const [shipmentDate, setShipmentDate] = useState('');
+  const [cargoType, setCargoType] = useState('');
+  const [weight, setWeight] = useState('');
+  const [specialRequirements, setSpecialRequirements] = useState('');
+  const [selectedProviderId, setSelectedProviderId] = useState<number | null>(null);
+  const [trackingId, setTrackingId] = useState('');
+  
+  // Fetch logistics data
+  const { 
+    data: logisticsData,
+    isLoading: isLogisticsLoading,
+    refetch: refetchLogistics
+  } = useQuery<Logistics[]>({
+    queryKey: ['/api/logistics', userId],
+    queryFn: async () => {
+      if (!userId) return [];
+      const res = await fetch(`/api/logistics?userId=${userId}`);
+      return res.json();
+    },
+    enabled: !!userId
+  });
+  
+  // Fetch logistics providers
+  const {
+    data: providers,
+    isLoading: isProvidersLoading
+  } = useQuery<LogisticsProvider[]>({
+    queryKey: ['/api/logistics-providers'],
+    queryFn: async () => {
+      const res = await fetch('/api/logistics-providers');
+      return res.json();
+    }
+  });
+  
+  // Handle booking submission
+  const handleBookLogistics = async () => {
+    if (!userId || !selectedProviderId) return;
+    
+    try {
+      const provider = providers?.find(p => p.id === selectedProviderId);
+      if (!provider) return;
       
-      <Tabs defaultValue="book">
+      const shipmentDateObj = new Date(shipmentDate);
+      const estimatedDeliveryDate = new Date(shipmentDateObj);
+      estimatedDeliveryDate.setDate(estimatedDeliveryDate.getDate() + provider.estimatedDays);
+      
+      const bookingData = {
+        userId,
+        type: LOGISTICS_TYPE.SHIPPING,
+        status: LOGISTICS_STATUS.PENDING,
+        origin,
+        destination,
+        shipmentDate: shipmentDateObj.toISOString(),
+        estimatedDelivery: estimatedDeliveryDate.toISOString(),
+        cargoType,
+        weight,
+        specialRequirements,
+        provider: provider.name,
+        trackingId: `BFX-${Date.now().toString().slice(-8)}`,
+        contractId: null,
+        milestones: [
+          {
+            type: 'BOOKING_CONFIRMED',
+            date: new Date().toISOString(),
+            details: 'Booking confirmed with ' + provider.name
+          }
+        ]
+      };
+      
+      await apiRequest('POST', '/api/logistics', bookingData);
+      
+      // Reset form
+      setOrigin('');
+      setDestination('');
+      setShipmentDate('');
+      setCargoType('');
+      setWeight('');
+      setSpecialRequirements('');
+      setSelectedProviderId(null);
+      
+      // Refresh data
+      refetchLogistics();
+      
+    } catch (error) {
+      console.error('Failed to book logistics:', error);
+    }
+  };
+  
+  // Handle tracking search
+  const handleTrackSearch = () => {
+    // Filter logistics data by tracking ID
+    // This is client-side filtering, as we already have the data
+  };
+  
+  const filteredLogistics = trackingId 
+    ? logisticsData?.filter(item => 
+        item.trackingId?.toLowerCase().includes(trackingId.toLowerCase())
+      )
+    : logisticsData;
+  
+  return (
+    <div className="p-6 max-w-7xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4">Logistics Management</h1>
+      <p className="text-gray-600 mb-6">
+        Book and track shipments across your supply chain with our logistics network.
+      </p>
+      
+      <Tabs defaultValue="track" className="w-full">
         <TabsList className="mb-6">
+          <TabsTrigger value="track">Track Shipments</TabsTrigger>
           <TabsTrigger value="book">Find & Book</TabsTrigger>
-          <TabsTrigger value="track">Track Shipment</TabsTrigger>
           <TabsTrigger value="providers">Logistics Providers</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="book">
-          <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
-            <div className="flex items-center mb-4">
-              <Truck className="h-5 w-5 text-primary mr-2" />
-              <h2 className="text-xl font-semibold">Book a Shipment</h2>
-            </div>
-            <p className="text-gray-600 mb-6">
-              Find and book the best logistics services for your international trade needs. 
-              Compare rates and services from trusted logistics providers.
-            </p>
-            <BookingForm />
-          </div>
-        </TabsContent>
-        
+        {/* Track Shipments Tab */}
         <TabsContent value="track">
-          <TrackingSection />
+          <Card>
+            <CardHeader>
+              <CardTitle>Track Your Shipments</CardTitle>
+              <CardDescription>
+                Enter a tracking ID to get real-time updates on your shipment.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-4 mb-6">
+                <Input 
+                  placeholder="Enter tracking ID" 
+                  value={trackingId}
+                  onChange={(e) => setTrackingId(e.target.value)}
+                  className="flex-1"
+                />
+                <Button onClick={handleTrackSearch}>
+                  <Search className="mr-2 h-4 w-4" /> Track
+                </Button>
+              </div>
+              
+              {isLogisticsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredLogistics && filteredLogistics.length > 0 ? (
+                    filteredLogistics.map((item) => (
+                      <Card key={item.id} className="overflow-hidden">
+                        <CardContent className="p-0">
+                          <div className="bg-blue-50 p-4 flex justify-between items-center">
+                            <div>
+                              <p className="font-semibold">Tracking ID: {item.trackingId}</p>
+                              <p className="text-sm text-gray-500">{item.provider}</p>
+                            </div>
+                            <div className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {item.status}
+                            </div>
+                          </div>
+                          
+                          <div className="p-4">
+                            <div className="flex items-center mb-4">
+                              <MapPin className="h-5 w-5 text-gray-400 mr-2" />
+                              <div className="flex-1 flex items-center">
+                                <span className="font-medium">{item.origin}</span>
+                                <ArrowRight className="mx-2 h-4 w-4 text-gray-400" />
+                                <span className="font-medium">{item.destination}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <p className="text-gray-500">Shipment Date</p>
+                                <p>{format(new Date(item.shipmentDate), 'MMM dd, yyyy')}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-500">Estimated Delivery</p>
+                                <p>{format(new Date(item.estimatedDelivery || Date.now()), 'MMM dd, yyyy')}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-500">Cargo Type</p>
+                                <p>{item.cargoType}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-500">Weight</p>
+                                <p>{item.weight}</p>
+                              </div>
+                            </div>
+                            
+                            {item.milestones && Array.isArray(item.milestones) && (
+                              <div className="mt-4">
+                                <h4 className="font-medium mb-2">Shipment Status</h4>
+                                <div className="space-y-2">
+                                  {item.milestones.map((milestone, idx) => (
+                                    <div key={idx} className="flex items-start">
+                                      <div className="h-2 w-2 mt-1.5 rounded-full bg-blue-500 mr-2"></div>
+                                      <div>
+                                        <p className="font-medium">{milestone.type}</p>
+                                        <p className="text-sm text-gray-500">
+                                          {format(new Date(milestone.date), 'MMM dd, yyyy')} - {milestone.details}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <Truck className="h-12 w-12 mx-auto text-gray-300 mb-2" />
+                      <h3 className="text-lg font-medium text-gray-900">No shipments found</h3>
+                      <p className="text-gray-500 mt-1">
+                        {trackingId ? "We couldn't find that tracking ID. Please check and try again." : "You don't have any active shipments."}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
         
-        <TabsContent value="providers">
-          <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
-            <div className="flex items-center mb-4">
-              <Shield className="h-5 w-5 text-primary mr-2" />
-              <h2 className="text-xl font-semibold">Trusted Logistics Providers</h2>
-            </div>
-            <p className="text-gray-600 mb-6">
-              We partner with reliable logistics companies to ensure smooth, secure, and efficient shipping 
-              for your international trade operations. All providers are thoroughly vetted and monitored for quality.
-            </p>
-            
-            <div className="grid grid-cols-1 gap-4">
-              {logisticsProviders.map((provider, index) => (
-                <LogisticsProviderCard
-                  key={index}
-                  name={provider.name}
-                  logo={provider.logo}
-                  rating={provider.rating}
-                  specialties={provider.specialties}
-                  description={provider.description}
-                />
-              ))}
-            </div>
-            
-            <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-              <div className="flex items-start">
-                <ThumbsUp className="h-6 w-6 text-blue-700 mr-3 mt-1" />
-                <div>
-                  <h3 className="text-lg font-medium text-blue-900">Provider Verification</h3>
-                  <p className="text-sm text-blue-800 mt-1">
-                    All logistics providers on our platform undergo thorough verification, including operational capabilities,
-                    compliance checks, performance history, and customer feedback. This ensures you only work with the most reliable partners.
-                  </p>
+        {/* Find & Book Tab */}
+        <TabsContent value="book">
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Book Shipping Services</CardTitle>
+                <CardDescription>
+                  Fill out the form to book a logistics provider for your shipment.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="origin">Origin</Label>
+                      <Input
+                        id="origin"
+                        placeholder="City, Country"
+                        value={origin}
+                        onChange={(e) => setOrigin(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="destination">Destination</Label>
+                      <Input
+                        id="destination"
+                        placeholder="City, Country"
+                        value={destination}
+                        onChange={(e) => setDestination(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="shipmentDate">Shipment Date</Label>
+                    <Input
+                      id="shipmentDate"
+                      type="date"
+                      value={shipmentDate}
+                      onChange={(e) => setShipmentDate(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="cargoType">Cargo Type</Label>
+                    <Select
+                      onValueChange={setCargoType}
+                      value={cargoType}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select cargo type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="General">General Cargo</SelectItem>
+                        <SelectItem value="Refrigerated">Refrigerated</SelectItem>
+                        <SelectItem value="Liquid">Liquid Bulk</SelectItem>
+                        <SelectItem value="Dry Bulk">Dry Bulk</SelectItem>
+                        <SelectItem value="Hazardous">Hazardous Materials</SelectItem>
+                        <SelectItem value="Oversized">Oversized Cargo</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="weight">Weight (kg)</Label>
+                    <Input
+                      id="weight"
+                      placeholder="Enter weight in kg"
+                      type="number"
+                      value={weight}
+                      onChange={(e) => setWeight(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="specialRequirements">Special Requirements</Label>
+                    <Input
+                      id="specialRequirements"
+                      placeholder="Any special requirements"
+                      value={specialRequirements}
+                      onChange={(e) => setSpecialRequirements(e.target.value)}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="provider">Select Provider</Label>
+                    <Select
+                      onValueChange={(value) => setSelectedProviderId(Number(value))}
+                      value={selectedProviderId?.toString() || ""}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a provider" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {isProvidersLoading ? (
+                          <div className="flex items-center justify-center p-2">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <span className="ml-2">Loading...</span>
+                          </div>
+                        ) : (
+                          providers?.map((provider) => (
+                            <SelectItem 
+                              key={provider.id} 
+                              value={provider.id.toString()}
+                            >
+                              {provider.name} ({provider.estimatedDays} days)
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <Button 
+                    className="w-full mt-4" 
+                    onClick={handleBookLogistics}
+                    disabled={
+                      !origin || !destination || !shipmentDate || !cargoType || 
+                      !weight || !selectedProviderId || isProvidersLoading
+                    }
+                  >
+                    Book Shipment
+                  </Button>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Shipping Information</CardTitle>
+                <CardDescription>
+                  What to know before booking your shipment.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-medium">Shipping Process</h3>
+                    <p className="text-gray-600 mt-1">
+                      Our logistics partners offer secure and reliable shipping services for your goods.
+                      From pick-up to delivery, we ensure your cargo reaches its destination safely.
+                    </p>
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div>
+                    <h3 className="text-lg font-medium">Requirements</h3>
+                    <ul className="list-disc list-inside space-y-1 text-gray-600 mt-1">
+                      <li>Complete and accurate shipping information</li>
+                      <li>Proper packaging for your cargo type</li>
+                      <li>Any required documentation for international shipping</li>
+                      <li>Special handling instructions if applicable</li>
+                    </ul>
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div>
+                    <h3 className="text-lg font-medium">Tracking</h3>
+                    <p className="text-gray-600 mt-1">
+                      Once your shipment is booked, you'll receive a tracking ID. Use this to monitor
+                      your shipment's progress in real-time on the "Track Shipments" tab.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
+        </TabsContent>
+        
+        {/* Logistics Providers Tab */}
+        <TabsContent value="providers">
+          <Card>
+            <CardHeader>
+              <CardTitle>Our Logistics Partners</CardTitle>
+              <CardDescription>
+                Choose from our trusted network of logistics providers.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isProvidersLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {providers?.map((provider) => (
+                    <Card key={provider.id}>
+                      <CardContent className="pt-6">
+                        <div className="flex items-center mb-4">
+                          <div className="h-12 w-12 rounded-md bg-blue-100 flex items-center justify-center mr-4">
+                            <img 
+                              src={provider.logo} 
+                              alt={provider.name}
+                              className="h-8 w-8 object-contain"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/80?text=' + provider.name.charAt(0);
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <h3 className="font-medium">{provider.name}</h3>
+                            <div className="flex items-center text-yellow-500">
+                              {'★'.repeat(Math.floor(Number(provider.rating)))}
+                              {'☆'.repeat(5 - Math.floor(Number(provider.rating)))}
+                              <span className="text-gray-600 text-sm ml-1">({provider.rating})</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <p className="text-gray-600 text-sm mb-4">{provider.description}</p>
+                        
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div>
+                            <p className="text-gray-500">Base Price</p>
+                            <p>{provider.basePrice} {provider.currency}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-500">Typical Delivery</p>
+                            <p>{provider.estimatedDays} days</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mt-4">
+                          <p className="text-gray-500 text-sm">Specialties:</p>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {provider.specialties && Array.isArray(provider.specialties) && 
+                              provider.specialties.map((specialty, idx) => (
+                                <span 
+                                  key={idx}
+                                  className="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-xs"
+                                >
+                                  {specialty}
+                                </span>
+                              ))
+                            }
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

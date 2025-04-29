@@ -7,7 +7,7 @@ import HomePage from "@/pages/HomePage";
 import ContractsPage from "@/pages/ContractsPage";
 import DocumentsPage from "@/pages/DocumentsPage";
 import WalletPage from "@/pages/WalletPage";
-import LogisticsPage from "../../pages/LogisticsPage";
+import LogisticsPage from "../../components/logistics/LogisticsPage";
 import Layout from "@/components/layout/Layout";
 import { useWeb3 } from "./hooks/useWeb3";
 import { AppProvider } from "./context/AppContext";
