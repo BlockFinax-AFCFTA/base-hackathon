@@ -15,6 +15,19 @@ interface Wallet {
   updatedAt: Date;
 }
 
+interface Document {
+  id: number;
+  name: string;
+  fileType: string;
+  fileSize: number;
+  url: string;
+  uploadedBy: number;
+  isVerified: boolean | null;
+  createdAt: Date;
+  contractId: number | null;
+  invoiceId: number | null;
+}
+
 interface Transaction {
   id: number;
   fromWalletId: number | null;
@@ -27,6 +40,8 @@ interface Transaction {
   description: string | null;
   createdAt: Date;
   metadata: Record<string, any> | null;
+  // Add related documents
+  documents?: Document[];
 }
 
 export const useWallet = (userId?: number, walletId?: number) => {
