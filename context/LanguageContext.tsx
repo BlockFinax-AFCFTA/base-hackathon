@@ -52,6 +52,25 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.recentTransactions': 'Recent Transactions',
     'dashboard.activeContracts': 'Active Contracts',
     'dashboard.riskAssessment': 'Risk Assessment',
+    'dashboard.financial': 'Financial Dashboard',
+    'dashboard.risk': 'Risk Intelligence',
+    'dashboard.translation': 'Translation Tool',
+    'dashboard.lastUpdated': 'Last updated:',
+    'dashboard.totalTradeVolume': 'Total Trade Volume',
+    'dashboard.globalTradeActivity': 'Global trade activity',
+    'dashboard.activeTradeDeals': 'Active Trade Deals',
+    'dashboard.currentTransactions': 'Current transactions',
+    'dashboard.securedTransactions': 'Secured Transactions',
+    'dashboard.smartContractProtected': 'Smart contract protected',
+    'dashboard.transactionLedger': 'Transaction Ledger',
+    'dashboard.newTransaction': 'New Transaction',
+    'dashboard.recentEscrow': 'Recent escrow contract activities and settlements',
+    'dashboard.noTransactions': 'No transactions yet',
+    'dashboard.transactionHistory': 'Your transaction history will appear here',
+    'dashboard.riskAssessmentComing': 'Risk assessment dashboard coming soon',
+    'dashboard.analyzeRisk': 'Analyze your trade portfolio risk factors',
+    'dashboard.aiTranslation': 'AI-Enhanced Translation System',
+    'dashboard.aiTranslationDesc': 'BlockFinaX uses advanced AI translation to break language barriers in international trade',
     
     // Contracts
     'contracts.create': 'Create Contract',
@@ -102,6 +121,16 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Language selector
     'language.select': 'Select Language',
+    
+    // Translation demo
+    'translation.demo': 'Translation Demo',
+    'translation.testSystem': 'Test the AI-enhanced translation system with your own text',
+    'translation.usingAI': 'Using AI Translation (OpenAI)',
+    'translation.usingDict': 'Using Dictionary Translation',
+    'translation.inputText': 'Input Text',
+    'translation.examples': 'Examples',
+    'translation.enterEnglish': 'Enter English text to translate',
+    'translation.selectLanguage': 'Please select a language other than English to see the translation',
   },
   es: {
     // Spanish translations

@@ -1,8 +1,9 @@
 import { Language } from '../context/LanguageContext';
+import { OpenAIService } from './openaiService';
 
 /**
- * Local translation service that handles dynamic content translation
- * This is a simplified implementation without calling external APIs
+ * Translation service that handles dynamic content translation
+ * Combines local dictionary lookup with OpenAI API for advanced translations
  */
 export class TranslationService {
   // Basic dictionary of common words/phrases for each language
@@ -185,18 +186,41 @@ export class TranslationService {
     }
   };
 
+  // Cache for storing OpenAI translations to reduce API calls
+  private static translationCache: Record<string, Record<string, string>> = {
+    es: {},
+    zh: {},
+    fr: {},
+    ar: {},
+    ru: {}
+  };
+
   /**
    * Translate dynamic content to the target language
+   * First tries to use the local dictionary, then falls back to OpenAI for complex translations
    * @param text Source text in English
    * @param targetLanguage Target language code
-   * @returns Translated text
+   * @returns Translated text or a Promise with translated text if using AI
    */
-  static translateDynamicContent(text: string, targetLanguage: Language): string {
+  static translateDynamicContent(text: string, targetLanguage: Language): string | Promise<string> {
     if (targetLanguage === 'en') return text; // No need to translate English to English
     
-    // Local implementation - translate word by word using our dictionary
-    // For a real-world application, this would call an external translation API
-    
+    // For very short texts or single words, use the dictionary approach
+    if (text.length < 30) {
+      return this.localDictionaryTranslate(text, targetLanguage);
+    }
+
+    // For longer texts or complex sentences, use OpenAI
+    return this.aiTranslate(text, targetLanguage);
+  }
+
+  /**
+   * Translate using the local dictionary 
+   * @param text Source text in English
+   * @param targetLanguage Target language code 
+   * @returns Translated text
+   */
+  private static localDictionaryTranslate(text: string, targetLanguage: Language): string {
     // Split the text into words/phrases for simple word-by-word translation
     const words = text.split(/\b/);
     
@@ -226,5 +250,33 @@ export class TranslationService {
     });
     
     return translated.join('');
+  }
+
+  /**
+   * Translate using OpenAI API
+   * @param text Source text in English
+   * @param targetLanguage Target language code
+   * @returns Promise with translated text
+   */
+  private static async aiTranslate(text: string, targetLanguage: Language): Promise<string> {
+    // Check if we already have this translation in cache
+    const cacheKey = `${text}_${targetLanguage}`;
+    if (this.translationCache[targetLanguage][cacheKey]) {
+      return this.translationCache[targetLanguage][cacheKey];
+    }
+
+    try {
+      // Use OpenAI Service for translation
+      const translatedText = await OpenAIService.translateText(text, targetLanguage);
+      
+      // Store in cache for future use
+      this.translationCache[targetLanguage][cacheKey] = translatedText;
+      
+      return translatedText;
+    } catch (error) {
+      console.error("AI translation failed, falling back to dictionary:", error);
+      // Fall back to dictionary-based translation on error
+      return this.localDictionaryTranslate(text, targetLanguage);
+    }
   }
 }
