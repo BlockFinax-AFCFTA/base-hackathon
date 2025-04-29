@@ -1,7 +1,8 @@
 import { 
   User, InsertUser, Contract, InsertContract, Document, InsertDocument,
   Wallet, InsertWallet, Transaction, InsertTransaction, 
-  Invoice, InsertInvoice, TradeFinanceApplication, InsertTradeFinanceApplication
+  Invoice, InsertInvoice, TradeFinanceApplication, InsertTradeFinanceApplication,
+  Logistics, InsertLogistics, LogisticsProvider, InsertLogisticsProvider
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -64,6 +65,19 @@ export interface IStorage {
   deleteDocument(id: number): Promise<boolean>;
   grantDocumentAccess(id: number, userIds: number[]): Promise<Document | undefined>;
   revokeDocumentAccess(id: number, userIds: number[]): Promise<Document | undefined>;
+  
+  // Logistics methods
+  getLogistics(): Promise<Logistics[]>;
+  getLogisticsById(id: number): Promise<Logistics | undefined>;
+  getLogisticsByUserId(userId: number): Promise<Logistics[]>;
+  getLogisticsByContractId(contractId: number): Promise<Logistics[]>;
+  createLogistics(logistics: InsertLogistics): Promise<Logistics>;
+  updateLogistics(id: number, logisticsData: Partial<Logistics>): Promise<Logistics | undefined>;
+  
+  // Logistics Providers methods
+  getLogisticsProviders(): Promise<LogisticsProvider[]>;
+  getLogisticsProviderById(id: number): Promise<LogisticsProvider | undefined>;
+  createLogisticsProvider(provider: InsertLogisticsProvider): Promise<LogisticsProvider>;
 }
 
 export class MemStorage implements IStorage {
@@ -74,6 +88,8 @@ export class MemStorage implements IStorage {
   private transactions: Map<number, Transaction>;
   private invoices: Map<number, Invoice>;
   private tradeFinanceApplications: Map<number, TradeFinanceApplication>;
+  private logistics: Map<number, Logistics>;
+  private logisticsProviders: Map<number, LogisticsProvider>;
   
   private userId: number;
   private contractId: number;
@@ -82,6 +98,8 @@ export class MemStorage implements IStorage {
   private transactionId: number;
   private invoiceId: number;
   private tradeFinanceApplicationId: number;
+  private logisticsId: number;
+  private logisticsProviderId: number;
   
   public sessionStore: session.Store;
 

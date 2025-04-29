@@ -236,3 +236,70 @@ export const TRADE_FINANCE_STATUS = {
   REJECTED: "REJECTED",
   PROCESSING: "PROCESSING"
 } as const;
+
+// Logistics schema
+export type Logistics = typeof logistics.$inferSelect;
+export type InsertLogistics = z.infer<typeof insertLogisticsSchema>;
+
+export const logistics = pgTable("logistics", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  contractId: integer("contract_id"),
+  type: text("type").notNull(), // BOOKING, TRACKING
+  status: text("status").notNull().default("PENDING"), // PENDING, CONFIRMED, IN_TRANSIT, DELIVERED, CANCELLED
+  origin: text("origin").notNull(),
+  destination: text("destination").notNull(),
+  shipmentDate: timestamp("shipment_date").notNull(),
+  cargoType: text("cargo_type").notNull(),
+  weight: decimal("weight", { precision: 10, scale: 2 }).notNull(),
+  specialRequirements: text("special_requirements"),
+  providerId: integer("provider_id"),
+  trackingNumber: text("tracking_number"),
+  milestones: jsonb("milestones"),
+  estimatedDelivery: timestamp("estimated_delivery"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertLogisticsSchema = createInsertSchema(logistics).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type LogisticsProvider = typeof logisticsProviders.$inferSelect;
+export type InsertLogisticsProvider = z.infer<typeof insertLogisticsProviderSchema>;
+
+export const logisticsProviders = pgTable("logistics_providers", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  logo: text("logo").notNull(),
+  rating: decimal("rating", { precision: 3, scale: 1 }).notNull(),
+  specialties: jsonb("specialties").notNull(),
+  description: text("description").notNull(),
+  basePrice: decimal("base_price", { precision: 10, scale: 2 }).notNull(),
+  currency: text("currency").notNull().default("USD"),
+  estimatedDays: integer("estimated_days").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertLogisticsProviderSchema = createInsertSchema(logisticsProviders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const LOGISTICS_STATUS = {
+  PENDING: "PENDING",
+  CONFIRMED: "CONFIRMED",
+  IN_TRANSIT: "IN_TRANSIT",
+  CUSTOMS: "CUSTOMS",
+  DELIVERED: "DELIVERED",
+  CANCELLED: "CANCELLED"
+} as const;
+
+export const LOGISTICS_TYPE = {
+  BOOKING: "BOOKING",
+  TRACKING: "TRACKING"
+} as const;
