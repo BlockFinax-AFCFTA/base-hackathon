@@ -69,14 +69,8 @@ const Sidebar = () => {
         <NavItem 
           href="/documents" 
           icon={<Upload className="h-5 w-5" />} 
-          label="Documents" 
-          active={isGroupActive(["/documents"])} 
-        />
-        <NavItem 
-          href="/logistics" 
-          icon={<Truck className="h-5 w-5" />} 
-          label="Logistics" 
-          active={isGroupActive(["/logistics"])} 
+          label="Documents & Logistics" 
+          active={isGroupActive(["/documents", "/logistics"])} 
         />
         <NavItem 
           href="/kyc" 

@@ -253,10 +253,10 @@ const Dashboard = () => {
               <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
                 <div className="p-6 bg-blue-50 rounded-lg text-center">
                   <h3 className="text-lg font-medium mb-2">Logistics Dashboard</h3>
-                  <p className="mb-4">View the full logistics dashboard by clicking the button below or selecting "Logistics" from the sidebar</p>
+                  <p className="mb-4">View the full logistics dashboard by clicking the button below or selecting "Documents & Logistics" from the sidebar</p>
                   <div className="flex justify-center">
-                    <Link href="/logistics">
-                      <Button>Go to Logistics Dashboard</Button>
+                    <Link href="/documents">
+                      <Button>Go to Documents & Logistics</Button>
                     </Link>
                   </div>
                 </div>
