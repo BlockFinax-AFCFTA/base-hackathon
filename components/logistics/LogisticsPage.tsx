@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
@@ -6,13 +6,44 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Separator } from "../ui/separator";
-import { Loader2, Search, Truck, MapPin, Calendar, Package, ArrowRight } from 'lucide-react';
+import { Loader2, Search, Truck, MapPin, ArrowRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { Logistics, LogisticsProvider, LOGISTICS_STATUS, LOGISTICS_TYPE } from '../../shared/schema';
 import { Web3Context } from '../../context/Web3Context';
 import { useContext } from 'react';
 import { apiRequest } from '../../lib/queryClient';
 import { format } from 'date-fns';
+
+// Define milestone type for improved readability
+interface Milestone {
+  type: string;
+  date: string;
+  details: string;
+}
+
+// Define a fully typed interface that includes all properties from the API
+interface ExtendedLogistics {
+  id: number;
+  userId: number;
+  contractId: number | null;
+  type: string;
+  status: string;
+  origin: string;
+  destination: string;
+  shipmentDate: Date;
+  estimatedDelivery: Date | null;
+  cargoType: string;
+  weight: string;
+  specialRequirements: string | null;
+  providerId: number | null;
+  trackingNumber: string | null;
+  milestones: Milestone[] | null;
+  createdAt: Date;
+  updatedAt: Date;
+  // Additional properties from API
+  trackingId?: string;
+  provider?: string;
+}
 
 const LogisticsPage: React.FC = () => {
   const { user } = useContext(Web3Context);
@@ -33,7 +64,7 @@ const LogisticsPage: React.FC = () => {
     data: logisticsData,
     isLoading: isLogisticsLoading,
     refetch: refetchLogistics
-  } = useQuery<Logistics[]>({
+  } = useQuery<ExtendedLogistics[]>({
     queryKey: ['/api/logistics', userId],
     queryFn: async () => {
       if (!userId) return [];
@@ -69,7 +100,7 @@ const LogisticsPage: React.FC = () => {
       
       const bookingData = {
         userId,
-        type: LOGISTICS_TYPE.SHIPPING,
+        type: LOGISTICS_TYPE.BOOKING,
         status: LOGISTICS_STATUS.PENDING,
         origin,
         destination,
