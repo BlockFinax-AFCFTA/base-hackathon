@@ -229,20 +229,39 @@ const LogisticsPage: React.FC = () => {
       return;
     }
     
-    // Apply filtering based on cargo type and other criteria
-    const filtered = providers.filter(provider => {
-      // Check if this provider can handle the selected cargo type
-      if (provider.specialties && Array.isArray(provider.specialties)) {
-        // If the provider has cargo specialties defined, ensure they can handle this type
-        if (provider.specialties.length > 0 && 
-            !provider.specialties.some(s => s.includes(cargoType))) {
-          return false;
-        }
+    // Apply flexible filtering based on cargo type and other criteria
+    let filtered = providers;
+    
+    // First try to find providers that match the cargo type exactly
+    const exactMatches = providers.filter(provider => {
+      // Safely handle specialties as they might be JSON or unknown type
+      const specialties = provider.specialties as string[] || [];
+      if (specialties && Array.isArray(specialties)) {
+        return specialties.some((s: string) => 
+          s.toLowerCase().includes(cargoType.toLowerCase())
+        );
       }
-      
-      // Add more filtering criteria here as needed
-      return true;
+      return false;
     });
+    
+    // If we have exact matches, use them, otherwise use all providers
+    // This ensures we always show some providers
+    if (exactMatches.length > 0) {
+      filtered = exactMatches;
+      console.log("Found exact matching providers:", exactMatches.length);
+    } else {
+      console.log("No exact matches, showing all providers");
+      // Label providers that don't match exactly with a higher price estimate
+      filtered = providers.map(provider => ({
+        ...provider,
+        // Add a note about special cargo handling if needed
+        description: provider.description + (
+          cargoType && !(provider.specialties as string[])?.some((s: string) => s.toLowerCase().includes(cargoType.toLowerCase())) 
+            ? " (Additional fees may apply for your cargo type)" 
+            : ""
+        )
+      }));
+    }
     
     // Sort by price, estimated days, or rating
     // By default, sort by estimated delivery time
@@ -250,8 +269,14 @@ const LogisticsPage: React.FC = () => {
     
     console.log("Filtered providers:", sorted);
     
-    // Update state
-    setFilteredOffers(sorted);
+    // Always ensure we have providers to show
+    if (sorted.length === 0 && providers.length > 0) {
+      console.log("Fallback to all providers since no matches were found");
+      setFilteredOffers(providers);
+    } else {
+      setFilteredOffers(sorted);
+    }
+    
     setShowingOffers(true);
   };
   
@@ -493,9 +518,20 @@ const LogisticsPage: React.FC = () => {
                         </Button>
                       </div>
                       
-                      {filteredOffers.length === 0 ? (
+                      {filteredOffers.length === 0 && providers && providers.length > 0 ? (
+                        // This should never happen now with our new filtering logic
                         <div className="text-center py-4">
-                          <p>No matching providers found for your shipment requirements.</p>
+                          <Button onClick={() => {
+                            // Last resort fallback - show ALL providers if somehow we still have none
+                            setFilteredOffers(providers);
+                          }}>
+                            Show All Available Providers
+                          </Button>
+                        </div>
+                      ) : filteredOffers.length === 0 ? (
+                        <div className="text-center py-4">
+                          <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
+                          <p>Loading available logistics providers...</p>
                         </div>
                       ) : (
                         <div className="space-y-3">
@@ -650,8 +686,8 @@ const LogisticsPage: React.FC = () => {
                         <div className="mt-4">
                           <p className="text-gray-500 text-sm">Specialties:</p>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {provider.specialties && Array.isArray(provider.specialties) && 
-                              provider.specialties.map((specialty: string, idx: number) => (
+                            {Array.isArray(provider.specialties as string[]) && 
+                              (provider.specialties as string[]).map((specialty: string, idx: number) => (
                                 <span 
                                   key={idx}
                                   className="px-2 py-1 bg-blue-50 text-blue-700 rounded-md text-xs"
