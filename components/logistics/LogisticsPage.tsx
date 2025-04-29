@@ -754,7 +754,7 @@ const LogisticsPage: React.FC = () => {
                         <p className="font-medium">Specialties</p>
                         <div className="flex flex-wrap gap-2 mt-1">
                           {Array.isArray(selectedProvider.specialties) ? (
-                            selectedProvider.specialties.map((specialty, idx) => (
+                            selectedProvider.specialties.map((specialty: string, idx: number) => (
                               <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
                                 {specialty}
                               </span>
@@ -780,7 +780,7 @@ const LogisticsPage: React.FC = () => {
                         <p className="font-medium">Certifications</p>
                         <div className="flex flex-wrap gap-2 mt-1">
                           {Array.isArray(selectedProvider.certificates) && selectedProvider.certificates.length > 0 ? (
-                            selectedProvider.certificates.map((cert, idx) => (
+                            selectedProvider.certificates.map((cert: string, idx: number) => (
                               <span key={idx} className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs flex items-center">
                                 <Check className="h-3 w-3 mr-1" />
                                 {cert}
