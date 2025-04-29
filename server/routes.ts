@@ -8,11 +8,15 @@ import {
   insertTransactionSchema, 
   insertInvoiceSchema, 
   insertTradeFinanceApplicationSchema,
+  insertLogisticsSchema,
+  insertLogisticsProviderSchema,
   WALLET_TYPE,
   TRANSACTION_TYPE,
   INVOICE_STATUS,
   KYC_STATUS,
-  TRADE_FINANCE_STATUS
+  TRADE_FINANCE_STATUS,
+  LOGISTICS_STATUS,
+  LOGISTICS_TYPE
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -1026,6 +1030,125 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete document" });
+    }
+  });
+
+  // Logistics routes
+  app.get("/api/logistics", async (req, res) => {
+    try {
+      const { userId, contractId } = req.query;
+      
+      if (userId) {
+        const userIdNum = parseInt(userId as string);
+        const logisticsData = await storage.getLogisticsByUserId(userIdNum);
+        return res.json(logisticsData);
+      }
+      
+      if (contractId) {
+        const contractIdNum = parseInt(contractId as string);
+        const logisticsData = await storage.getLogisticsByContractId(contractIdNum);
+        return res.json(logisticsData);
+      }
+      
+      const allLogistics = await storage.getLogistics();
+      res.json(allLogistics);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch logistics data" });
+    }
+  });
+  
+  app.get("/api/logistics/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const logistics = await storage.getLogisticsById(id);
+      
+      if (!logistics) {
+        return res.status(404).json({ message: "Logistics entry not found" });
+      }
+      
+      res.json(logistics);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch logistics data" });
+    }
+  });
+  
+  app.post("/api/logistics", async (req, res) => {
+    try {
+      const logisticsData = insertLogisticsSchema.parse(req.body);
+      
+      // Ensure we have default status if not provided
+      if (!logisticsData.status) {
+        logisticsData.status = LOGISTICS_STATUS.PENDING;
+      }
+      
+      const newLogistics = await storage.createLogistics(logisticsData);
+      res.status(201).json(newLogistics);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid logistics data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create logistics entry" });
+    }
+  });
+  
+  app.patch("/api/logistics/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const logisticsData = req.body;
+      
+      const updatedLogistics = await storage.updateLogistics(id, logisticsData);
+      
+      if (!updatedLogistics) {
+        return res.status(404).json({ message: "Logistics entry not found" });
+      }
+      
+      res.json(updatedLogistics);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update logistics data" });
+    }
+  });
+  
+  // Logistics Providers routes
+  app.get("/api/logistics-providers", async (req, res) => {
+    try {
+      const providers = await storage.getLogisticsProviders();
+      res.json(providers);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch logistics providers" });
+    }
+  });
+  
+  app.get("/api/logistics-providers/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const provider = await storage.getLogisticsProviderById(id);
+      
+      if (!provider) {
+        return res.status(404).json({ message: "Logistics provider not found" });
+      }
+      
+      res.json(provider);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch logistics provider" });
+    }
+  });
+  
+  app.post("/api/logistics-providers", async (req, res) => {
+    try {
+      const providerData = insertLogisticsProviderSchema.parse(req.body);
+      
+      // Ensure we have default currency if not provided
+      if (!providerData.currency) {
+        providerData.currency = "USD";
+      }
+      
+      const newProvider = await storage.createLogisticsProvider(providerData);
+      res.status(201).json(newProvider);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid logistics provider data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create logistics provider" });
     }
   });
 

@@ -6,6 +6,8 @@ import {
 } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
+// Use unknown type for Json data
+type Json = unknown;
 
 export interface IStorage {
   // Session storage
@@ -111,6 +113,8 @@ export class MemStorage implements IStorage {
     this.transactions = new Map();
     this.invoices = new Map();
     this.tradeFinanceApplications = new Map();
+    this.logistics = new Map();
+    this.logisticsProviders = new Map();
     
     this.userId = 1;
     this.contractId = 1;
@@ -119,6 +123,8 @@ export class MemStorage implements IStorage {
     this.transactionId = 1;
     this.invoiceId = 1;
     this.tradeFinanceApplicationId = 1;
+    this.logisticsId = 1;
+    this.logisticsProviderId = 1;
     
     // Create memory store for sessions
     const MemoryStore = createMemoryStore(session);
@@ -127,49 +133,6 @@ export class MemStorage implements IStorage {
     });
   }
   
-  // Document Access methods
-  getDocumentsByInvoiceId(invoiceId: number): Promise<Document[]> {
-    return Promise.resolve(Array.from(this.documents.values()).filter(
-      doc => doc.invoiceId === invoiceId
-    ));
-  }
-  
-  getAccessibleDocuments(userId: number): Promise<Document[]> {
-    return Promise.resolve(Array.from(this.documents.values()).filter(doc => {
-      if (!doc.access || (doc.access as any[]).length === 0) return true; // Public document
-      return (doc.access as any[]).includes(userId);
-    }));
-  }
-  
-  updateDocument(id: number, documentData: Partial<Document>): Promise<Document | undefined> {
-    const document = this.documents.get(id);
-    if (!document) return Promise.resolve(undefined);
-    
-    const updatedDocument = { ...document, ...documentData };
-    this.documents.set(id, updatedDocument);
-    return Promise.resolve(updatedDocument);
-  }
-  
-  grantDocumentAccess(id: number, userIds: number[]): Promise<Document | undefined> {
-    const document = this.documents.get(id);
-    if (!document) return Promise.resolve(undefined);
-    
-    const currentAccess = document.access as number[] || [];
-    const newAccess = [...new Set([...currentAccess, ...userIds])];
-    
-    return this.updateDocument(id, { access: newAccess });
-  }
-  
-  revokeDocumentAccess(id: number, userIds: number[]): Promise<Document | undefined> {
-    const document = this.documents.get(id);
-    if (!document) return Promise.resolve(undefined);
-    
-    const currentAccess = document.access as number[] || [];
-    const newAccess = currentAccess.filter(id => !userIds.includes(id));
-    
-    return this.updateDocument(id, { access: newAccess });
-  }
-
   // User methods
   async getUser(id: number): Promise<User | undefined> {
     return this.users.get(id);
@@ -189,7 +152,15 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userId++;
-    const user: User = { ...insertUser, id };
+    const user: User = { 
+      ...insertUser, 
+      id,
+      walletAddress: insertUser.walletAddress || null,
+      profileImage: insertUser.profileImage || null,
+      kycStatus: insertUser.kycStatus || null,
+      riskScore: insertUser.riskScore || null,
+      kycData: insertUser.kycData || null
+    };
     this.users.set(id, user);
     return user;
   }
@@ -226,6 +197,9 @@ export class MemStorage implements IStorage {
     const wallet: Wallet = {
       ...insertWallet,
       id,
+      contractId: insertWallet.contractId || null,
+      balance: insertWallet.balance || "0",
+      currency: insertWallet.currency || "USD",
       createdAt: now,
       updatedAt: now
     };
@@ -290,6 +264,12 @@ export class MemStorage implements IStorage {
     const transaction: Transaction = {
       ...insertTransaction,
       id,
+      status: insertTransaction.status || "PENDING",
+      contractId: insertTransaction.contractId || null,
+      fromWalletId: insertTransaction.fromWalletId || null,
+      toWalletId: insertTransaction.toWalletId || null,
+      description: insertTransaction.description || null,
+      metadata: insertTransaction.metadata || null,
       createdAt: now
     };
     this.transactions.set(id, transaction);
@@ -334,6 +314,10 @@ export class MemStorage implements IStorage {
     const invoice: Invoice = {
       ...insertInvoice,
       id,
+      status: insertInvoice.status || "DRAFT",
+      contractId: insertInvoice.contractId || null,
+      paymentTerms: insertInvoice.paymentTerms || null,
+      notes: insertInvoice.notes || null,
       issueDate: now
     };
     this.invoices.set(id, invoice);
@@ -372,6 +356,12 @@ export class MemStorage implements IStorage {
     const application: TradeFinanceApplication = {
       ...insertApplication,
       id,
+      status: insertApplication.status || "PENDING",
+      contractId: insertApplication.contractId || null,
+      approvalDate: null,
+      expiryDate: insertApplication.expiryDate || null,
+      terms: insertApplication.terms || null,
+      supportingDocuments: insertApplication.supportingDocuments || null,
       applicationDate: now
     };
     this.tradeFinanceApplications.set(id, application);
@@ -414,7 +404,11 @@ export class MemStorage implements IStorage {
     const now = new Date();
     const contract: Contract = { 
       ...insertContract, 
-      id, 
+      id,
+      status: insertContract.status || "DRAFT",
+      description: insertContract.description || null,
+      contractAddress: insertContract.contractAddress || null,
+      escrowWalletId: insertContract.escrowWalletId || null, 
       createdAt: now, 
       updatedAt: now 
     };
@@ -463,15 +457,19 @@ export class MemStorage implements IStorage {
       return (doc.access as any[]).includes(userId);
     });
   }
-
+  
   async createDocument(insertDocument: InsertDocument): Promise<Document> {
     const id = this.documentId++;
     const now = new Date();
     const document: Document = { 
-      ...insertDocument, 
-      id, 
-      uploadedAt: now,
-      isVerified: false
+      ...insertDocument,
+      id,
+      contractId: insertDocument.contractId || null,
+      invoiceId: insertDocument.invoiceId || null,
+      tags: insertDocument.tags || [],
+      access: insertDocument.access || [],
+      isVerified: false,
+      uploadedAt: now
     };
     this.documents.set(id, document);
     return document;
@@ -485,9 +483,14 @@ export class MemStorage implements IStorage {
     this.documents.set(id, updatedDocument);
     return updatedDocument;
   }
-
+  
   async deleteDocument(id: number): Promise<boolean> {
-    return this.documents.delete(id);
+    const exists = this.documents.has(id);
+    if (exists) {
+      this.documents.delete(id);
+      return true;
+    }
+    return false;
   }
   
   async grantDocumentAccess(id: number, userIds: number[]): Promise<Document | undefined> {
@@ -508,6 +511,76 @@ export class MemStorage implements IStorage {
     const newAccess = currentAccess.filter(id => !userIds.includes(id));
     
     return this.updateDocument(id, { access: newAccess });
+  }
+
+  // Logistics methods
+  async getLogistics(): Promise<Logistics[]> {
+    return Array.from(this.logistics.values());
+  }
+
+  async getLogisticsById(id: number): Promise<Logistics | undefined> {
+    return this.logistics.get(id);
+  }
+
+  async getLogisticsByUserId(userId: number): Promise<Logistics[]> {
+    return Array.from(this.logistics.values()).filter(
+      logistics => logistics.userId === userId
+    );
+  }
+
+  async getLogisticsByContractId(contractId: number): Promise<Logistics[]> {
+    return Array.from(this.logistics.values()).filter(
+      logistics => logistics.contractId === contractId
+    );
+  }
+
+  async createLogistics(insertLogistics: InsertLogistics): Promise<Logistics> {
+    const id = this.logisticsId++;
+    const now = new Date();
+    const logistics: Logistics = {
+      ...insertLogistics,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    this.logistics.set(id, logistics);
+    return logistics;
+  }
+
+  async updateLogistics(id: number, logisticsData: Partial<Logistics>): Promise<Logistics | undefined> {
+    const logistics = await this.getLogisticsById(id);
+    if (!logistics) return undefined;
+    
+    const updatedLogistics = { 
+      ...logistics, 
+      ...logisticsData,
+      updatedAt: new Date()
+    };
+    
+    this.logistics.set(id, updatedLogistics);
+    return updatedLogistics;
+  }
+
+  // Logistics Providers methods
+  async getLogisticsProviders(): Promise<LogisticsProvider[]> {
+    return Array.from(this.logisticsProviders.values());
+  }
+
+  async getLogisticsProviderById(id: number): Promise<LogisticsProvider | undefined> {
+    return this.logisticsProviders.get(id);
+  }
+
+  async createLogisticsProvider(insertProvider: InsertLogisticsProvider): Promise<LogisticsProvider> {
+    const id = this.logisticsProviderId++;
+    const now = new Date();
+    const provider: LogisticsProvider = {
+      ...insertProvider,
+      id,
+      createdAt: now,
+      updatedAt: now
+    };
+    this.logisticsProviders.set(id, provider);
+    return provider;
   }
 }
 
