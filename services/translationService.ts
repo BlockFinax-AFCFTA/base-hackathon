@@ -10,12 +10,15 @@ export class TranslationService {
   private static commonPhrases: Record<Language, Record<string, string>> = {
     en: {},  // English is the base language
     es: {
+      // General words
       "Hello": "Hola",
       "Welcome": "Bienvenido",
       "Thank you": "Gracias",
       "Yes": "Sí",
       "No": "No",
       "Please": "Por favor",
+      
+      // Trade finance and blockchain terms
       "Contract": "Contrato",
       "Payment": "Pago",
       "Shipping": "Envío",
@@ -34,6 +37,8 @@ export class TranslationService {
       "Status": "Estado",
       "Buyer": "Comprador",
       "Seller": "Vendedor",
+      
+      // Actions
       "Save": "Guardar",
       "Cancel": "Cancelar",
       "Edit": "Editar",
@@ -42,15 +47,41 @@ export class TranslationService {
       "Details": "Detalles",
       "Loading": "Cargando",
       "Error": "Error",
-      "Success": "Éxito"
+      "Success": "Éxito",
+      
+      // Trade finance specific terms
+      "Escrow": "Fideicomiso",
+      "Letter of Credit": "Carta de Crédito",
+      "Bill of Lading": "Conocimiento de Embarque",
+      "Invoice": "Factura",
+      "Trade Finance": "Financiamiento Comercial",
+      "Smart Contract": "Contrato Inteligente",
+      "Blockchain": "Cadena de Bloques",
+      "Logistics": "Logística",
+      "Supply Chain": "Cadena de Suministro",
+      "International Trade": "Comercio Internacional",
+      "KYC": "Conoce a tu Cliente",
+      "Risk Assessment": "Evaluación de Riesgos",
+      "Customs": "Aduanas",
+      "Import": "Importación",
+      "Export": "Exportación",
+      "Freight": "Flete",
+      "Insurance": "Seguro",
+      "Cargo": "Carga",
+      "Goods": "Mercancías",
+      "Terms of Trade": "Términos de Comercio",
+      "Incoterms": "Incoterms"
     },
     zh: {
+      // General words
       "Hello": "你好",
       "Welcome": "欢迎",
       "Thank you": "谢谢",
       "Yes": "是",
       "No": "否",
       "Please": "请",
+      
+      // Trade finance and blockchain terms
       "Contract": "合同",
       "Payment": "付款",
       "Shipping": "运输",
@@ -69,6 +100,8 @@ export class TranslationService {
       "Status": "状态",
       "Buyer": "买方",
       "Seller": "卖方",
+      
+      // Actions
       "Save": "保存",
       "Cancel": "取消",
       "Edit": "编辑",
@@ -77,15 +110,41 @@ export class TranslationService {
       "Details": "详情",
       "Loading": "加载中",
       "Error": "错误",
-      "Success": "成功"
+      "Success": "成功",
+      
+      // Trade finance specific terms
+      "Escrow": "托管",
+      "Letter of Credit": "信用证",
+      "Bill of Lading": "提单",
+      "Invoice": "发票",
+      "Trade Finance": "贸易金融",
+      "Smart Contract": "智能合约",
+      "Blockchain": "区块链",
+      "Logistics": "物流",
+      "Supply Chain": "供应链",
+      "International Trade": "国际贸易",
+      "KYC": "了解您的客户",
+      "Risk Assessment": "风险评估",
+      "Customs": "海关",
+      "Import": "进口",
+      "Export": "出口",
+      "Freight": "货运",
+      "Insurance": "保险",
+      "Cargo": "货物",
+      "Goods": "商品",
+      "Terms of Trade": "贸易条款",
+      "Incoterms": "国际贸易术语"
     },
     fr: {
+      // General words
       "Hello": "Bonjour",
       "Welcome": "Bienvenue",
       "Thank you": "Merci",
       "Yes": "Oui",
       "No": "Non",
       "Please": "S'il vous plaît",
+      
+      // Trade finance and blockchain terms
       "Contract": "Contrat",
       "Payment": "Paiement",
       "Shipping": "Expédition",
@@ -104,6 +163,8 @@ export class TranslationService {
       "Status": "Statut",
       "Buyer": "Acheteur",
       "Seller": "Vendeur",
+      
+      // Actions
       "Save": "Enregistrer",
       "Cancel": "Annuler",
       "Edit": "Modifier",
@@ -112,7 +173,30 @@ export class TranslationService {
       "Details": "Détails",
       "Loading": "Chargement",
       "Error": "Erreur",
-      "Success": "Succès"
+      "Success": "Succès",
+      
+      // Trade finance specific terms
+      "Escrow": "Séquestre",
+      "Letter of Credit": "Lettre de Crédit",
+      "Bill of Lading": "Connaissement",
+      "Invoice": "Facture",
+      "Trade Finance": "Financement du Commerce",
+      "Smart Contract": "Contrat Intelligent",
+      "Blockchain": "Chaîne de Blocs",
+      "Logistics": "Logistique",
+      "Supply Chain": "Chaîne d'Approvisionnement",
+      "International Trade": "Commerce International",
+      "KYC": "Connaissance du Client",
+      "Risk Assessment": "Évaluation des Risques",
+      "Customs": "Douanes",
+      "Import": "Importation",
+      "Export": "Exportation",
+      "Freight": "Fret",
+      "Insurance": "Assurance",
+      "Cargo": "Cargaison",
+      "Goods": "Marchandises",
+      "Terms of Trade": "Conditions Commerciales",
+      "Incoterms": "Incoterms"
     },
     ar: {
       "Hello": "مرحبا",
@@ -220,7 +304,7 @@ export class TranslationService {
    * @param targetLanguage Target language code 
    * @returns Translated text
    */
-  private static localDictionaryTranslate(text: string, targetLanguage: Language): string {
+  static localDictionaryTranslate(text: string, targetLanguage: Language): string {
     // Split the text into words/phrases for simple word-by-word translation
     const words = text.split(/\b/);
     
@@ -258,7 +342,7 @@ export class TranslationService {
    * @param targetLanguage Target language code
    * @returns Promise with translated text
    */
-  private static async aiTranslate(text: string, targetLanguage: Language): Promise<string> {
+  static async aiTranslate(text: string, targetLanguage: Language): Promise<string> {
     // Check if we already have this translation in cache
     const cacheKey = `${text}_${targetLanguage}`;
     if (this.translationCache[targetLanguage][cacheKey]) {
