@@ -14,6 +14,7 @@ import {
   TabsTrigger 
 } from "../ui/tabs";
 import RiskDashboard from '../risk/RiskDashboard';
+import RegulatoryAIWidget from './RegulatoryAIWidget';
 
 const ContractStatusOverview = () => {
   const { contracts, isLoadingContracts } = useContracts();
@@ -198,6 +199,7 @@ const Dashboard = () => {
           <TabsList>
             <TabsTrigger value="overview">Financial Dashboard</TabsTrigger>
             <TabsTrigger value="risk">Risk Intelligence</TabsTrigger>
+            <TabsTrigger value="regulatory">Regulatory AI</TabsTrigger>
             <TabsTrigger value="translation">Translation Demo</TabsTrigger>
             <TabsTrigger value="logistics">Logistics</TabsTrigger>
           </TabsList>
@@ -216,6 +218,88 @@ const Dashboard = () => {
         
         <TabsContent value="risk" className="mt-0">
           <RiskDashboard />
+        </TabsContent>
+        
+        <TabsContent value="regulatory" className="mt-0">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <RegulatoryAIWidget />
+            
+            <Card className="md:col-span-8 xl:col-span-8">
+              <CardHeader className="pb-2">
+                <CardTitle>About Export Regulatory Assistant</CardTitle>
+                <CardDescription>
+                  AI-powered guidance for navigating international trade regulations
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <p>
+                    Our Export Regulatory Assistant helps traders navigate the complex landscape of international export regulations 
+                    by providing guidance tailored to specific products and destinations.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="flex items-start">
+                      <div className="bg-primary/10 p-2 rounded-full mr-3">
+                        <Check className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Required Documentation</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Understand what paperwork is needed for your export
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-primary/10 p-2 rounded-full mr-3">
+                        <Check className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Tariffs & Duties</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Get insights on applicable tariffs for your goods
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-primary/10 p-2 rounded-full mr-3">
+                        <Check className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Compliance Requirements</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Learn about relevant regulations and standards
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="bg-primary/10 p-2 rounded-full mr-3">
+                        <Check className="h-5 w-5 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium">Restrictions & Prohibitions</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Identify potential import restrictions at destination
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-center mt-6">
+                    <Link href="/regulatory-ai">
+                      <Button>
+                        Access Full Regulatory AI Assistant
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
         
         <TabsContent value="translation" className="mt-0">
