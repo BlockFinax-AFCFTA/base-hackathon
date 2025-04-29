@@ -587,16 +587,46 @@ const LogisticsPage: React.FC = () => {
                   </div>
                   
                   {!showingOffers ? (
-                    <Button 
-                      className="w-full mt-4" 
-                      onClick={searchOffers}
-                      disabled={
-                        !origin || !destination || !shipmentDate || !cargoType || 
-                        !weight || isProvidersLoading
-                      }
-                    >
-                      Find Available Offers
-                    </Button>
+                    selectedProviderId ? (
+                      <div className="mt-4 p-3 border-2 border-blue-500 rounded-md bg-blue-50">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <h4 className="font-medium">Selected Provider</h4>
+                            <p className="text-sm">{providers?.find(p => p.id === selectedProviderId)?.name}</p>
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button size="sm" variant="outline" onClick={() => setShowingOffers(true)}>
+                              Change
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              onClick={() => {
+                                if (selectedProviderId && providers) {
+                                  const provider = providers.find(p => p.id === selectedProviderId);
+                                  if (provider) {
+                                    setSelectedProvider(provider);
+                                    setBookingConfirmOpen(true);
+                                  }
+                                }
+                              }}
+                            >
+                              Book Now
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <Button 
+                        className="w-full mt-4" 
+                        onClick={searchOffers}
+                        disabled={
+                          !origin || !destination || !shipmentDate || !cargoType || 
+                          !weight || isProvidersLoading
+                        }
+                      >
+                        Find Available Offers
+                      </Button>
+                    )
                   ) : (
                     <div className="space-y-4 mt-4">
                       <div className="flex justify-between items-center">
@@ -629,7 +659,11 @@ const LogisticsPage: React.FC = () => {
                               className={`p-3 border rounded-md ${
                                 selectedProviderId === provider.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-200'
                               } cursor-pointer transition-colors`}
-                              onClick={() => setSelectedProviderId(provider.id)}
+                              onClick={() => {
+                                setSelectedProviderId(provider.id);
+                                // Automatically collapse the form when a provider is selected
+                                setShowingOffers(false);
+                              }}
                             >
                               <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-2">
@@ -661,7 +695,23 @@ const LogisticsPage: React.FC = () => {
                           
                           <Button 
                             className="w-full mt-4" 
-                            onClick={startBookingProcess}
+                            onClick={() => {
+                              console.log("Direct booking button click");
+                              // Call booking process directly
+                              if (selectedProviderId && providers) {
+                                const provider = providers.find(p => p.id === selectedProviderId);
+                                if (provider) {
+                                  setSelectedProvider(provider);
+                                  setBookingConfirmOpen(true);
+                                }
+                              } else {
+                                toast({
+                                  title: "Provider selection required",
+                                  description: "Please select a logistics provider first",
+                                  variant: "destructive"
+                                });
+                              }
+                            }}
                             disabled={!selectedProviderId}
                           >
                             Book with Selected Provider
