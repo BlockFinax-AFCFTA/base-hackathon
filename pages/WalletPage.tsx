@@ -1,8 +1,10 @@
 import React from 'react';
-import Wallet from '@/components/wallet/WalletPage';
+import MockEscrowWalletPage from '../components/wallet/MockEscrowWalletPage';
 
 const WalletPage: React.FC = () => {
-  return <Wallet />;
+  // Using the standalone mock implementation that will always show escrow wallets
+  // and transactions with documents
+  return <MockEscrowWalletPage />;
 };
 
 export default WalletPage;
