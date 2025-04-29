@@ -103,8 +103,138 @@ const RegulatoryAIPage: React.FC = () => {
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [currentTab, setCurrentTab] = useState('requirements');
   
-  // Handle form submission
-  const handleAnalyzeClick = async () => {
+  // Mock data for our prototype
+  const getMockAnalysisData = () => {
+    // Generate different responses based on product and countries
+    const restrictionLevel = 
+      (productCategory === 'Chemicals & Pharmaceuticals' || destinationCountry === 'CN') 
+        ? 'HIGH' 
+        : (productCategory === 'Electronics & Technology' || destinationCountry === 'RU') 
+          ? 'MEDIUM' 
+          : 'LOW';
+    
+    return {
+      summary: `Analysis of ${product} export from ${COUNTRIES.find(c => c.code === originCountry)?.name} to ${COUNTRIES.find(c => c.code === destinationCountry)?.name}. This ${productCategory.toLowerCase()} product faces ${restrictionLevel.toLowerCase()} level trade restrictions based on current regulations and trade agreements.`,
+      restrictionLevel: restrictionLevel,
+      keyRequirements: [
+        `Product Classification: Assign the correct tariff code for ${product}`,
+        "Certificate of Origin: Document showing where goods were manufactured",
+        "Commercial Invoice: Detailed description of the goods, including values and quantities",
+        "Packing List: Itemized list of package contents",
+        restrictionLevel === 'HIGH' ? "Special Export License: Required for controlled items in this category" : "Standard Export Declaration: Form submitted to customs authorities"
+      ],
+      restrictions: restrictionLevel === 'HIGH' 
+        ? ["Export license required before shipment", "End-user verification may be required", "Specific technical standards compliance needed"] 
+        : restrictionLevel === 'MEDIUM'
+          ? ["Pre-shipment inspection may be required", "Compliance with packaging and labeling regulations"]
+          : [],
+      requiredDocuments: [
+        {
+          name: "Certificate of Origin",
+          description: "Official document that certifies goods were obtained, produced, manufactured, or processed in the stated country",
+          mandatory: true,
+          notes: "Must be stamped by the local chamber of commerce"
+        },
+        {
+          name: "Commercial Invoice",
+          description: "Document that contains information about the sale of goods",
+          mandatory: true,
+          notes: "Must include detailed product description, quantity, and value"
+        },
+        {
+          name: "Packing List",
+          description: "Document detailing the contents of a shipment",
+          mandatory: true,
+          notes: "Should match the commercial invoice details"
+        },
+        {
+          name: "Bill of Lading",
+          description: "Receipt given by a carrier for goods accepted for transportation",
+          mandatory: true,
+          notes: "Serves as a contract between the shipper and carrier"
+        },
+        restrictionLevel === 'HIGH' ? {
+          name: "Export License",
+          description: "Government-issued document authorizing the export of specific goods",
+          mandatory: true,
+          notes: "Apply through the Department of Commerce at least 30 days before shipping"
+        } : {
+          name: "Quality Certificate",
+          description: "Document certifying the product meets quality standards",
+          mandatory: false,
+          notes: "Recommended for consumer goods to avoid customs delays"
+        },
+        productCategory === 'Agriculture & Food' ? {
+          name: "Phytosanitary Certificate",
+          description: "Certificate stating plants or plant products are free from pests and diseases",
+          mandatory: true,
+          notes: "Must be obtained from agricultural authorities in the origin country"
+        } : {
+          name: "Insurance Certificate",
+          description: "Document confirming insurance coverage for goods during transportation",
+          mandatory: false,
+          notes: "Recommended for high-value shipments"
+        }
+      ],
+      tariffs: {
+        overview: `The tariff regime between ${COUNTRIES.find(c => c.code === originCountry)?.name} and ${COUNTRIES.find(c => c.code === destinationCountry)?.name} for ${productCategory.toLowerCase()} products includes import duties, value-added tax, and possibly special assessments.`,
+        estimatedRates: [
+          {
+            category: "Import Duty",
+            rate: restrictionLevel === 'HIGH' ? "15-25%" : restrictionLevel === 'MEDIUM' ? "5-15%" : "0-5%",
+            notes: "Based on harmonized tariff schedule classification"
+          },
+          {
+            category: "Value Added Tax",
+            rate: destinationCountry === 'GB' ? "20%" : destinationCountry === 'DE' || destinationCountry === 'FR' ? "19%" : "10-17%",
+            notes: "Applied to the customs value plus import duty"
+          },
+          restrictionLevel === 'HIGH' ? {
+            category: "Special Assessment",
+            rate: "3-8%",
+            notes: "Additional tax on sensitive or controlled products"
+          } : {
+            category: "Preferential Rate",
+            rate: "Reduced rates may apply",
+            notes: "Check if free trade agreements exist between countries"
+          }
+        ]
+      },
+      regulations: [
+        {
+          name: `${destinationCountry === 'US' ? 'Export Administration Regulations (EAR)' : 'Export Control Law'}`,
+          description: `Governs the export of dual-use items from ${COUNTRIES.find(c => c.code === originCountry)?.name}`,
+          authority: destinationCountry === 'US' ? "Bureau of Industry and Security" : "Department of Commerce",
+          link: "#"
+        },
+        {
+          name: `${destinationCountry === 'GB' ? 'UK Trade Tariff' : destinationCountry === 'CN' ? 'Import and Export Tariff of China' : 'Customs Code'}`,
+          description: `Comprehensive system of import duties for ${COUNTRIES.find(c => c.code === destinationCountry)?.name}`,
+          authority: "Customs Administration",
+          link: "#"
+        },
+        productCategory === 'Chemicals & Pharmaceuticals' ? {
+          name: "Chemical Registration Requirements",
+          description: "Framework for registration and assessment of chemicals",
+          authority: "Environmental Protection Agency",
+          link: "#"
+        } : productCategory === 'Electronics & Technology' ? {
+          name: "Technical Standards Compliance",
+          description: "Regulations governing electronic equipment safety and compatibility",
+          authority: "Standards and Technology Bureau",
+          link: "#"
+        } : {
+          name: "Consumer Protection Regulations",
+          description: "Rules ensuring consumer goods meet safety standards",
+          authority: "Consumer Safety Commission",
+          link: "#"
+        }
+      ]
+    };
+  };
+
+  // Handle form submission with mock data
+  const handleAnalyzeClick = () => {
     if (!product || !originCountry || !destinationCountry || !productCategory) {
       toast({
         title: 'Missing information',
@@ -116,36 +246,21 @@ const RegulatoryAIPage: React.FC = () => {
     
     setIsAnalyzing(true);
     
-    try {
-      const response = await fetch('/api/regulatory-ai/analyze', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          product,
-          originCountry,
-          destinationCountry,
-          productCategory,
-          additionalDetails
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to analyze export requirements');
+    // Simulate API call with a delay
+    setTimeout(() => {
+      try {
+        const mockResult = getMockAnalysisData();
+        setAnalysisResult(mockResult);
+      } catch (error) {
+        toast({
+          title: 'Analysis failed',
+          description: 'An error occurred during the analysis',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsAnalyzing(false);
       }
-      
-      const result = await response.json();
-      setAnalysisResult(result);
-    } catch (error) {
-      toast({
-        title: 'Analysis failed',
-        description: error.message || 'An error occurred during the analysis',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsAnalyzing(false);
-    }
+    }, 2000); // 2 second delay to simulate processing
   };
   
   // Handle reset/new analysis

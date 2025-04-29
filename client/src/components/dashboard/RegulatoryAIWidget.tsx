@@ -64,6 +64,9 @@ const RegulatoryAIWidget: React.FC = () => {
       return;
     }
     
+    // Set loading state for visual feedback
+    setIsAnalyzing(true);
+    
     // Navigate to the full regulatory AI page with query parameters
     const queryParams = new URLSearchParams({
       product,
@@ -72,7 +75,10 @@ const RegulatoryAIWidget: React.FC = () => {
       category: productCategory
     }).toString();
     
-    window.location.href = `/regulatory-ai?${queryParams}`;
+    // Use a timeout to show loading state briefly
+    setTimeout(() => {
+      window.location.href = `/regulatory-ai?${queryParams}`;
+    }, 1000);
   };
   
   return (

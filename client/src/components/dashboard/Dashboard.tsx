@@ -287,12 +287,10 @@ const Dashboard = () => {
                   </div>
                   
                   <div className="flex justify-center mt-6">
-                    <Link href="/regulatory-ai">
-                      <Button>
-                        Access Full Regulatory AI Assistant
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </Link>
+                    <Button onClick={() => window.location.href = '/regulatory-ai'}>
+                      Access Full Regulatory AI Assistant
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               </CardContent>
