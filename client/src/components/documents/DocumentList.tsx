@@ -76,8 +76,141 @@ const DocumentList = () => {
   const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   
-  // Ensure documents is treated as Document[] even if it comes as unknown
-  const documentsList: Document[] = Array.isArray(documents) ? documents : [];
+  // Create mock documents for display
+  const mockDocuments: Document[] = [
+    {
+      id: '1',
+      name: 'Invoice for Contract #12345',
+      type: 'application/pdf',
+      size: 1024 * 1024 * 2.3, // 2.3 MB
+      hash: 'hash123456',
+      url: 'https://example.com/documents/invoice12345.pdf',
+      contractId: '1',
+      uploadedBy: 'user123',
+      uploadedAt: new Date('2025-03-15'),
+      tags: ['invoice', 'payment', 'contract'],
+      referenceNumber: 'INV-2025-0001',
+      status: DocumentStatus.APPROVED,
+      isVerified: true,
+      verifiedBy: 'admin',
+      verifiedAt: new Date('2025-03-16'),
+      access: [1, 2, 3]
+    },
+    {
+      id: '2',
+      name: 'Bill of Lading - Shipping Container MSCU7854321',
+      type: 'application/pdf',
+      size: 1024 * 1024 * 1.5, // 1.5 MB
+      hash: 'hash234567',
+      url: 'https://example.com/documents/bl7854321.pdf',
+      contractId: '1',
+      uploadedBy: 'user123',
+      uploadedAt: new Date('2025-03-18'),
+      tags: ['shipping', 'logistics', 'bill of lading'],
+      referenceNumber: 'BL-2025-0001',
+      status: DocumentStatus.PENDING_REVIEW,
+      access: [1]
+    },
+    {
+      id: '3',
+      name: 'Certificate of Origin - Ghana',
+      type: 'application/pdf',
+      size: 1024 * 512, // 512 KB
+      hash: 'hash345678',
+      url: 'https://example.com/documents/coghana2025.pdf',
+      uploadedBy: 'user123',
+      uploadedAt: new Date('2025-03-20'),
+      tags: ['certificate', 'origin', 'ghana'],
+      referenceNumber: 'CO-2025-0001',
+      status: DocumentStatus.APPROVED,
+      isVerified: true,
+      verifiedBy: 'admin',
+      verifiedAt: new Date('2025-03-21'),
+      access: [1, 4]
+    },
+    {
+      id: '4',
+      name: 'Purchase Order - Coffee Beans',
+      type: 'application/pdf',
+      size: 1024 * 750, // 750 KB
+      hash: 'hash456789',
+      url: 'https://example.com/documents/po89012.pdf',
+      contractId: '2',
+      uploadedBy: 'user123',
+      uploadedAt: new Date('2025-03-22'),
+      tags: ['purchase', 'coffee', 'order'],
+      referenceNumber: 'PO-2025-0001',
+      status: DocumentStatus.DRAFT,
+      access: [1]
+    },
+    {
+      id: '5',
+      name: 'Import Permit - Agricultural Products',
+      type: 'application/pdf',
+      size: 1024 * 1024 * 1.2, // 1.2 MB
+      hash: 'hash567890',
+      url: 'https://example.com/documents/importpermit45678.pdf',
+      uploadedBy: 'user123',
+      uploadedAt: new Date('2025-02-10'),
+      tags: ['permit', 'import', 'agriculture'],
+      referenceNumber: 'IP-2025-0001',
+      status: DocumentStatus.EXPIRED,
+      expiryDate: new Date('2025-03-25'),
+      access: [1, 2]
+    },
+    {
+      id: '6',
+      name: 'Insurance Certificate - Cargo',
+      type: 'application/pdf',
+      size: 1024 * 920, // 920 KB
+      hash: 'hash678901',
+      url: 'https://example.com/documents/insurancecargo12345.pdf',
+      contractId: '1',
+      uploadedBy: 'user123',
+      uploadedAt: new Date('2025-03-01'),
+      tags: ['insurance', 'cargo', 'certificate'],
+      referenceNumber: 'IC-2025-0001',
+      status: DocumentStatus.APPROVED,
+      isVerified: true,
+      verifiedBy: 'admin',
+      verifiedAt: new Date('2025-03-02'),
+      access: [1, 3, 5]
+    },
+    {
+      id: '7',
+      name: 'Quality Inspection Report',
+      type: 'application/pdf',
+      size: 1024 * 1024 * 3.1, // 3.1 MB
+      hash: 'hash789012',
+      url: 'https://example.com/documents/qualityreport789.pdf',
+      contractId: '2',
+      uploadedBy: 'user123',
+      uploadedAt: new Date('2025-03-24'),
+      tags: ['quality', 'inspection', 'report'],
+      referenceNumber: 'QIR-2025-0001',
+      status: DocumentStatus.REJECTED,
+      access: [1]
+    },
+    {
+      id: '8',
+      name: 'Export License - Electronic Goods',
+      type: 'application/pdf',
+      size: 1024 * 850, // 850 KB
+      hash: 'hash890123',
+      url: 'https://example.com/documents/exportlicense456.pdf',
+      uploadedBy: 'user123',
+      uploadedAt: new Date('2025-03-05'),
+      tags: ['export', 'license', 'electronics'],
+      referenceNumber: 'EL-2025-0001',
+      status: DocumentStatus.PENDING_REVIEW,
+      access: [1, 6]
+    }
+  ];
+  
+  // Combine real documents with mock ones, or just use mock if none exist
+  const documentsList: Document[] = Array.isArray(documents) && documents.length > 0 
+    ? documents 
+    : mockDocuments;
   
   const formatDate = (dateString: string | Date) => {
     const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
@@ -114,24 +247,29 @@ const DocumentList = () => {
     }
   };
   
-  const filteredDocuments = documentsList.filter((doc: Document) => 
-    doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (doc.tags && doc.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase())))
-  );
-  
-  // Mock references to contracts since we don't fetch them
-  const mockReferenceNumbers = [
-    'DOC-2025-0001',
-    'DOC-2025-0002', 
-    'DOC-2025-0003',
-    'DOC-2025-0004',
-    'DOC-2025-0005',
-    'INV-2025-0001',
-    'INV-2025-0002',
-    'CON-2025-0001',
-    'CON-2025-0002',
-    'BL-2025-0001',
-  ];
+  // Filter documents by search term and status
+  const filteredDocuments = documentsList.filter((doc: Document) => {
+    // First filter by search term
+    const matchesSearch = 
+      doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (doc.tags && doc.tags.some((tag: string) => 
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+      )) ||
+      (doc.referenceNumber && 
+        doc.referenceNumber.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    
+    // Then filter by status if not showing all
+    const matchesStatus = 
+      statusFilter === 'all' ||
+      (statusFilter === 'approved' && doc.status === DocumentStatus.APPROVED) ||
+      (statusFilter === 'pending' && doc.status === DocumentStatus.PENDING_REVIEW) ||
+      (statusFilter === 'draft' && doc.status === DocumentStatus.DRAFT) ||
+      (statusFilter === 'rejected' && doc.status === DocumentStatus.REJECTED) ||
+      (statusFilter === 'expired' && doc.status === DocumentStatus.EXPIRED);
+    
+    return matchesSearch && matchesStatus;
+  });
   
   const [activeView, setActiveView] = useState('grid');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -324,12 +462,7 @@ const DocumentList = () => {
             </div>
           ) : activeView === 'grid' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredDocuments?.map((document: Document, index: number) => {
-                // For mock purposes, add status and reference number
-                const mockStatus = Object.values(DocumentStatus)[index % 5];
-                const mockRefNum = mockReferenceNumbers[index % mockReferenceNumbers.length];
-                
-                return (
+              {filteredDocuments.map((document: Document) => (
                 <div 
                   key={document.id} 
                   className="border border-gray-200 rounded-lg overflow-hidden flex flex-col"
@@ -340,7 +473,7 @@ const DocumentList = () => {
                         <File className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        {getStatusBadge(mockStatus)}
+                        {getStatusBadge(document.status)}
                       </div>
                     </div>
                     
@@ -348,7 +481,7 @@ const DocumentList = () => {
                     
                     <div className="mt-2">
                       <div className="text-xs font-medium text-gray-500">Reference Number</div>
-                      <div className="text-sm font-mono bg-gray-50 p-1 rounded">{mockRefNum}</div>
+                      <div className="text-sm font-mono bg-gray-50 p-1 rounded">{document.referenceNumber}</div>
                     </div>
                     
                     <div className="flex flex-wrap gap-y-1 items-center text-xs text-gray-500 mt-2">
@@ -420,16 +553,11 @@ const DocumentList = () => {
                     )}
                   </div>
                 </div>
-              )})}
+              ))}
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredDocuments?.map((document: Document, index: number) => {
-                // For mock purposes, add status and reference number
-                const mockStatus = Object.values(DocumentStatus)[index % 5];
-                const mockRefNum = mockReferenceNumbers[index % mockReferenceNumbers.length];
-                
-                return (
+              {filteredDocuments.map((document: Document) => (
                 <div key={document.id} className="flex items-start p-4 border border-gray-200 rounded-lg">
                   <div className="p-2 bg-primary/10 rounded-md mr-4">
                     <File className="h-6 w-6 text-primary" />
@@ -439,10 +567,10 @@ const DocumentList = () => {
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="font-medium text-gray-900">{document.name}</h3>
-                          {getStatusBadge(mockStatus)}
+                          {getStatusBadge(document.status)}
                         </div>
                         <div className="text-xs font-medium text-gray-500 mt-1">Reference Number: 
-                          <span className="font-mono ml-1 bg-gray-50 px-1 rounded">{mockRefNum}</span>
+                          <span className="font-mono ml-1 bg-gray-50 px-1 rounded">{document.referenceNumber}</span>
                         </div>
                         <div className="flex flex-wrap gap-y-1 items-center text-sm text-gray-500 mt-1">
                           <span className="flex items-center mr-3">
@@ -545,7 +673,7 @@ const DocumentList = () => {
                     )}
                   </div>
                 </div>
-              )})}
+              ))}
             </div>
           )}
         </CardContent>
