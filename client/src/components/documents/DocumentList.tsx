@@ -216,11 +216,14 @@ const DocumentList = () => {
   const [activeView, setActiveView] = useState('grid');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showVerifyDialog, setShowVerifyDialog] = useState(false);
   const [activeDocument, setActiveDocument] = useState<Document | null>(null);
   const [shareLink, setShareLink] = useState('');
   const [isPasswordProtected, setIsPasswordProtected] = useState(false);
   const [sharePassword, setSharePassword] = useState('');
   const [shareExpiry, setShareExpiry] = useState('7days');
+  const [verificationMethod, setVerificationMethod] = useState<'hash' | 'blockchain' | 'certificate'>('hash');
+  const [verificationStatus, setVerificationStatus] = useState<'idle' | 'verifying' | 'verified' | 'failed'>('idle');
 
   const formatDate = (dateString: string | Date) => {
     const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
@@ -300,6 +303,62 @@ const DocumentList = () => {
       title: "Link Copied",
       description: "Share link copied to clipboard",
     });
+  };
+  
+  // Handle document verification dialog
+  const handleVerifyClick = (document: Document) => {
+    setActiveDocument(document);
+    setVerificationStatus('idle');
+    setShowVerifyDialog(true);
+  };
+  
+  // Simulate document verification process
+  const verifyDocument = async () => {
+    if (!activeDocument) return;
+    
+    setVerificationStatus('verifying');
+    
+    // Simulate verification process with a delay
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // For demo purposes, we'll consider documents that have isVerified=true as valid
+      if (activeDocument.isVerified) {
+        setVerificationStatus('verified');
+        toast({
+          title: "Verification Successful",
+          description: "The document has been successfully verified as authentic",
+          variant: "default"
+        });
+      } else {
+        // Randomly succeed or fail verification for non-verified documents
+        const isSuccessful = Math.random() > 0.3;
+        
+        if (isSuccessful) {
+          setVerificationStatus('verified');
+          toast({
+            title: "Verification Successful",
+            description: "The document has been successfully verified as authentic",
+            variant: "default"
+          });
+        } else {
+          setVerificationStatus('failed');
+          toast({
+            title: "Verification Failed",
+            description: "The document could not be verified. It may have been tampered with.",
+            variant: "destructive"
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error verifying document:', error);
+      setVerificationStatus('failed');
+      toast({
+        title: "Verification Error",
+        description: "An error occurred during the verification process",
+        variant: "destructive"
+      });
+    }
   };
   
   const getStatusBadge = (status: DocumentStatus) => {
@@ -528,6 +587,10 @@ const DocumentList = () => {
                           <Download className="h-4 w-4 mr-2" />
                           Download
                         </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleVerifyClick(document)}>
+                          <CheckCircle2 className="h-4 w-4 mr-2" />
+                          Verify Authenticity
+                        </DropdownMenuItem>
                         <DropdownMenuItem>
                           <ClipboardSignature className="h-4 w-4 mr-2" />
                           Sign
@@ -641,6 +704,23 @@ const DocumentList = () => {
                             </TooltipTrigger>
                             <TooltipContent>
                               <p>Download</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleVerifyClick(document)}
+                              >
+                                <CheckCircle2 className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Verify Authenticity</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -804,6 +884,139 @@ const DocumentList = () => {
               disabled={isDeleting}
             >
               {isDeleting ? 'Deleting...' : 'Delete'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Document Verification Dialog */}
+      <Dialog open={showVerifyDialog} onOpenChange={setShowVerifyDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Verify Document Authenticity</DialogTitle>
+            <DialogDescription>
+              Verify the authenticity of "{activeDocument?.name}"
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label>Document Information</Label>
+              <div className="bg-gray-50 p-3 rounded-md text-sm">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-medium">Reference Number:</span>
+                  <span className="font-mono text-xs bg-white px-2 py-1 rounded border">{activeDocument?.referenceNumber}</span>
+                </div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-medium">File Hash:</span>
+                  <span className="font-mono text-xs bg-white px-2 py-1 rounded border truncate max-w-[180px]">{activeDocument?.hash}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">Upload Date:</span>
+                  <span className="text-xs">{activeDocument && formatDate(activeDocument.uploadedAt)}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="grid gap-2">
+              <Label htmlFor="verification-method">Verification Method</Label>
+              <Select value={verificationMethod} onValueChange={(val: any) => setVerificationMethod(val)}>
+                <SelectTrigger id="verification-method">
+                  <SelectValue placeholder="Select Method" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hash">Hash Verification</SelectItem>
+                  <SelectItem value="blockchain">Blockchain Verification</SelectItem>
+                  <SelectItem value="certificate">Certificate Authority</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {verificationMethod === 'hash' && (
+              <div className="grid gap-2">
+                <Label htmlFor="hash-input">Compare Hash (Optional)</Label>
+                <Input
+                  id="hash-input"
+                  placeholder="Enter hash to compare..."
+                  className="font-mono text-xs"
+                />
+                <p className="text-xs text-gray-500">
+                  You can verify by comparing the document hash with a known hash or let the system automatically verify against our records.
+                </p>
+              </div>
+            )}
+            
+            {verificationMethod === 'blockchain' && (
+              <div className="grid gap-2">
+                <p className="text-xs text-gray-500">
+                  We'll verify this document against the blockchain records. This provides the highest level of verification, confirming the document hasn't been modified since it was recorded on the blockchain.
+                </p>
+              </div>
+            )}
+            
+            {verificationMethod === 'certificate' && (
+              <div className="grid gap-2">
+                <p className="text-xs text-gray-500">
+                  We'll verify the document's digital signature against trusted certificate authorities to confirm its authenticity.
+                </p>
+              </div>
+            )}
+            
+            {verificationStatus === 'verified' && (
+              <div className="bg-green-50 border border-green-200 rounded-md p-4 flex items-start">
+                <CheckCircle2 className="h-5 w-5 text-green-600 mr-3 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-green-800">Document Verified</h4>
+                  <p className="text-sm text-green-700 mt-1">
+                    This document has been verified as authentic and has not been tampered with.
+                    {activeDocument?.verifiedBy && (
+                      <span className="block mt-1">
+                        Verified by: <span className="font-medium">{activeDocument.verifiedBy}</span> on {activeDocument.verifiedAt && formatDate(activeDocument.verifiedAt)}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+            )}
+            
+            {verificationStatus === 'failed' && (
+              <div className="bg-red-50 border border-red-200 rounded-md p-4 flex items-start">
+                <AlertCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-red-800">Verification Failed</h4>
+                  <p className="text-sm text-red-700 mt-1">
+                    We couldn't verify this document. It may have been modified or the verification information could be incorrect.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowVerifyDialog(false)}
+              className="mr-auto"
+            >
+              Close
+            </Button>
+            
+            <Button
+              onClick={verifyDocument}
+              disabled={verificationStatus === 'verifying'}
+              className="min-w-[120px]"
+            >
+              {verificationStatus === 'verifying' ? (
+                <>
+                  <RotateCw className="h-4 w-4 mr-2 animate-spin" />
+                  Verifying...
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="h-4 w-4 mr-2" />
+                  Verify Document
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
