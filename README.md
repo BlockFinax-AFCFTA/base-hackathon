@@ -1,278 +1,443 @@
-# Blockfinax: Revolutionizing Global Trade Finance with Blockchain Technology
-
-![Blockfinax](https://via.placeholder.com/800x200.png?text=Blockfinax+-+Trade+Finance+Reimagined)
-
-## Executive Overview
-
-Blockfinax is an enterprise-grade, blockchain-powered financial platform that fundamentally transforms how international trade is conducted, financed, and secured. By combining cutting-edge distributed ledger technology with sophisticated trade finance instruments, Blockfinax bridges the $1.7 trillion global trade finance gap while providing unparalleled security, transparency, and efficiency to all participants in the global supply chain.
-
-Our platform serves as a comprehensive ecosystem where importers, exporters, financial institutions, and trade facilitators can collaborate seamlessly, reducing the traditional 45+ day trade cycle to as little as 4 hours while eliminating paperwork, minimizing fraud, and optimizing capital efficiency.
-
-## Market Landscape & Problem Statement
-
-International trade remains burdened by:
-
-- **Financing Gap**: $1.7 trillion in rejected trade finance applications annually, disproportionately affecting SMEs and emerging markets
-- **Operational Friction**: 4-7% of transaction value lost to administrative costs and inefficiencies
-- **Counterparty Risk**: 60% of global trade rejections stem from trust deficits between parties
-- **Documentary Complexity**: The average trade transaction requires 27 documents from 10 different parties
-- **Settlement Delays**: 60-90 day payment cycles creating cash flow challenges for exporters
-- **Fraud Vulnerability**: $4.26 billion in annual losses due to trade document falsification
-
-Blockfinax addresses these challenges through a revolutionary blockchain-based architecture that reimagines the entire trade ecosystem.
-
-## Core Platform Capabilities
-
-### Enterprise-Grade Smart Contract Treasury System
-
-- **Programmable Multi-Signature Escrow**: Customizable smart contract architecture with configurable release conditions aligned with ICC Incoterms 2020
-- **Hierarchical Deterministic Wallets**: Dedicated multi-currency accounts with 3-factor authentication and role-based access controls
-- **Automated Payment Orchestration**: Conditional fund releases triggered by verified milestones, IoT inputs, or authorized confirmations
-- **Financial Institution Integration**: APIs connecting with 126+ global banks, supporting SWIFT GPI, SEPA, and Ripple payment networks
-- **Treasury Management Tools**: Cash position forecasting, FX hedging options, and working capital optimization
-- **Insurance-Backed Guarantees**: Integrated parametric insurance for shipment loss, delay, or quality issues
-
-**Industry Scenario**: A medium-sized Peruvian cocoa exporter secures a $350,000 contract with a Swiss chocolate manufacturer. Rather than waiting 90+ days for payment after shipment, Blockfinax's smart treasury allows the exporter to receive 40% upon contract signing, 30% upon verified shipping documents, and 30% upon confirmed delivery, with all funds held in secure multi-signature wallets managed by the platform's smart contract logic.
-
-### Comprehensive Trade Document Management
-
-- **Document Digitization & Standardization**: Optical character recognition and NLP processing for trade document digitization compliant with UN/CEFACT standards
-- **Zero-Knowledge Proof Verification**: Privacy-preserving document validation using ZK-STARK protocols
-- **Immutable Audit Trail**: Tamper-proof versioning and timestamping of all document changes with cryptographic verification
-- **Document Template Library**: 85+ standardized trade document templates with dynamic field mapping to ensure compliance
-- **Real-time Compliance Validation**: Automated screening against 240+ global regulations including OFAC, EAR, and country-specific documentation requirements
-- **Selective Disclosure Mechanisms**: Granular permission system allowing controlled data sharing across the trade network
-
-**Industry Scenario**: A Singapore-based electronics distributor needs to ship components to multiple European markets, each with different regulatory requirements. Blockfinax's document management system automatically generates market-specific export documentation, validates compliance with EU directives, RoHS standards, and local certifications, and securely shares only the necessary information with customs authorities while maintaining confidentiality of proprietary business terms with each buyer.
-
-### Tokenized Trade Asset Exchange
-
-- **Invoice Tokenization**: Convert outstanding invoices into tradable digital assets with DLT-backed verification
-- **Secondary Market for Trade Assets**: Liquidity pool connecting 40+ institutional investors for discounting trade receivables
-- **Dynamic Pricing Algorithm**: Risk-adjusted valuation model incorporating credit scores, historical performance, and market conditions
-- **Cross-Border Factoring**: Multi-currency invoice financing without traditional geographic limitations
-- **Atomic Settlement**: T+0 settlement of trade asset transfers with instant fund distribution
-- **Regulatory-Compliant Tokenization**: Securities law compliant digital asset framework with jurisdictional adaptability
-
-**Industry Scenario**: A Taiwanese electronics manufacturer with $12 million in outstanding receivables from European retailers faces a cash flow shortage. Through Blockfinax, the company tokenizes selected invoices, which are instantly verified by the platform's validation engine. A consortium of Asian alternative lenders purchases 75% of the tokenized invoices at competitive rates, providing immediate capital while assuming the receivables risk, all executed via smart contracts with anti-money laundering and regulatory compliance built in.
-
-### AI-Powered Credit Assessment
-
-- **Alternative Credit Scoring**: Proprietary algorithm analyzing 340+ data points beyond traditional financial metrics
-- **Behavioral Analysis Engine**: ML-driven pattern recognition of trading behavior to identify reliability patterns
-- **Supply Chain Network Analysis**: Assessment of an entity's position and performance within broader supply ecosystems
-- **Predictive Default Modeling**: Forward-looking risk assessment with 83% accuracy in predicting payment defaults
-- **Real-time Rating Adjustments**: Dynamic credit scores updated as trade milestones are completed
-- **Fraud Pattern Detection**: Neural network analysis to identify anomalous document or transaction patterns
-
-**Industry Scenario**: A Nigerian agricultural cooperative with limited formal banking history seeks financing for expansion. Traditional lenders have declined due to insufficient credit history. Blockfinax's AI assessment evaluates their 3-year trading pattern with five European importers, on-time delivery rate, product quality consistency, and growth trajectory. The resulting alternative credit score enables a qualifying credit line of $275,000 from impact investors, facilitating the cooperative's expansion and improving income for 600+ small-scale farmers.
-
-### Supply Chain Visibility & Traceability
-
-- **IoT Integration Framework**: Connects with 20+ sensor types for real-time cargo condition monitoring
-- **Geospatial Tracking**: GPS and satellite-based shipment tracking with geofence notifications
-- **Distributed Verification Nodes**: Third-party validation of supply chain events by independent oracles
-- **Chain-of-Custody Documentation**: Immutable record of handling across entire supply chain
-- **Sustainability & Compliance Tracking**: ESG metrics monitoring for carbon footprint, fair labor practices, and ethical sourcing
-- **End-Consumer Transparency Tools**: QR code and NFC tag options for final customer verification
-
-**Industry Scenario**: A premium German coffee retailer sources specialty beans from multiple small-scale Ethiopian growers. Blockfinax's supply chain module tracks each lot from harvest (via field agent mobile app verification) through processing, shipping, and roasting. Environmental sensors monitor temperature and humidity throughout transport. The end consumer can scan each package to view the complete provenance, farming practices, roasting date, and even farmer compensation, ensuring fair trade claims are verifiable and transparent.
-
-### Cross-Border Regulatory Compliance
-
-- **Dynamic Jurisdictional Rule Engine**: Automated compliance with trade regulations across 174 countries
-- **Sanctions & Restricted Party Screening**: Real-time verification against OFAC, EU, UN, and other sanctions lists
-- **Customs Documentation Automation**: Pre-clearance preparation with jurisdiction-specific requirements
-- **Tax & Duty Calculation**: Automated determination of applicable tariffs, VAT, and special trade agreement benefits
-- **Licensing & Permit Verification**: Validation of import/export licenses and special permissions
-- **Compliance Attestation**: Digital signoff and certification of regulatory adherence
-
-**Industry Scenario**: A Canadian pharmaceutical distributor exports temperature-sensitive medications to 14 countries. Blockfinax automatically manages the complex documentation requirements for each market, including certificate of pharmaceutical product (CPP) validation, Good Distribution Practice (GDP) compliance evidence, pharmaceutical product licensing verification, and temperature control documentation. The platform ensures all market-specific regulatory requirements are met before shipment, preventing costly border delays and product deterioration.
-
-## Advanced Technical Architecture
-
-### Multi-Layer Blockchain Implementation
-
-- **Base Settlement Layer**: Ethereum for financial transactions and smart contract execution
-- **Document Layer**: IPFS/Filecoin for decentralized document storage with encryption
-- **Verification Layer**: Polygon sidechain for high-throughput document verification operations
-- **Identity Layer**: Self-sovereign identity framework compatible with W3C DID standards
-- **Interoperability Protocols**: Cross-chain bridges to public and private enterprise blockchains
-- **Consensus Mechanism**: Configurable between PoA for private deployments and PoS for public network participation
-
-### Security & Resilience Framework
-
-- **Multi-Signature Security**: M-of-N signature requirements for all critical operations
-- **Advanced Encryption**: AES-256 at rest and TLS 1.3 in transit with quantum-resistant key exchange
-- **Formal Verification**: Smart contracts audited and mathematically verified by three independent security firms
-- **Penetration Testing**: Quarterly white-hat hacking assessments with bounty program
-- **Distributed Architecture**: No single points of failure with geographic redundancy
-- **Comprehensive Key Management**: HSM protection for cryptographic keys with sophisticated recovery mechanisms
-- **Security Operations Center**: 24/7 monitoring with real-time threat intelligence integration
-
-### Enterprise Integration Capabilities
-
-- **ERP System Connectors**: Pre-built integrations with SAP, Oracle, Microsoft Dynamics, and NetSuite
-- **Banking System APIs**: Swift, ISO 20022, and FIX protocol compatibility
-- **Logistics Provider Integration**: EDI and API connections with major shipping and logistics platforms
-- **Customs Authority Interfaces**: Electronic submission capabilities for major customs systems
-- **Accounting Software Synchronization**: Automated reconciliation with major accounting packages
-- **Legacy System Adaptors**: Custom middleware for specialized enterprise systems
-
-## Case Studies
-
-### Manufacturing Sector
-
-**Client**: Global Electronics Manufacturer with 17 production facilities across Asia
-**Challenge**: 62-day average payment cycle creating $42M in working capital constraints
-**Solution**: Implemented Blockfinax's End-to-End Trade Platform
-
-**Results**:
-- Payment cycle reduced to 12 days average
-- $28M working capital released
-- 96% reduction in document processing time
-- 4.2% decrease in overall trade operations costs
-- Complete elimination of double-financing fraud incidents
-- 99.8% on-time payment rate after implementation
-
-### Commodity Trading
-
-**Client**: Multi-national Agricultural Commodities Trader
-**Challenge**: Complex documentation requirements across 24 export markets with significant fraud risk
-**Solution**: Deployed Blockfinax Document Verification and Compliance Module
-
-**Results**:
-- 91% reduction in document verification time
-- Eliminated $3.7M in annual fraud losses
-- Streamlined compliance with 340+ varying regulatory requirements
-- Reduced customs clearance delays by 78%
-- Enabled real-time tracking of 1,200+ monthly shipments
-- Improved supplier payment speed by 400%
-
-### Financial Services
-
-**Client**: Regional Trade Finance Bank with $2.8B annual financing volume
-**Challenge**: Limited visibility into underlying trade flows creating excessive risk premiums
-**Solution**: Integrated Blockfinax's Risk Assessment and Document Verification Platform
-
-**Results**:
-- Expanded SME financing by 47% without increased risk exposure
-- Reduced KYC/due diligence costs by 62%
-- Improved risk-adjusted returns by 3.4 percentage points
-- Decreased non-performing loans by 76%
-- Accelerated credit decisions from 9 days to 6 hours
-- Enabled new supply chain finance product offerings
-
-## Implementation & Onboarding Process
-
-### Enterprise Deployment Model
-
-1. **Discovery & Assessment** (2-3 weeks)
-   - Business process analysis and documentation
-   - Integration requirements specification
-   - ROI modeling and value capture planning
-   - Security and compliance audit
-
-2. **Platform Configuration** (3-4 weeks)
-   - Custom workflow design
-   - Document template customization
-   - Smart contract parameter setting
-   - User role and permission configuration
-   - Integration with existing systems
-
-3. **Controlled Implementation** (2 weeks)
-   - Parallel processing with existing systems
-   - Phased transaction migration
-   - Sandbox testing with actual trade data
-   - Security penetration testing
-
-4. **Production Deployment** (1 week)
-   - Full system cutover
-   - Real-time monitoring
-   - 24/7 implementation support
-   - Performance optimization
-
-5. **Ongoing Optimization** (Continuous)
-   - Quarterly performance reviews
-   - New feature deployment
-   - Compliance updates
-   - User experience refinement
-
-### User Experience
-
-The Blockfinax platform offers:
-
-- **Intuitive Web Interface**: Role-optimized dashboards with actionable intelligence
-- **Mobile Applications**: iOS and Android apps with biometric authentication
-- **API Access**: RESTful and GraphQL APIs for system integration
-- **Command Center**: Administrative control panel for enterprise oversight
-- **Analytics Suite**: Advanced reporting and business intelligence tools
-- **Alert System**: Multi-channel notifications for critical events
-
-## Security & Compliance Standards
-
-Blockfinax maintains the highest security and compliance standards in the industry:
-
-- **Certifications**: ISO 27001, SOC 2 Type II, PCI DSS
-- **Global Compliance**: GDPR, CCPA, HIPAA, GLBA compatible
-- **Financial Standards**: Compliant with FATF recommendations, AML/CFT regulations
-- **Audit Trail**: Comprehensive, immutable record of all transactions and changes
-- **Privacy Controls**: Data minimization, purpose limitation, and granular access controls
-- **Insurance**: $50M cyber liability coverage and professional indemnity insurance
-
-## Deployment Options
-
-- **Blockfinax Cloud**: Fully-managed SaaS deployment with enterprise SLA
-- **Private Cloud**: Dedicated instance on AWS, Azure, or Google Cloud
-- **On-Premises**: Hardware-secured deployment within corporate infrastructure
-- **Hybrid Model**: Customized combination of cloud and on-premises components
-
-## Industry Partnerships & Ecosystem
-
-Blockfinax has established strategic partnerships with:
-
-- **Banking Network**: 47 global financial institutions for payment and financing
-- **Logistics Providers**: Integration with 23 major carriers and freight forwarders
-- **Insurance Partners**: 12 specialized trade credit and cargo insurance providers
-- **Government Agencies**: Collaboration with 9 customs and trade authorities
-- **Industry Bodies**: Active participation in ICC, WTO, and BAFT working groups
-- **Technology Alliance**: Integration with leading ERP, SCM, and TMS providers
-
-## Getting Started with Blockfinax
-
-### Enterprise Onboarding
-
-1. Schedule a consultation with our industry solutions team
-2. Receive customized implementation plan and ROI analysis
-3. Begin phased deployment with dedicated implementation manager
-4. Train core team on platform capabilities
-5. Expand usage across your trade ecosystem
-
-### Platform Exploration
-
-- **Demo Environment**: Request access to our interactive sandbox environment
-- **Webinar Series**: Register for our regular "Blockchain for Trade" educational sessions
-- **Pilot Program**: Qualify for our 30-day limited scope implementation
-- **ROI Calculator**: Analyze potential value creation for your specific trade patterns
-- **Technical Documentation**: Access developer resources and API specifications
-
-## Transformative Impact
-
-Blockfinax is driving fundamental change in global trade:
-
-- **Financial Inclusion**: Enabling SMEs in developing markets to access global trade finance
-- **Sustainability**: Providing verifiable tracking of environmental and ethical commitments
-- **Fraud Reduction**: Eliminating documentary fraud through cryptographic verification
-- **Capital Efficiency**: Unlocking trapped working capital across global supply chains
-- **Risk Reduction**: Decreasing counterparty risk through transparency and verification
-- **Operational Excellence**: Streamlining trade processes to reduce cost and complexity
-
----
-
-*Blockfinax: Securing the future of global trade with intelligent blockchain technology.*
-
-**Contact Us:**
-- Website: [www.blockfinax.com](https://www.blockfinax.com)
-- Email: enterprise@blockfinax.com
-- Phone: +1 (415) 555-0123
-- Headquarters: Financial District, San Francisco, CA 94104
+# BlockFinaX: Blockchain-Powered International Trade Platform
+
+![BlockFinaX Logo](generated-icon.png)
+
+## Overview
+
+BlockFinaX is a comprehensive blockchain-powered platform designed to streamline international trade through secure, transparent, and efficient technological solutions. The platform connects buyers, sellers, financial institutions, and logistics providers in a unified ecosystem, reducing trade financing gaps and enabling seamless cross-border transactions.
+
+## Table of Contents
+
+1. [Key Features](#key-features)
+2. [Architecture](#architecture)
+3. [User Journey Maps](#user-journey-maps)
+4. [Module Descriptions](#module-descriptions)
+5. [Technical Implementation](#technical-implementation)
+6. [Security Measures](#security-measures)
+7. [Getting Started](#getting-started)
+8. [API Documentation](#api-documentation)
+
+## Key Features
+
+### Contract Management System
+- Smart contract-based escrow system
+- Automated milestone payments
+- Real-time contract status tracking
+- Comprehensive contract templates library
+- Contract state transitions: DRAFT → AWAITING_FUNDS → FUNDED → GOODS_SHIPPED → GOODS_RECEIVED → COMPLETED
+
+### Document Management
+- Document reference numbers (DOC-YYYY-XXXXX format)
+- Document status tracking (Draft, Pending Review, Approved, Rejected, Expired)
+- Document sharing with granular permissions
+- Version control and audit trails
+- Document authenticity verification through multiple methods:
+  - Hash verification
+  - Blockchain verification
+  - Certificate authority verification
+
+### Multi-Currency Wallet System
+- Secure escrow wallets
+- Transaction history with document attachments
+- Multi-signature authorization
+- Real-time balance monitoring
+- Support for fiat and cryptocurrency transactions
+
+### Trade Finance Tools
+- Invoice management and tokenization
+- Letter of credit automation
+- Financing application processing
+- Risk assessment and credit scoring
+- Payment terms optimization
+
+### Logistics Management
+- Shipment tracking across multiple providers
+- Booking and reservation system
+- Logistics provider directory
+- Documentation for shipping and customs
+- Integration with major carriers' APIs
+
+### Regulatory Compliance AI
+- Export regulations guidance
+- Prohibited items screening
+- Country-specific requirements
+- VAT and tariff calculation
+- Documentation requirements checker
+
+### Multi-Language Support
+- Six supported languages: English, Spanish, Chinese, French, Arabic, Russian
+- AI-powered dynamic translation
+- Context-aware translation for trade terminology
+- Localized document templates
+
+### KYC and Identity Verification
+- Individual and company verification
+- Risk scoring system
+- Document verification for identity confirmation
+- Compliance with international AML/KYC regulations
+
+## Architecture
+
+BlockFinaX is built on a modern technology stack:
+
+### Frontend
+- Next.js with TypeScript for type safety
+- React components with shadcn/ui design system
+- TanStack Query for data fetching and caching
+- Tailwind CSS for responsive styling
+- Authentication system with role-based access control
+
+### Backend
+- Node.js Express server
+- RESTful API design
+- PostgreSQL database with Drizzle ORM
+- WebSocket for real-time updates
+- Blockchain integration through ethers.js
+
+### Blockchain Layer
+- Smart contract escrow system
+- Document hash storage for verification
+- Decentralized identity management
+- Immutable transaction records
+- Multi-signature wallet infrastructure
+
+### AI and ML Components
+- OpenAI integration for dynamic translations
+- Risk assessment algorithms
+- Document verification systems
+- Regulatory compliance assistant
+- Fraud detection mechanisms
+
+## User Journey Maps
+
+### Buyer Journey
+1. **Registration & KYC**
+   - Create account
+   - Complete identity verification
+   - Set up payment methods
+
+2. **Contract Creation**
+   - Initiate contract with seller
+   - Negotiate terms
+   - Approve final agreement
+
+3. **Payment Processing**
+   - Fund escrow wallet
+   - Authorize milestone payments
+   - Review payment confirmations
+
+4. **Shipment Tracking**
+   - Monitor goods in transit
+   - Receive status updates
+   - Confirm goods receipt
+
+5. **Contract Completion**
+   - Release final payment
+   - Rate transaction experience
+   - Archive completed contract
+
+### Seller Journey
+1. **Registration & KYC**
+   - Create account
+   - Complete business verification
+   - Set up receiving accounts
+
+2. **Listing & Contract Management**
+   - Create product/service listings
+   - Accept buyer contracts
+   - Manage active agreements
+
+3. **Document Management**
+   - Upload required documentation
+   - Obtain necessary approvals
+   - Share verified documents
+
+4. **Shipment Management**
+   - Book logistics services
+   - Upload shipping documentation
+   - Track shipment progress
+
+5. **Payment Receipt**
+   - Receive milestone payments
+   - Request trade financing if needed
+   - Confirm final settlement
+
+### Financial Institution Journey
+1. **Platform Integration**
+   - Register as financial service provider
+   - Set up service offerings
+   - Define risk parameters
+
+2. **Risk Assessment**
+   - Review trade participants
+   - Evaluate transaction risks
+   - Set financing terms
+
+3. **Financing Provision**
+   - Approve financing requests
+   - Disburse funds to escrow
+   - Monitor repayment schedule
+
+4. **Transaction Monitoring**
+   - Track contract progress
+   - Monitor fund flows
+   - Ensure compliance
+
+### Logistics Provider Journey
+1. **Service Registration**
+   - List shipping services
+   - Define routes and pricing
+   - Set capacity and scheduling
+
+2. **Booking Management**
+   - Receive booking requests
+   - Confirm reservations
+   - Allocate resources
+
+3. **Shipment Execution**
+   - Process documentation
+   - Manage customs clearance
+   - Update tracking information
+
+4. **Delivery Confirmation**
+   - Record proof of delivery
+   - Update platform status
+   - Invoice for services
+
+## Module Descriptions
+
+### Dashboard
+The dashboard provides a comprehensive overview of the user's activity on the platform, including:
+- Active contracts summary
+- Recent transactions
+- Document notifications
+- Critical alerts and updates
+- Quick access to key functions
+
+### Contract Management
+Enables users to create, manage, and monitor trade contracts with the following features:
+- Smart contract templates for different trade scenarios
+- Milestone-based payment scheduling
+- Document attachment and verification
+- Status tracking through the entire trade lifecycle
+- Multi-party signing and approval workflows
+
+### Document Management
+A comprehensive system for handling all trade-related documentation:
+- Secure document storage with encryption
+- Reference number system (DOC-YYYY-XXXXX format)
+- Status tracking (Draft, Pending Review, Approved, Rejected, Expired)
+- Document sharing with password protection and expiration settings
+- Document verification system with multiple methods
+- Grid and list views for flexible document display
+
+### Wallet System
+A secure financial transaction system that includes:
+- Multi-currency support
+- Escrow functionality
+- Transaction history with filtering
+- Document attachment to transactions
+- Balance monitoring and notifications
+- Multi-signature authorization requirements
+
+### Trade Finance
+Tools for financing international trade transactions:
+- Financing application processing
+- Invoice management and factoring
+- Letter of credit automation
+- Risk assessment and scoring
+- Payment terms negotiation
+- Financing marketplace with multiple providers
+
+### Logistics Management
+A comprehensive suite for managing the physical movement of goods:
+- Carrier search and comparison
+- Booking and reservation system
+- Documentation preparation
+- Customs clearance assistance
+- Shipment tracking across carriers
+- Delivery confirmation and proof
+
+### Regulatory AI Assistant
+An intelligent system to navigate complex international trade regulations:
+- Product classification guidance
+- Country-specific requirements
+- Export restriction checking
+- Required documentation assistance
+- Duty and tax calculation
+- Compliance risk assessment
+
+### Identity Verification
+KYC and business verification system:
+- Individual verification with ID documents
+- Company verification with business registration
+- Risk scoring based on multiple factors
+- Ongoing monitoring for compliance
+- Integration with global watchlists
+
+## Technical Implementation
+
+### Smart Contract System
+BlockFinaX utilizes Ethereum-based smart contracts to enable:
+- Secure escrow of funds with conditional release
+- Immutable record of contract terms and milestones
+- Multi-signature authorization requirements
+- Automated payment release based on confirmed conditions
+- Transparent transaction history
+
+### Document Verification
+The document verification system ensures authenticity through:
+- Cryptographic hashing of document contents
+- Blockchain storage of hash values
+- Timestamp verification
+- Certificate authority validation
+- Hash comparison for tampering detection
+
+### API Integrations
+The platform integrates with various external systems:
+- Banking and payment gateways
+- Logistics provider tracking systems
+- Regulatory databases
+- Identity verification services
+- Translation services
+- Blockchain networks
+
+### Database Architecture
+The system uses a PostgreSQL database with:
+- Secure user data storage
+- Document metadata indexing
+- Transaction record management
+- Contract state persistence
+- Audit logging for all activities
+
+## Security Measures
+
+BlockFinaX implements comprehensive security measures:
+
+### Data Protection
+- End-to-end encryption for sensitive information
+- Data minimization principles
+- Regular security audits
+- GDPR and data privacy compliance
+- Secure data backup and recovery systems
+
+### Authentication
+- Multi-factor authentication
+- Role-based access control
+- Session management with automatic timeouts
+- Secure password policies
+- Biometric authentication options
+
+### Blockchain Security
+- Multi-signature wallet requirements
+- Smart contract auditing
+- Formal verification of critical contracts
+- Secure key management
+- Immutable audit trails
+
+### Network Security
+- HTTPS with TLS 1.3
+- API rate limiting
+- DDoS protection
+- Web application firewall
+- Regular penetration testing
+
+## Getting Started
+
+### Registration
+1. Visit the BlockFinaX platform
+2. Complete the registration form
+3. Verify your email address
+4. Complete the KYC process
+5. Set up multi-factor authentication
+
+### Creating Your First Contract
+1. Navigate to the Contracts section
+2. Select "Create New Contract"
+3. Choose appropriate template
+4. Fill in contract details and terms
+5. Invite counterparty
+6. Complete negotiation and signing process
+7. Fund escrow wallet to initiate the contract
+
+### Managing Documents
+1. Navigate to Documents section
+2. Upload required documentation
+3. Assign reference numbers and metadata
+4. Share with relevant parties
+5. Monitor approval status
+6. Verify document authenticity as needed
+
+### Booking Logistics
+1. Navigate to Logistics section
+2. Enter shipment details
+3. Compare available providers
+4. Select and book service
+5. Upload required documentation
+6. Track shipment progress
+7. Confirm delivery
+
+## API Documentation
+
+BlockFinaX provides a comprehensive REST API for integration with external systems. Full documentation is available at [API_DOCS.md](API_DOCS.md)
+
+### Authentication
+```
+POST /api/auth/login
+POST /api/auth/register
+POST /api/auth/logout
+GET /api/auth/session
+```
+
+### Contracts
+```
+GET /api/contracts
+GET /api/contracts/:id
+POST /api/contracts
+PUT /api/contracts/:id
+DELETE /api/contracts/:id
+```
+
+### Documents
+```
+GET /api/documents
+GET /api/documents/:id
+POST /api/documents
+PUT /api/documents/:id
+DELETE /api/documents/:id
+POST /api/documents/:id/verify
+POST /api/documents/:id/share
+```
+
+### Wallets
+```
+GET /api/wallets
+GET /api/wallets/:id
+GET /api/wallets/:id/transactions
+POST /api/wallets/:id/transfer
+```
+
+### Trade Finance
+```
+GET /api/finance/applications
+POST /api/finance/applications
+GET /api/finance/applications/:id
+PUT /api/finance/applications/:id
+```
+
+### Logistics
+```
+GET /api/logistics/providers
+GET /api/logistics/bookings
+POST /api/logistics/bookings
+GET /api/logistics/shipments/:id/track
+```
+
+### Regulatory AI
+```
+POST /api/regulatory/check
+GET /api/regulatory/countries
+GET /api/regulatory/requirements
+```
+
+For detailed information about specific features, please refer to the corresponding module documentation.
