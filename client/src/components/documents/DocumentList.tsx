@@ -212,6 +212,16 @@ const DocumentList = () => {
     ? documents 
     : mockDocuments;
   
+  // Initialize state
+  const [activeView, setActiveView] = useState('grid');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [activeDocument, setActiveDocument] = useState<Document | null>(null);
+  const [shareLink, setShareLink] = useState('');
+  const [isPasswordProtected, setIsPasswordProtected] = useState(false);
+  const [sharePassword, setSharePassword] = useState('');
+  const [shareExpiry, setShareExpiry] = useState('7days');
+
   const formatDate = (dateString: string | Date) => {
     const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
     return format(date, 'MMM dd, yyyy');
@@ -270,15 +280,6 @@ const DocumentList = () => {
     
     return matchesSearch && matchesStatus;
   });
-  
-  const [activeView, setActiveView] = useState('grid');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [showShareDialog, setShowShareDialog] = useState(false);
-  const [activeDocument, setActiveDocument] = useState<Document | null>(null);
-  const [shareLink, setShareLink] = useState('');
-  const [isPasswordProtected, setIsPasswordProtected] = useState(false);
-  const [sharePassword, setSharePassword] = useState('');
-  const [shareExpiry, setShareExpiry] = useState('7days');
   
   // Generate share link with password
   const generateShareLink = (docId: string) => {
