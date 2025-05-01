@@ -17,6 +17,7 @@ import { useLanguage, Language, languageOptions } from '../../context/LanguageCo
 import RiskDashboard from '../risk/RiskDashboard';
 import RegulatoryAIWidget from './RegulatoryAIWidget';
 import TranslationExample from '../ui/TranslationExample';
+import OnboardingButton from '../onboarding/OnboardingButton';
 
 const ContractStatusOverview = () => {
   const { contracts, isLoadingContracts } = useContracts();
@@ -207,15 +208,20 @@ const Dashboard = () => {
             <TabsTrigger value="translation">{translate('dashboard.translation')}</TabsTrigger>
             <TabsTrigger value="logistics">{translate('dashboard.logistics')}</TabsTrigger>
           </TabsList>
-          <div className="text-sm text-gray-500">
-            {translate('dashboard.lastUpdated')} {new Date().toLocaleDateString(
-              language === 'en' ? 'en-US' : 
-              language === 'fr' ? 'fr-FR' : 
-              language === 'es' ? 'es-ES' : 
-              language === 'pt' ? 'pt-PT' : 
-              language === 'ar' ? 'ar-EG' : 'en-US', 
-              { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }
-            )}
+          <div className="flex items-center gap-4">
+            <OnboardingButton 
+              buttonText={translate('onboarding.startTutorial') || 'Interactive Tutorial'}
+            />
+            <div className="text-sm text-gray-500">
+              {translate('dashboard.lastUpdated')} {new Date().toLocaleDateString(
+                language === 'en' ? 'en-US' : 
+                language === 'fr' ? 'fr-FR' : 
+                language === 'es' ? 'es-ES' : 
+                language === 'pt' ? 'pt-PT' : 
+                language === 'ar' ? 'ar-EG' : 'en-US', 
+                { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }
+              )}
+            </div>
           </div>
         </div>
         

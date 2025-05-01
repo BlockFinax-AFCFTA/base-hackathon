@@ -97,10 +97,13 @@ function App() {
     <LanguageProvider>
       <AppProvider>
         <Web3Provider>
-          <QueryClientProvider client={queryClient}>
-            <Router />
-            <Toaster />
-          </QueryClientProvider>
+          <OnboardingProvider>
+            <QueryClientProvider client={queryClient}>
+              <Router />
+              <OnboardingWizard />
+              <Toaster />
+            </QueryClientProvider>
+          </OnboardingProvider>
         </Web3Provider>
       </AppProvider>
     </LanguageProvider>

@@ -30,8 +30,8 @@ const OnboardingButton: React.FC<OnboardingButtonProps> = ({
   
   // Default button text
   const defaultText = hasCompletedOnboarding 
-    ? t('onboarding.restartTutorial', 'Restart Tutorial') 
-    : t('onboarding.startTutorial', 'Start Tutorial');
+    ? t('onboarding.restartTutorial') || 'Restart Tutorial'
+    : t('onboarding.startTutorial') || 'Start Tutorial';
   
   // Use provided button text or default
   const text = buttonText || defaultText;

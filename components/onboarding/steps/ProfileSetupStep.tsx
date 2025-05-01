@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Building, Building2, Buildings, Users } from 'lucide-react';
+import { Building, Building2, LayoutGrid as Buildings, Users } from 'lucide-react';
 
 /**
  * The second step of the onboarding wizard
