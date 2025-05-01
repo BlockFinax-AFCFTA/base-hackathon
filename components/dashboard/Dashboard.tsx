@@ -13,6 +13,7 @@ import {
   TabsList, 
   TabsTrigger 
 } from "../ui/tabs";
+import { useLanguage, Language, languageOptions } from '../../context/LanguageContext';
 import RiskDashboard from '../risk/RiskDashboard';
 import RegulatoryAIWidget from './RegulatoryAIWidget';
 import TranslationExample from '../ui/TranslationExample';
@@ -193,19 +194,28 @@ const Dashboard = () => {
   const { contracts } = useContracts();
   const [activeTab, setActiveTab] = useState<string>('overview');
 
+  const { language, translate, setLanguage } = useLanguage();
+
   return (
     <div className="space-y-4">
       <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab}>
         <div className="flex justify-between items-center mb-4">
           <TabsList>
-            <TabsTrigger value="overview">Financial Dashboard</TabsTrigger>
-            <TabsTrigger value="risk">Risk Intelligence</TabsTrigger>
-            <TabsTrigger value="regulatory">Regulatory AI</TabsTrigger>
-            <TabsTrigger value="translation">Translation Demo</TabsTrigger>
-            <TabsTrigger value="logistics">Logistics</TabsTrigger>
+            <TabsTrigger value="overview">{translate('dashboard.financial')}</TabsTrigger>
+            <TabsTrigger value="risk">{translate('dashboard.risk')}</TabsTrigger>
+            <TabsTrigger value="regulatory">{translate('dashboard.regulatory')}</TabsTrigger>
+            <TabsTrigger value="translation">{translate('dashboard.translation')}</TabsTrigger>
+            <TabsTrigger value="logistics">{translate('dashboard.logistics')}</TabsTrigger>
           </TabsList>
           <div className="text-sm text-gray-500">
-            Last updated: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            {translate('dashboard.lastUpdated')} {new Date().toLocaleDateString(
+              language === 'en' ? 'en-US' : 
+              language === 'fr' ? 'fr-FR' : 
+              language === 'es' ? 'es-ES' : 
+              language === 'pt' ? 'pt-PT' : 
+              language === 'ar' ? 'ar-EG' : 'en-US', 
+              { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }
+            )}
           </div>
         </div>
         
@@ -227,16 +237,15 @@ const Dashboard = () => {
             
             <Card className="md:col-span-8 xl:col-span-8">
               <CardHeader className="pb-2">
-                <CardTitle>About Export Regulatory Assistant</CardTitle>
+                <CardTitle>{translate('dashboard.regulatory')}</CardTitle>
                 <CardDescription>
-                  AI-powered guidance for navigating international trade regulations
+                  {translate('dashboard.aiRegulatoryDesc')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <p>
-                    Our Export Regulatory Assistant helps traders navigate the complex landscape of international export regulations 
-                    by providing guidance tailored to specific products and destinations.
+                    {translate('regulatory.description')}
                   </p>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -245,9 +254,9 @@ const Dashboard = () => {
                         <Check className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-medium">Required Documentation</h4>
+                        <h4 className="text-sm font-medium">{translate('regulatory.documentation')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Understand what paperwork is needed for your export
+                          {translate('regulatory.documentationDesc')}
                         </p>
                       </div>
                     </div>
@@ -257,9 +266,9 @@ const Dashboard = () => {
                         <Check className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-medium">Tariffs & Duties</h4>
+                        <h4 className="text-sm font-medium">{translate('regulatory.tariffs')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Get insights on applicable tariffs for your goods
+                          {translate('regulatory.tariffsDesc')}
                         </p>
                       </div>
                     </div>
@@ -269,9 +278,9 @@ const Dashboard = () => {
                         <Check className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-medium">Compliance Requirements</h4>
+                        <h4 className="text-sm font-medium">{translate('regulatory.compliance')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Learn about relevant regulations and standards
+                          {translate('regulatory.complianceDesc')}
                         </p>
                       </div>
                     </div>
@@ -281,9 +290,9 @@ const Dashboard = () => {
                         <Check className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-medium">Restrictions & Prohibitions</h4>
+                        <h4 className="text-sm font-medium">{translate('regulatory.restrictions')}</h4>
                         <p className="text-sm text-muted-foreground">
-                          Identify potential import restrictions at destination
+                          {translate('regulatory.restrictionsDesc')}
                         </p>
                       </div>
                     </div>
@@ -292,7 +301,7 @@ const Dashboard = () => {
                   <div className="flex justify-center mt-6">
                     <Link href="/regulatory-ai">
                       <Button>
-                        Access Full Regulatory AI Assistant
+                        {translate('regulatory.accessFull')}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </Link>
@@ -307,19 +316,24 @@ const Dashboard = () => {
           <div className="space-y-4">
             <Card className="bg-white shadow-md">
               <CardHeader className="px-4 py-5 sm:px-6">
-                <h3 className="text-lg leading-6 font-medium text-primary">Translation Demo</h3>
-                <p className="mt-1 max-w-2xl text-sm text-gray-500">Test our AI-powered translation system</p>
+                <h3 className="text-lg leading-6 font-medium text-primary">{translate('translation.demo')}</h3>
+                <p className="mt-1 max-w-2xl text-sm text-gray-500">{translate('translation.testSystem')}</p>
               </CardHeader>
               <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
                 <div className="p-6 bg-blue-50 rounded-lg text-center mb-6">
-                  <h3 className="text-lg font-medium mb-2">AI-Powered Translation System</h3>
-                  <p className="mb-4">Switch languages using the language selector in the top-right corner of the page</p>
+                  <h3 className="text-lg font-medium mb-2">{translate('dashboard.aiTranslation')}</h3>
+                  <p className="mb-4">{translate('translation.selectLanguage')}</p>
                   <div className="flex flex-wrap justify-center gap-2">
-                    <Button variant="outline" className="mx-1">English</Button>
-                    <Button variant="outline" className="mx-1">Español</Button>
-                    <Button variant="outline" className="mx-1">Français</Button>
-                    <Button variant="outline" className="mx-1">العربية</Button>
-                    <Button variant="outline" className="mx-1">Português</Button>
+                    {languageOptions.map((option) => (
+                      <Button 
+                        key={option.code} 
+                        variant={language === option.code ? "default" : "outline"} 
+                        className="mx-1"
+                        onClick={() => setLanguage(option.code as Language)}
+                      >
+                        {option.flag} {option.name}
+                      </Button>
+                    ))}
                   </div>
                 </div>
                 
@@ -335,16 +349,16 @@ const Dashboard = () => {
           <div className="space-y-4">
             <Card className="bg-white shadow-md">
               <CardHeader className="px-4 py-5 sm:px-6">
-                <h3 className="text-lg leading-6 font-medium text-primary">Logistics Management</h3>
-                <p className="mt-1 max-w-2xl text-sm text-gray-500">Track shipments and manage logistics</p>
+                <h3 className="text-lg leading-6 font-medium text-primary">{translate('dashboard.logistics')}</h3>
+                <p className="mt-1 max-w-2xl text-sm text-gray-500">{translate('logistics.track')} & {translate('logistics.book')}</p>
               </CardHeader>
               <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
                 <div className="p-6 bg-blue-50 rounded-lg text-center">
-                  <h3 className="text-lg font-medium mb-2">Logistics Dashboard</h3>
-                  <p className="mb-4">View the full logistics dashboard by clicking the button below or selecting "Documents & Logistics" from the sidebar</p>
+                  <h3 className="text-lg font-medium mb-2">{translate('dashboard.logistics')}</h3>
+                  <p className="mb-4">{translate('logistics.providers')}</p>
                   <div className="flex justify-center">
-                    <Link href="/documents">
-                      <Button>Go to Documents & Logistics</Button>
+                    <Link href="/logistics">
+                      <Button>{translate('actions.view')} {translate('nav.logistics')}</Button>
                     </Link>
                   </div>
                 </div>

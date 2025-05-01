@@ -58,6 +58,8 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.riskAssessment': 'Risk Assessment',
     'dashboard.financial': 'Financial Dashboard',
     'dashboard.risk': 'Risk Intelligence',
+    'dashboard.regulatory': 'Regulatory AI',
+    'dashboard.logistics': 'Logistics',
     'dashboard.translation': 'Translation Tool',
     'dashboard.lastUpdated': 'Last updated:',
     'dashboard.totalTradeVolume': 'Total Trade Volume',
@@ -75,6 +77,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.analyzeRisk': 'Analyze your trade portfolio risk factors',
     'dashboard.aiTranslation': 'AI-Enhanced Translation System',
     'dashboard.aiTranslationDesc': 'BlockFinaX uses advanced AI translation to break language barriers in international trade',
+    'dashboard.aiRegulatoryDesc': 'AI-powered guidance for navigating international trade regulations',
     
     // Contracts
     'contracts.create': 'Create Contract',
@@ -137,6 +140,18 @@ const translations: Record<Language, Record<string, string>> = {
     'translation.selectLanguage': 'Please select a language other than English to see the translation',
     'translation.withVariables': 'You are currently using {{language}} as your preferred language. There are {{count}} supported languages in the system.',
     'translation.withComponents': 'Click the <bold>highlighted text</bold> or <button>this button</button> to perform an action.',
+    
+    // Regulatory AI
+    'regulatory.description': 'Our Export Regulatory Assistant helps traders navigate the complex landscape of international export regulations by providing guidance tailored to specific products and destinations.',
+    'regulatory.documentation': 'Required Documentation',
+    'regulatory.documentationDesc': 'Understand what paperwork is needed for your export',
+    'regulatory.tariffs': 'Tariffs & Duties',
+    'regulatory.tariffsDesc': 'Get insights on applicable tariffs for your goods',
+    'regulatory.compliance': 'Compliance Requirements',
+    'regulatory.complianceDesc': 'Learn about relevant regulations and standards',
+    'regulatory.restrictions': 'Restrictions & Prohibitions',
+    'regulatory.restrictionsDesc': 'Identify potential import restrictions at destination',
+    'regulatory.accessFull': 'Access Full Regulatory AI Assistant',
   },
   es: {
     // Spanish translations
