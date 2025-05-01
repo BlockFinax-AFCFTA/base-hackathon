@@ -221,6 +221,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.recentTransactions': 'Transações Recentes',
     'dashboard.activeContracts': 'Contratos Ativos',
     'dashboard.riskAssessment': 'Avaliação de Risco',
+    'dashboard.aiTranslationDesc': 'BlockFinaX usa tradução avançada por IA para quebrar barreiras linguísticas no comércio internacional',
     
     'contracts.create': 'Criar Contrato',
     'contracts.status.draft': 'Rascunho',
@@ -263,6 +264,10 @@ const translations: Record<Language, Record<string, string>> = {
     'actions.register': 'Registrar',
     
     'language.select': 'Selecionar Idioma',
+    
+    'translation.demo': 'Demonstração de Tradução',
+    'translation.withVariables': 'Você está usando {{language}} como seu idioma preferido. Existem {{count}} idiomas suportados no sistema.',
+    'translation.withComponents': 'Clique no <bold>texto destacado</bold> ou <button>este botão</button> para realizar uma ação.',
   },
   fr: {
     // French translations
@@ -282,6 +287,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.recentTransactions': 'Transactions Récentes',
     'dashboard.activeContracts': 'Contrats Actifs',
     'dashboard.riskAssessment': 'Évaluation des Risques',
+    'dashboard.aiTranslationDesc': 'BlockFinaX utilise la traduction avancée par IA pour éliminer les barrières linguistiques dans le commerce international',
     
     'contracts.create': 'Créer un Contrat',
     'contracts.status.draft': 'Brouillon',
@@ -324,6 +330,10 @@ const translations: Record<Language, Record<string, string>> = {
     'actions.register': 'S\'inscrire',
     
     'language.select': 'Sélectionner la Langue',
+    
+    'translation.demo': 'Démo de Traduction',
+    'translation.withVariables': 'Vous utilisez actuellement {{language}} comme langue préférée. Il y a {{count}} langues prises en charge dans le système.',
+    'translation.withComponents': 'Cliquez sur le <bold>texte en gras</bold> ou <button>ce bouton</button> pour effectuer une action.',
   },
   ar: {
     // Arabic translations
@@ -343,6 +353,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.recentTransactions': 'المعاملات الأخيرة',
     'dashboard.activeContracts': 'العقود النشطة',
     'dashboard.riskAssessment': 'تقييم المخاطر',
+    'dashboard.aiTranslationDesc': 'يستخدم BlockFinaX الترجمة المتقدمة بالذكاء الاصطناعي لكسر حواجز اللغة في التجارة الدولية',
     
     'contracts.create': 'إنشاء عقد',
     'contracts.status.draft': 'مسودة',
@@ -385,6 +396,10 @@ const translations: Record<Language, Record<string, string>> = {
     'actions.register': 'التسجيل',
     
     'language.select': 'اختر اللغة',
+    
+    'translation.demo': 'عرض توضيحي للترجمة',
+    'translation.withVariables': 'أنت تستخدم حاليًا {{language}} كلغتك المفضلة. هناك {{count}} لغات مدعومة في النظام.',
+    'translation.withComponents': 'انقر على <bold>النص المميز</bold> أو <button>هذا الزر</button> لتنفيذ إجراء.',
   },
 
 };
@@ -482,18 +497,23 @@ interface I18nTransProps {
 export const Trans: React.FC<I18nTransProps> = ({ i18nKey, values, components }) => {
   const { t } = useTranslation();
   
+  // Simple approach - just use the translated string directly
+  // We'll handle component replacement in a simpler way
+  const translatedText = t(i18nKey, values || {});
+  
+  // If there are no components, return the translated text directly
   if (!components) {
-    return <>{t(i18nKey, values)}</>;
+    return <>{translatedText}</>;
   }
   
-  // For complex translations with components, use the imported Trans as I18nTrans
-  return (
-    <I18nTrans
-      i18nKey={i18nKey}
-      values={values}
-      components={components}
-    />
-  );
+  try {
+    // When components are present, use I18nTrans directly but with a workaround
+    // This will return the unformatted translation string if there's an issue
+    return <I18nTrans t={t} i18nKey={i18nKey} values={values}>{translatedText}</I18nTrans>;
+  } catch (error) {
+    console.error("Error in Trans component:", error);
+    return <>{translatedText}</>;
+  }
 };
 
 // Re-export i18next 
