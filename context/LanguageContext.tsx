@@ -1,4 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import i18n from 'i18next';
+import { initReactI18next, useTranslation } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
 // Define available languages - only official African Union languages
 export type Language = 'en' | 'fr' | 'ar' | 'pt' | 'es';
@@ -380,14 +383,49 @@ const translations: Record<Language, Record<string, string>> = {
 
 };
 
+// Initialize i18next
+i18n
+  .use(initReactI18next) // passes i18n down to react-i18next
+  .use(LanguageDetector) // detects user language
+  .init({
+    resources: {
+      en: { translation: translations.en },
+      fr: { translation: translations.fr },
+      ar: { translation: translations.ar },
+      pt: { translation: translations.pt },
+      es: { translation: translations.es }
+    },
+    fallbackLng: 'en',
+    interpolation: {
+      escapeValue: false // react already escapes values
+    },
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage']
+    }
+  });
+
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('en');
+  const { t } = useTranslation();
+  const [language, setLanguageState] = useState<Language>('en');
+
+  // Create a wrapped setLanguage function that also updates i18next
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    i18n.changeLanguage(lang);
+  };
 
   // Load language preference from localStorage on mount
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage && Object.keys(translations).includes(savedLanguage)) {
       setLanguage(savedLanguage);
+    } else {
+      // Use the language detected by i18next if no saved preference
+      const detectedLang = i18n.language.split('-')[0] as Language; 
+      if (languageOptions.some(option => option.code === detectedLang)) {
+        setLanguage(detectedLang);
+      }
     }
   }, []);
 
@@ -396,20 +434,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     localStorage.setItem('language', language);
   }, [language]);
 
-  // Function to get translation for a key
+  // Function to get translation for a key using i18next
   const translate = (key: string): string => {
-    // Try to find the key in the current language
-    if (translations[language] && translations[language][key]) {
-      return translations[language][key];
-    }
-    
-    // Fallback to English if the key doesn't exist in current language
-    if (translations.en && translations.en[key]) {
-      return translations.en[key];
-    }
-    
-    // Return the key itself if no translation found
-    return key;
+    // Use i18next's t function, which will handle fallbacks automatically
+    return t(key) || key;
   };
 
   // Function to translate dynamic content using our local translation service
@@ -437,5 +465,33 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
 
 // Custom hook to use the language context
 export const useLanguage = () => useContext(LanguageContext);
+
+// Create a simple Trans component for complex translations with variables
+interface I18nTransProps {
+  i18nKey: string;
+  values?: Record<string, string | number>;
+  components?: Record<string, React.ReactNode>;
+}
+
+export const Trans: React.FC<I18nTransProps> = ({ i18nKey, values, components }) => {
+  const { t } = useTranslation();
+  
+  if (!components) {
+    return <>{t(i18nKey, values)}</>;
+  }
+  
+  // For complex translations with components, use the Trans component from react-i18next
+  const TransComponent = require('react-i18next').Trans;
+  return (
+    <TransComponent
+      i18nKey={i18nKey}
+      values={values}
+      components={components}
+    />
+  );
+};
+
+// Re-export i18next 
+export { i18n };
 
 export default LanguageContext;
