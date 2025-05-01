@@ -135,6 +135,8 @@ const translations: Record<Language, Record<string, string>> = {
     'translation.examples': 'Examples',
     'translation.enterEnglish': 'Enter English text to translate',
     'translation.selectLanguage': 'Please select a language other than English to see the translation',
+    'translation.withVariables': 'You are currently using {{language}} as your preferred language. There are {{count}} supported languages in the system.',
+    'translation.withComponents': 'Click the <bold>highlighted text</bold> or <button>this button</button> to perform an action.',
   },
   es: {
     // Spanish translations
@@ -196,6 +198,10 @@ const translations: Record<Language, Record<string, string>> = {
     'actions.register': 'Registrarse',
     
     'language.select': 'Seleccionar Idioma',
+    
+    'translation.demo': 'Demostración de Traducción',
+    'translation.withVariables': 'Actualmente estás usando {{language}} como tu idioma preferido. Hay {{count}} idiomas compatibles en el sistema.',
+    'translation.withComponents': 'Haz clic en el <bold>texto resaltado</bold> o <button>este botón</button> para realizar una acción.',
   },
   pt: {
     // Portuguese translations
@@ -480,10 +486,9 @@ export const Trans: React.FC<I18nTransProps> = ({ i18nKey, values, components })
     return <>{t(i18nKey, values)}</>;
   }
   
-  // For complex translations with components, use the Trans component from react-i18next
-  const TransComponent = require('react-i18next').Trans;
+  // For complex translations with components, use the imported Trans as I18nTrans
   return (
-    <TransComponent
+    <I18nTrans
       i18nKey={i18nKey}
       values={values}
       components={components}
