@@ -65,24 +65,48 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-// Sample country data
+// Sample country data with currency information
 const COUNTRIES = [
-  { code: 'US', name: 'United States', region: 'North America' },
-  { code: 'GB', name: 'United Kingdom', region: 'Europe' },
-  { code: 'DE', name: 'Germany', region: 'Europe' },
-  { code: 'FR', name: 'France', region: 'Europe' },
-  { code: 'JP', name: 'Japan', region: 'Asia' },
-  { code: 'CN', name: 'China', region: 'Asia' },
-  { code: 'IN', name: 'India', region: 'Asia' },
-  { code: 'BR', name: 'Brazil', region: 'South America' },
-  { code: 'AU', name: 'Australia', region: 'Oceania' },
-  { code: 'ZA', name: 'South Africa', region: 'Africa' },
-  { code: 'NG', name: 'Nigeria', region: 'Africa' },
-  { code: 'EG', name: 'Egypt', region: 'Africa' },
-  { code: 'SA', name: 'Saudi Arabia', region: 'Middle East' },
-  { code: 'AE', name: 'UAE', region: 'Middle East' },
-  { code: 'SG', name: 'Singapore', region: 'Asia' },
+  { code: 'US', name: 'United States', region: 'North America', currency: 'USD', symbol: '$', exchangeRate: 1.0 },
+  { code: 'GB', name: 'United Kingdom', region: 'Europe', currency: 'GBP', symbol: '£', exchangeRate: 0.78 },
+  { code: 'DE', name: 'Germany', region: 'Europe', currency: 'EUR', symbol: '€', exchangeRate: 0.92 },
+  { code: 'FR', name: 'France', region: 'Europe', currency: 'EUR', symbol: '€', exchangeRate: 0.92 },
+  { code: 'JP', name: 'Japan', region: 'Asia', currency: 'JPY', symbol: '¥', exchangeRate: 109.32 },
+  { code: 'CN', name: 'China', region: 'Asia', currency: 'CNY', symbol: '¥', exchangeRate: 7.23 },
+  { code: 'IN', name: 'India', region: 'Asia', currency: 'INR', symbol: '₹', exchangeRate: 83.29 },
+  { code: 'BR', name: 'Brazil', region: 'South America', currency: 'BRL', symbol: 'R$', exchangeRate: 5.09 },
+  { code: 'AU', name: 'Australia', region: 'Oceania', currency: 'AUD', symbol: 'A$', exchangeRate: 1.49 },
+  // African countries with their currencies
+  { code: 'ZA', name: 'South Africa', region: 'Africa', currency: 'ZAR', symbol: 'R', exchangeRate: 18.62 },
+  { code: 'NG', name: 'Nigeria', region: 'Africa', currency: 'NGN', symbol: '₦', exchangeRate: 1464.02 },
+  { code: 'EG', name: 'Egypt', region: 'Africa', currency: 'EGP', symbol: 'E£', exchangeRate: 48.27 },
+  { code: 'KE', name: 'Kenya', region: 'Africa', currency: 'KES', symbol: 'KSh', exchangeRate: 129.05 },
+  { code: 'GH', name: 'Ghana', region: 'Africa', currency: 'GHS', symbol: 'GH₵', exchangeRate: 14.98 },
+  { code: 'ET', name: 'Ethiopia', region: 'Africa', currency: 'ETB', symbol: 'Br', exchangeRate: 56.86 },
+  { code: 'TZ', name: 'Tanzania', region: 'Africa', currency: 'TZS', symbol: 'TSh', exchangeRate: 2580.85 },
+  { code: 'MA', name: 'Morocco', region: 'Africa', currency: 'MAD', symbol: 'DH', exchangeRate: 9.95 },
+  { code: 'CI', name: 'Ivory Coast', region: 'Africa', currency: 'XOF', symbol: 'CFA', exchangeRate: 601.10 },
+  { code: 'SN', name: 'Senegal', region: 'Africa', currency: 'XOF', symbol: 'CFA', exchangeRate: 601.10 },
+  { code: 'RW', name: 'Rwanda', region: 'Africa', currency: 'RWF', symbol: 'FRw', exchangeRate: 1247.86 },
+  // Middle East
+  { code: 'SA', name: 'Saudi Arabia', region: 'Middle East', currency: 'SAR', symbol: '﷼', exchangeRate: 3.75 },
+  { code: 'AE', name: 'UAE', region: 'Middle East', currency: 'AED', symbol: 'د.إ', exchangeRate: 3.67 },
+  { code: 'SG', name: 'Singapore', region: 'Asia', currency: 'SGD', symbol: 'S$', exchangeRate: 1.33 },
 ];
+
+// Helper function to convert prices to local currency
+const convertToLocalCurrency = (priceUSD: number, countryName: string) => {
+  const country = COUNTRIES.find(c => c.name === countryName);
+  if (!country) return { value: priceUSD, symbol: '$', currency: 'USD' };
+  
+  const convertedPrice = priceUSD * country.exchangeRate;
+  return {
+    value: convertedPrice,
+    symbol: country.symbol,
+    currency: country.currency,
+    formatted: `${country.symbol}${convertedPrice.toFixed(2)} ${country.currency}`
+  };
+};
 
 // Product categories
 const PRODUCT_CATEGORIES = [
@@ -318,7 +342,20 @@ const ProductCard = ({ product, onViewDetails }: { product: any, onViewDetails: 
         <p className="text-gray-600 text-sm mt-2 line-clamp-2">{product.description}</p>
         <div className="mt-auto pt-4">
           <div className="flex justify-between items-center mb-3">
-            <div className="text-lg font-bold">${product.price.toFixed(2)}<span className="text-sm font-normal text-gray-600">/{product.unit}</span></div>
+            <div className="flex flex-col">
+              <div className="text-lg font-bold">
+                {(() => {
+                  const localPrice = convertToLocalCurrency(product.price, product.origin);
+                  return (
+                    <>
+                      {localPrice.symbol}{localPrice.value.toFixed(2)} <span className="text-xs text-gray-500">{localPrice.currency}</span>
+                    </>
+                  );
+                })()}
+                <span className="text-sm font-normal text-gray-600">/{product.unit}</span>
+              </div>
+              <div className="text-xs text-gray-500">(${product.price.toFixed(2)} USD)</div>
+            </div>
             <div className="text-xs text-gray-600">Min: {product.minOrder} {product.unit}s</div>
           </div>
           <Button 
@@ -655,7 +692,21 @@ const MarketplaceTabContent: React.FC = () => {
               
               <div>
                 <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                  <div className="mb-1 text-2xl font-bold">${selectedProduct.price.toFixed(2)}<span className="text-sm font-normal text-gray-600">/{selectedProduct.unit}</span></div>
+                  <div className="mb-1">
+                    {(() => {
+                      const localPrice = convertToLocalCurrency(selectedProduct.price, selectedProduct.origin);
+                      return (
+                        <div>
+                          <div className="text-2xl font-bold">
+                            {localPrice.symbol}{localPrice.value.toFixed(2)} 
+                            <span className="text-sm font-medium text-gray-700">{localPrice.currency}</span>
+                            <span className="text-sm font-normal text-gray-600 ml-1">/{selectedProduct.unit}</span>
+                          </div>
+                          <div className="text-sm text-gray-500">(${selectedProduct.price.toFixed(2)} USD)</div>
+                        </div>
+                      );
+                    })()}
+                  </div>
                   <div className="text-sm text-gray-600 mb-3">
                     Minimum order: {selectedProduct.minOrder} {selectedProduct.unit}s
                   </div>
@@ -750,32 +801,76 @@ const MarketplaceTabContent: React.FC = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Unit Price:</span>
-                    <span>${selectedProduct.price.toFixed(2)} per {selectedProduct.unit}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Subtotal:</span>
-                    <span>${(selectedProduct.price * quantity).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Estimated Shipping:</span>
-                    <span>${(quantity * 2).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Escrow Service Fee:</span>
-                    <span>${(selectedProduct.price * quantity * 0.02).toFixed(2)}</span>
-                  </div>
+                  {(() => {
+                    const localPrice = convertToLocalCurrency(selectedProduct.price, selectedProduct.origin);
+                    const localShipping = convertToLocalCurrency(2, selectedProduct.origin); // $2 per unit shipping
+                    const localServiceFee = convertToLocalCurrency(selectedProduct.price * 0.02, selectedProduct.origin); // 2% service fee
+                    return (
+                      <>
+                        <div className="flex justify-between text-sm">
+                          <span>Unit Price:</span>
+                          <div className="text-right">
+                            <div>{localPrice.symbol}{localPrice.value.toFixed(2)} {localPrice.currency} per {selectedProduct.unit}</div>
+                            <div className="text-xs text-gray-500">(${selectedProduct.price.toFixed(2)} USD)</div>
+                          </div>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Subtotal:</span>
+                          <div className="text-right">
+                            <div>{localPrice.symbol}{(localPrice.value * quantity).toFixed(2)} {localPrice.currency}</div>
+                            <div className="text-xs text-gray-500">(${(selectedProduct.price * quantity).toFixed(2)} USD)</div>
+                          </div>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Estimated Shipping:</span>
+                          <div className="text-right">
+                            <div>{localShipping.symbol}{(localShipping.value * quantity).toFixed(2)} {localShipping.currency}</div>
+                            <div className="text-xs text-gray-500">(${(quantity * 2).toFixed(2)} USD)</div>
+                          </div>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Escrow Service Fee:</span>
+                          <div className="text-right">
+                            <div>{localServiceFee.symbol}{(localServiceFee.value * quantity).toFixed(2)} {localServiceFee.currency}</div>
+                            <div className="text-xs text-gray-500">(${(selectedProduct.price * quantity * 0.02).toFixed(2)} USD)</div>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
               
               <div className="flex justify-between items-center font-bold text-lg">
                 <span>Total:</span>
-                <span>${(
-                  selectedProduct.price * quantity + // Subtotal
-                  quantity * 2 + // Shipping
-                  selectedProduct.price * quantity * 0.02 // Escrow fee
-                ).toFixed(2)}</span>
+                {(() => {
+                  const localPrice = convertToLocalCurrency(selectedProduct.price, selectedProduct.origin);
+                  const localShipping = convertToLocalCurrency(2, selectedProduct.origin);
+                  const localServiceFee = convertToLocalCurrency(selectedProduct.price * 0.02, selectedProduct.origin);
+                  
+                  const localTotal = (
+                    localPrice.value * quantity + // Subtotal
+                    localShipping.value * quantity + // Shipping
+                    localServiceFee.value * quantity // Escrow fee
+                  );
+                  
+                  const usdTotal = (
+                    selectedProduct.price * quantity + // Subtotal
+                    quantity * 2 + // Shipping
+                    selectedProduct.price * quantity * 0.02 // Escrow fee
+                  );
+                  
+                  return (
+                    <div className="text-right">
+                      <div>
+                        {localPrice.symbol}{localTotal.toFixed(2)} {localPrice.currency}
+                      </div>
+                      <div className="text-xs text-gray-500 font-normal">
+                        (${usdTotal.toFixed(2)} USD)
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
               
               <div className="bg-blue-50 border border-blue-200 rounded-md p-4 text-sm space-y-2">
