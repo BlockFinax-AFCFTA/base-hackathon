@@ -12,11 +12,13 @@ import { useAppContext } from '@/hooks/useAppContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '../../../../context/LanguageContext';
 
 const Sidebar = () => {
   const [location] = useLocation();
   const { account, user } = useWeb3();
   const { sidebarOpen, toggleSidebar } = useAppContext();
+  const { translate } = useLanguage();
 
   const sidebarClasses = sidebarOpen 
     ? "fixed inset-0 z-40 flex md:static md:inset-auto md:flex md:flex-shrink-0 transform translate-x-0 transition-transform duration-200 ease-in-out"
@@ -50,7 +52,7 @@ const Sidebar = () => {
     <aside className={sidebarClasses}>
       <div className="flex flex-col w-64 border-r border-gray-200 bg-white">
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
-          <h1 className="text-xl font-bold text-primary">BlockFinaX</h1>
+          <h1 className="text-xl font-bold text-primary">{translate('app.title')}</h1>
           <Button 
             variant="ghost" 
             size="icon" 
@@ -65,56 +67,56 @@ const Sidebar = () => {
             <NavItem 
               href="/" 
               icon={<Home className="mr-3 h-5 w-5" />} 
-              label="Dashboard" 
+              label={translate('nav.dashboard')} 
               active={isActive("/")} 
             />
 
             <NavItem 
               href="/contracts" 
               icon={<FileText className="mr-3 h-5 w-5" />} 
-              label="Contracts" 
+              label={translate('nav.contracts')} 
               active={isGroupActive(["/contracts"])} 
             />
 
             <NavItem 
               href="/wallet" 
               icon={<Wallet className="mr-3 h-5 w-5" />} 
-              label="Wallet" 
+              label={translate('nav.wallet')} 
               active={isGroupActive(["/wallet"])} 
             />
 
             <NavItem 
               href="/invoices" 
               icon={<Receipt className="mr-3 h-5 w-5" />} 
-              label="Invoices" 
+              label={translate('nav.invoices')} 
               active={isGroupActive(["/invoices"])} 
             />
 
             <NavItem 
               href="/trade-finance" 
               icon={<Globe className="mr-3 h-5 w-5" />} 
-              label="Trade Finance" 
+              label={translate('nav.tradeFinance')} 
               active={isGroupActive(["/trade-finance"])} 
             />
 
             <NavItem 
               href="/documents" 
               icon={<Upload className="mr-3 h-5 w-5" />} 
-              label="Documents" 
+              label={translate('nav.documents')} 
               active={isGroupActive(["/documents"])} 
             />
 
             <NavItem 
               href="/logistics" 
               icon={<svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 17h4V5H2v12h3" /><path d="M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5" /><path d="M14 17h1" /><circle cx="7.5" cy="17.5" r="2.5" /><circle cx="17.5" cy="17.5" r="2.5" /></svg>} 
-              label="Logistics" 
+              label={translate('nav.logistics')} 
               active={isGroupActive(["/logistics"])} 
             />
 
             <NavItem 
               href="/kyc" 
               icon={<UserCheck className="mr-3 h-5 w-5" />} 
-              label="Identity Verification" 
+              label={translate('nav.kyc')} 
               active={isGroupActive(["/kyc", "/passport"])} 
             />
           </nav>
@@ -125,8 +127,8 @@ const Sidebar = () => {
               {user && (
                 <div className="p-2 px-3">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs text-gray-500">Identity Verification</span>
-                    <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">Verified</Badge>
+                    <span className="text-xs text-gray-500">{translate('nav.kyc')}</span>
+                    <Badge variant="outline" className="bg-green-100 text-green-800 hover:bg-green-100">{translate('kyc.status')}</Badge>
                   </div>
                 </div>
               )}
