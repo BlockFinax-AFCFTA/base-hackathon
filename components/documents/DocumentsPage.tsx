@@ -5,9 +5,11 @@ import DocumentList from './DocumentList';
 import DocumentUpload from './DocumentUpload';
 import LogisticsPage from '../logistics/LogisticsPage';
 import { Upload, Truck } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const DocumentsPage = () => {
   const [location] = useLocation();
+  const { translate } = useLanguage();
   
   if (location === '/documents/upload') {
     return <DocumentUpload />;
@@ -19,11 +21,11 @@ const DocumentsPage = () => {
             <TabsList>
               <TabsTrigger value="documents" className="flex items-center gap-2">
                 <Upload className="h-4 w-4" />
-                <span>Documents</span>
+                <span>{translate('documents.title')}</span>
               </TabsTrigger>
               <TabsTrigger value="logistics" className="flex items-center gap-2">
                 <Truck className="h-4 w-4" />
-                <span>Logistics</span>
+                <span>{translate('documents.logistics')}</span>
               </TabsTrigger>
             </TabsList>
           </div>

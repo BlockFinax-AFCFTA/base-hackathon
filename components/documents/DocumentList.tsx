@@ -18,6 +18,7 @@ import { Link } from 'wouter';
 import { useDocuments } from '@/hooks/useDocuments';
 import { Document, formatFileSize, getDocumentIcon } from '@/types/document';
 import { format } from 'date-fns';
+import { useLanguage } from '../../context/LanguageContext';
 import { useToast } from '@/hooks/use-toast';
 import {
   Dialog,
@@ -32,6 +33,7 @@ import {
 const DocumentList = () => {
   const { documents, isLoading, deleteDocument, isDeleting } = useDocuments();
   const { toast } = useToast();
+  const { translate } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
