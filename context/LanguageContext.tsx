@@ -1,30 +1,15 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
-// Define available languages
-export type Language = 'en' | 'es' | 'zh' | 'fr' | 'ar' | 'ru' | 'sw' | 'am' | 'ha' | 'yo' | 'ig' | 'zu' | 'xh' | 'st' | 'mg';
+// Define available languages - only official African Union languages
+export type Language = 'en' | 'fr' | 'ar' | 'pt' | 'es';
 
-// Languages include major African Union languages
+// Official languages of the African Union only
 export const languageOptions = [
-  // Global languages
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'ar', name: 'العربية', flag: '🇪🇬' },
-  
-  // African Union languages
-  { code: 'sw', name: 'Kiswahili', flag: '🇹🇿' },   // Tanzania/Kenya/East Africa
-  { code: 'am', name: 'አማርኛ', flag: '🇪🇹' },        // Amharic - Ethiopia
-  { code: 'ha', name: 'Hausa', flag: '🇳🇬' },       // Nigeria/Niger/Ghana
-  { code: 'yo', name: 'Yorùbá', flag: '🇳🇬' },      // Nigeria/Benin
-  { code: 'ig', name: 'Igbo', flag: '🇳🇬' },        // Nigeria
-  { code: 'zu', name: 'isiZulu', flag: '🇿🇦' },     // South Africa
-  { code: 'xh', name: 'isiXhosa', flag: '🇿🇦' },    // South Africa
-  { code: 'st', name: 'Sesotho', flag: '🇱🇸' },     // Lesotho/South Africa
-  { code: 'mg', name: 'Malagasy', flag: '🇲🇬' },    // Madagascar
-  
-  // Other global languages
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-  { code: 'zh', name: '中文', flag: '🇨🇳' },
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+  { code: 'en', name: 'English', flag: '🇺🇸', region: 'African Union Official' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', region: 'African Union Official' },
+  { code: 'ar', name: 'العربية', flag: '🇪🇬', region: 'African Union Official' },
+  { code: 'pt', name: 'Português', flag: '🇵🇹', region: 'African Union Official' },
+  { code: 'es', name: 'Español', flag: '🇪🇸', region: 'African Union Official' },
 ];
 
 interface LanguageContextType {
@@ -47,62 +32,6 @@ interface LanguageProviderProps {
 
 // Default translations for key phrases
 const translations: Record<Language, Record<string, string>> = {
-  // New African languages
-  sw: {
-    // Swahili translations
-    'app.title': 'BlockFinaX',
-    'app.slogan': 'Fedha za Biashara Salama kwa Biashara ya Kimataifa',
-    'app.welcome': 'Karibu kwenye BlockFinaX',
-    
-    'nav.dashboard': 'Dashibodi',
-    'nav.contracts': 'Mikataba',
-    'nav.wallet': 'Pochi',
-    'nav.documents': 'Nyaraka',
-    'nav.logistics': 'Usafirishaji',
-    'nav.tradeFinance': 'Ufadhili wa Biashara',
-    'nav.kyc': 'Uthibitishaji wa Utambulisho',
-    
-    'dashboard.overview': 'Muhtasari',
-    'dashboard.recentTransactions': 'Miamala ya Hivi Karibuni',
-    'dashboard.activeContracts': 'Mikataba Inayoendelea',
-    'dashboard.riskAssessment': 'Tathmini ya Hatari',
-
-    'language.select': 'Chagua Lugha',
-  },
-  
-  // Add minimal translations for other African languages (placeholders)
-  am: { 
-    'app.title': 'BlockFinaX',
-    'language.select': 'ቋንቋ ይምረጡ' 
-  }, // Amharic
-  ha: { 
-    'app.title': 'BlockFinaX',
-    'language.select': 'Zaɓi Harshe' 
-  }, // Hausa
-  yo: { 
-    'app.title': 'BlockFinaX',
-    'language.select': 'Yan Èdè' 
-  }, // Yoruba
-  ig: { 
-    'app.title': 'BlockFinaX',
-    'language.select': 'Họrọ Asụsụ' 
-  }, // Igbo
-  zu: { 
-    'app.title': 'BlockFinaX',
-    'language.select': 'Khetha Ulimi' 
-  }, // Zulu
-  xh: { 
-    'app.title': 'BlockFinaX',
-    'language.select': 'Khetha Ulwimi' 
-  }, // Xhosa
-  st: { 
-    'app.title': 'BlockFinaX',
-    'language.select': 'Kgetha Puo' 
-  }, // Sesotho
-  mg: { 
-    'app.title': 'BlockFinaX',
-    'language.select': 'Fidio fiteny' 
-  }, // Malagasy
   
   en: {
     // General
@@ -265,66 +194,66 @@ const translations: Record<Language, Record<string, string>> = {
     
     'language.select': 'Seleccionar Idioma',
   },
-  zh: {
-    // Chinese translations
+  pt: {
+    // Portuguese translations
     'app.title': 'BlockFinaX',
-    'app.slogan': '为全球贸易提供安全贸易融资',
-    'app.welcome': '欢迎使用BlockFinaX',
+    'app.slogan': 'Financiamento Comercial Seguro para o Comércio Global',
+    'app.welcome': 'Bem-vindo ao BlockFinaX',
     
-    'nav.dashboard': '仪表板',
-    'nav.contracts': '合同',
-    'nav.wallet': '钱包',
-    'nav.documents': '文档',
-    'nav.logistics': '物流',
-    'nav.tradeFinance': '贸易融资',
-    'nav.kyc': '身份验证',
+    'nav.dashboard': 'Painel',
+    'nav.contracts': 'Contratos',
+    'nav.wallet': 'Carteira',
+    'nav.documents': 'Documentos',
+    'nav.logistics': 'Logística',
+    'nav.tradeFinance': 'Financiamento Comercial',
+    'nav.kyc': 'Verificação de Identidade',
     
-    'dashboard.overview': '概览',
-    'dashboard.recentTransactions': '最近交易',
-    'dashboard.activeContracts': '活跃合同',
-    'dashboard.riskAssessment': '风险评估',
+    'dashboard.overview': 'Visão Geral',
+    'dashboard.recentTransactions': 'Transações Recentes',
+    'dashboard.activeContracts': 'Contratos Ativos',
+    'dashboard.riskAssessment': 'Avaliação de Risco',
     
-    'contracts.create': '创建合同',
-    'contracts.status.draft': '草稿',
-    'contracts.status.awaitingFunds': '等待资金',
-    'contracts.status.funded': '已注资',
-    'contracts.status.goodsShipped': '商品已发货',
-    'contracts.status.goodsReceived': '商品已收到',
-    'contracts.status.completed': '已完成',
+    'contracts.create': 'Criar Contrato',
+    'contracts.status.draft': 'Rascunho',
+    'contracts.status.awaitingFunds': 'Aguardando Fundos',
+    'contracts.status.funded': 'Financiado',
+    'contracts.status.goodsShipped': 'Mercadorias Enviadas',
+    'contracts.status.goodsReceived': 'Mercadorias Recebidas',
+    'contracts.status.completed': 'Concluído',
     
-    'wallet.balance': '余额',
-    'wallet.send': '发送',
-    'wallet.receive': '接收',
-    'wallet.transactions': '交易',
-    'wallet.fundEscrow': '托管资金',
+    'wallet.balance': 'Saldo',
+    'wallet.send': 'Enviar',
+    'wallet.receive': 'Receber',
+    'wallet.transactions': 'Transações',
+    'wallet.fundEscrow': 'Fundos em Custódia',
     
-    'documents.upload': '上传文档',
-    'documents.verify': '验证文档',
-    'documents.share': '分享文档',
+    'documents.upload': 'Carregar Documento',
+    'documents.verify': 'Verificar Documento',
+    'documents.share': 'Compartilhar Documento',
     
-    'logistics.book': '预订运输',
-    'logistics.track': '追踪运输',
-    'logistics.providers': '物流提供商',
+    'logistics.book': 'Reservar Envio',
+    'logistics.track': 'Rastrear Envio',
+    'logistics.providers': 'Provedores de Logística',
     
-    'finance.apply': '申请融资',
-    'finance.status': '申请状态',
+    'finance.apply': 'Solicitar Financiamento',
+    'finance.status': 'Status da Solicitação',
     
-    'kyc.verify': '验证身份',
-    'kyc.status': '验证状态',
+    'kyc.verify': 'Verificar Identidade',
+    'kyc.status': 'Status de Verificação',
     
-    'actions.save': '保存',
-    'actions.cancel': '取消',
-    'actions.confirm': '确认',
-    'actions.edit': '编辑',
-    'actions.delete': '删除',
-    'actions.view': '查看',
-    'actions.search': '搜索',
-    'actions.filter': '筛选',
-    'actions.more': '更多',
-    'actions.login': '登录',
-    'actions.register': '注册',
+    'actions.save': 'Salvar',
+    'actions.cancel': 'Cancelar',
+    'actions.confirm': 'Confirmar',
+    'actions.edit': 'Editar',
+    'actions.delete': 'Excluir',
+    'actions.view': 'Visualizar',
+    'actions.search': 'Pesquisar',
+    'actions.filter': 'Filtrar',
+    'actions.more': 'Mais',
+    'actions.login': 'Entrar',
+    'actions.register': 'Registrar',
     
-    'language.select': '选择语言',
+    'language.select': 'Selecionar Idioma',
   },
   fr: {
     // French translations
@@ -448,67 +377,7 @@ const translations: Record<Language, Record<string, string>> = {
     
     'language.select': 'اختر اللغة',
   },
-  ru: {
-    // Russian translations
-    'app.title': 'BlockFinaX',
-    'app.slogan': 'Безопасное Торговое Финансирование для Мировой Торговли',
-    'app.welcome': 'Добро пожаловать в BlockFinaX',
-    
-    'nav.dashboard': 'Панель Управления',
-    'nav.contracts': 'Контракты',
-    'nav.wallet': 'Кошелек',
-    'nav.documents': 'Документы',
-    'nav.logistics': 'Логистика',
-    'nav.tradeFinance': 'Торговое Финансирование',
-    'nav.kyc': 'Верификация Личности',
-    
-    'dashboard.overview': 'Обзор',
-    'dashboard.recentTransactions': 'Последние Транзакции',
-    'dashboard.activeContracts': 'Активные Контракты',
-    'dashboard.riskAssessment': 'Оценка Рисков',
-    
-    'contracts.create': 'Создать Контракт',
-    'contracts.status.draft': 'Черновик',
-    'contracts.status.awaitingFunds': 'Ожидание Средств',
-    'contracts.status.funded': 'Финансировано',
-    'contracts.status.goodsShipped': 'Товары Отправлены',
-    'contracts.status.goodsReceived': 'Товары Получены',
-    'contracts.status.completed': 'Завершено',
-    
-    'wallet.balance': 'Баланс',
-    'wallet.send': 'Отправить',
-    'wallet.receive': 'Получить',
-    'wallet.transactions': 'Транзакции',
-    'wallet.fundEscrow': 'Финансировать Депозит',
-    
-    'documents.upload': 'Загрузить Документ',
-    'documents.verify': 'Проверить Документ',
-    'documents.share': 'Поделиться Документом',
-    
-    'logistics.book': 'Заказать Перевозку',
-    'logistics.track': 'Отследить Перевозку',
-    'logistics.providers': 'Логистические Провайдеры',
-    
-    'finance.apply': 'Подать Заявку на Финансирование',
-    'finance.status': 'Статус Заявки',
-    
-    'kyc.verify': 'Проверить Личность',
-    'kyc.status': 'Статус Проверки',
-    
-    'actions.save': 'Сохранить',
-    'actions.cancel': 'Отменить',
-    'actions.confirm': 'Подтвердить',
-    'actions.edit': 'Редактировать',
-    'actions.delete': 'Удалить',
-    'actions.view': 'Просмотр',
-    'actions.search': 'Поиск',
-    'actions.filter': 'Фильтр',
-    'actions.more': 'Еще',
-    'actions.login': 'Войти',
-    'actions.register': 'Регистрация',
-    
-    'language.select': 'Выбрать Язык',
-  },
+
 };
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {

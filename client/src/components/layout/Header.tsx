@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext, createContext, useCallback, useMemo } from 'react';
+import React, { useState } from 'react';
+import { useLanguage, languageOptions, Language } from '../../../../context/LanguageContext';
 import { Menu, X, LogOut, User, LogIn, UserPlus, Globe } from 'lucide-react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
@@ -135,175 +136,7 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   );
 };
 
-// Simple local language types and options for official African Union languages
-type Language = 'en' | 'fr' | 'ar' | 'pt' | 'es';
-
-type LanguageOption = {
-  code: Language;
-  name: string;
-  flag: string;
-  region: string;
-};
-
-// Official languages of the African Union only
-const languageOptions: LanguageOption[] = [
-  { code: 'en', name: 'English', flag: '🇺🇸', region: 'African Union Official' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷', region: 'African Union Official' },
-  { code: 'ar', name: 'العربية', flag: '🇪🇬', region: 'African Union Official' },
-  { code: 'pt', name: 'Português', flag: '🇵🇹', region: 'African Union Official' },
-  { code: 'es', name: 'Español', flag: '🇪🇸', region: 'African Union Official' },
-];
-
-// Translation data for UI elements
-const translations: Record<Language, Record<string, string>> = {
-  en: {
-    'app.title': 'BlockFinaX',
-    'app.slogan': 'Secure Trade Finance for Global Commerce',
-    'nav.dashboard': 'Dashboard',
-    'nav.contracts': 'Contracts',
-    'nav.wallet': 'Wallet',
-    'nav.documents': 'Documents',
-    'nav.logistics': 'Logistics',
-    'nav.marketplace': 'Marketplace',
-    'nav.regulatory': 'Regulatory AI',
-    'actions.login': 'Login',
-    'actions.register': 'Register',
-    'language.select': 'Select Language',
-    'profile.view': 'Profile',
-    'wallet.view': 'Wallet',
-    'actions.logout': 'Log out',
-  },
-  fr: {
-    'app.title': 'BlockFinaX',
-    'app.slogan': 'Financement Commercial Sécurisé pour le Commerce Mondial',
-    'nav.dashboard': 'Tableau de Bord',
-    'nav.contracts': 'Contrats',
-    'nav.wallet': 'Portefeuille',
-    'nav.documents': 'Documents',
-    'nav.logistics': 'Logistique',
-    'nav.marketplace': 'Marché',
-    'nav.regulatory': 'IA Réglementaire',
-    'actions.login': 'Connexion',
-    'actions.register': 'S\'inscrire',
-    'language.select': 'Choisir la Langue',
-    'profile.view': 'Profil',
-    'wallet.view': 'Portefeuille',
-    'actions.logout': 'Déconnexion',
-  },
-  ar: {
-    'app.title': 'بلوك فيناكس',
-    'app.slogan': 'تمويل تجاري آمن للتجارة العالمية',
-    'nav.dashboard': 'لوحة التحكم',
-    'nav.contracts': 'العقود',
-    'nav.wallet': 'المحفظة',
-    'nav.documents': 'المستندات',
-    'nav.logistics': 'الخدمات اللوجستية',
-    'nav.marketplace': 'السوق',
-    'nav.regulatory': 'الذكاء الاصطناعي التنظيمي',
-    'actions.login': 'تسجيل الدخول',
-    'actions.register': 'التسجيل',
-    'language.select': 'اختر اللغة',
-    'profile.view': 'الملف الشخصي',
-    'wallet.view': 'المحفظة',
-    'actions.logout': 'تسجيل الخروج',
-  },
-  es: {
-    'app.title': 'BlockFinaX',
-    'app.slogan': 'Financiación Comercial Segura para el Comercio Global',
-    'nav.dashboard': 'Panel',
-    'nav.contracts': 'Contratos',
-    'nav.wallet': 'Billetera',
-    'nav.documents': 'Documentos',
-    'nav.logistics': 'Logística',
-    'nav.marketplace': 'Mercado',
-    'nav.regulatory': 'IA Regulatoria',
-    'actions.login': 'Iniciar Sesión',
-    'actions.register': 'Registrarse',
-    'language.select': 'Seleccionar Idioma',
-    'profile.view': 'Perfil',
-    'wallet.view': 'Billetera',
-    'actions.logout': 'Cerrar Sesión',
-  },
-  pt: {
-    'app.title': 'BlockFinaX',
-    'app.slogan': 'Financiamento Comercial Seguro para o Comércio Global',
-    'nav.dashboard': 'Painel',
-    'nav.contracts': 'Contratos',
-    'nav.wallet': 'Carteira',
-    'nav.documents': 'Documentos',
-    'nav.logistics': 'Logística',
-    'nav.marketplace': 'Mercado',
-    'nav.regulatory': 'IA Regulatória',
-    'actions.login': 'Entrar',
-    'actions.register': 'Registrar',
-    'language.select': 'Selecionar Idioma',
-    'profile.view': 'Perfil',
-    'wallet.view': 'Carteira',
-    'actions.logout': 'Sair',
-  },
-};
-
-// Language Provider Context for the application
-type LanguageContextType = {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  translate: (key: string) => string;
-};
-
-const LanguageContext = createContext<LanguageContextType>({
-  language: 'en',
-  setLanguage: () => {},
-  translate: (key: string) => key,
-});
-
-// Application-wide language hook
-const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
-};
-
-// Language Provider component for the application
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>(() => {
-    // Try to get language from localStorage
-    const savedLanguage = localStorage.getItem('language');
-    return (savedLanguage as Language) || 'en';
-  });
-  
-  // Save language selection to localStorage
-  useEffect(() => {
-    localStorage.setItem('language', language);
-    // Update the HTML lang attribute
-    document.documentElement.lang = language;
-    console.log(`Language changed to: ${language}`);
-  }, [language]);
-  
-  // Translation function
-  const translate = useCallback(
-    (key: string): string => {
-      return translations[language]?.[key] || translations['en'][key] || key;
-    },
-    [language]
-  );
-  
-  const value = useMemo(
-    () => ({ 
-      language, 
-      setLanguage,
-      translate 
-    }),
-    [language, translate]
-  );
-  
-  return (
-    <LanguageContext.Provider value={value}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
+// Now using the shared LanguageContext module from context/LanguageContext.tsx
 
 // Language switcher dropdown
 const LanguageSwitcher = () => {
@@ -323,7 +156,7 @@ const LanguageSwitcher = () => {
         {languageOptions.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => setLanguage(lang.code)}
+            onClick={() => setLanguage(lang.code as Language)}
             className={language === lang.code ? "bg-accent" : ""}
           >
             <span className="mr-2">{lang.flag}</span>
