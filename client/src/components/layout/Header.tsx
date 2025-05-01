@@ -33,18 +33,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+const RegisterDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [tab, setTab] = useState<'login' | 'register'>('login');
-  const { loginUser, createAccount } = useWeb3();
+  const { createAccount } = useWeb3();
   const { translate } = useLanguage();
-  
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await loginUser(username, password);
-    onClose();
-  };
   
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,82 +48,38 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
-        <Tabs defaultValue="login" value={tab} onValueChange={(value) => setTab(value as 'login' | 'register')}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">{translate('actions.login')}</TabsTrigger>
-            <TabsTrigger value="register">{translate('actions.register')}</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="login">
-            <form onSubmit={handleLogin}>
-              <DialogHeader>
-                <DialogTitle>{translate('actions.login')}</DialogTitle>
-                <DialogDescription>
-                  Enter your credentials to access your account.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="username">Username</Label>
-                  <Input 
-                    id="username" 
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)} 
-                    required 
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input 
-                    id="password" 
-                    type="password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    required 
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">{translate('actions.login')}</Button>
-              </DialogFooter>
-            </form>
-          </TabsContent>
-          
-          <TabsContent value="register">
-            <form onSubmit={handleRegister}>
-              <DialogHeader>
-                <DialogTitle>{translate('actions.register')}</DialogTitle>
-                <DialogDescription>
-                  Register to create your account and wallet.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="reg-username">Username</Label>
-                  <Input 
-                    id="reg-username" 
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)} 
-                    required 
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="reg-password">Password</Label>
-                  <Input 
-                    id="reg-password" 
-                    type="password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    required 
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">{translate('actions.register')}</Button>
-              </DialogFooter>
-            </form>
-          </TabsContent>
-        </Tabs>
+        <form onSubmit={handleRegister}>
+          <DialogHeader>
+            <DialogTitle>{translate('actions.register')}</DialogTitle>
+            <DialogDescription>
+              Register to create your account and wallet.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="reg-username">Username</Label>
+              <Input 
+                id="reg-username" 
+                value={username} 
+                onChange={(e) => setUsername(e.target.value)} 
+                required 
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="reg-password">Password</Label>
+              <Input 
+                id="reg-password" 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit">{translate('actions.register')}</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
@@ -221,7 +170,7 @@ const Header = () => {
   const { toggleSidebar } = useAppContext();
   const { isLoggedIn } = useWeb3();
   const { translate } = useLanguage();
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
 
   return (
     <header className="flex-shrink-0 bg-white border-b border-gray-200">
@@ -247,19 +196,10 @@ const Header = () => {
             ) : (
               <div className="flex gap-2">
                 <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => setLoginDialogOpen(true)}
-                  className="flex items-center gap-1"
-                >
-                  <LogIn className="h-4 w-4" />
-                  <span>{translate('actions.login')}</span>
-                </Button>
-                <Button 
                   variant="default" 
                   size="sm" 
                   onClick={() => {
-                    setLoginDialogOpen(true);
+                    setRegisterDialogOpen(true);
                   }}
                   className="flex items-center gap-1"
                 >
@@ -267,9 +207,9 @@ const Header = () => {
                   <span>{translate('actions.register')}</span>
                 </Button>
                 
-                <LoginDialog 
-                  isOpen={loginDialogOpen}
-                  onClose={() => setLoginDialogOpen(false)}
+                <RegisterDialog 
+                  isOpen={registerDialogOpen}
+                  onClose={() => setRegisterDialogOpen(false)}
                 />
               </div>
             )}
