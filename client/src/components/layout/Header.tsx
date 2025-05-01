@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Menu, X, LogOut, User, LogIn, UserPlus } from 'lucide-react';
+import React, { useState, useEffect, useContext, createContext } from 'react';
+import { Menu, X, LogOut, User, LogIn, UserPlus, Globe } from 'lucide-react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useWeb3 } from '@/hooks/useWeb3';
@@ -11,7 +11,13 @@ import {
   DropdownMenuItem, 
   DropdownMenuLabel, 
   DropdownMenuSeparator, 
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal
 } from "@/components/ui/dropdown-menu";
 import {
   Dialog,
@@ -128,9 +134,126 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   );
 };
 
+// Simple local language types and options
+type Language = 'en' | 'fr' | 'ar' | 'sw' | 'am' | 'ha' | 'yo' | 'ig' | 'zu' | 'xh';
+
+type LanguageOption = {
+  code: Language;
+  name: string;
+  flag: string;
+};
+
+// Language options with focus on African Union languages
+const languageOptions: LanguageOption[] = [
+  // Global languages
+  { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'ar', name: 'العربية', flag: '🇪🇬' },
+  
+  // African Union languages
+  { code: 'sw', name: 'Kiswahili', flag: '🇹🇿' },   // Tanzania/Kenya/East Africa
+  { code: 'am', name: 'አማርኛ', flag: '🇪🇹' },        // Amharic - Ethiopia
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬' },       // Nigeria/Niger/Ghana
+  { code: 'yo', name: 'Yorùbá', flag: '🇳🇬' },      // Nigeria/Benin
+  { code: 'ig', name: 'Igbo', flag: '🇳🇬' },        // Nigeria
+  { code: 'zu', name: 'isiZulu', flag: '🇿🇦' },     // South Africa
+  { code: 'xh', name: 'isiXhosa', flag: '🇿🇦' },    // South Africa
+];
+
+// Language Provider Context for the Header
+type LanguageContextType = {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+};
+
+const LanguageContext = createContext<LanguageContextType>({
+  language: 'en',
+  setLanguage: () => {},
+});
+
+// Simple hook to use language selection
+const useLanguage = () => {
+  const [language, setLanguage] = useState<Language>('en');
+  
+  useEffect(() => {
+    // On language change, we would normally update all UI text
+    // For now, we're just focusing on the dropdown component
+    console.log(`Language changed to: ${language}`);
+  }, [language]);
+  
+  return { language, setLanguage };
+};
+
+// Language switcher dropdown
+const LanguageSwitcher = () => {
+  const [language, setLanguage] = useState<Language>('en');
+  
+  // Group languages by region
+  const africanLanguages = languageOptions.filter(lang => 
+    ['sw', 'am', 'ha', 'yo', 'ig', 'zu', 'xh'].includes(lang.code)
+  );
+  
+  const globalLanguages = languageOptions.filter(lang => 
+    ['en', 'fr', 'ar'].includes(lang.code)
+  );
+  
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="mr-2">
+          <Globe className="h-[1.2rem] w-[1.2rem]" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel>Select Language</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <span className="font-medium">African Union Languages</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              {africanLanguages.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onClick={() => setLanguage(lang.code)}
+                  className={language === lang.code ? "bg-accent" : ""}
+                >
+                  <span className="mr-2">{lang.flag}</span>
+                  <span>{lang.name}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
+        
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <span className="font-medium">Global Languages</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              {globalLanguages.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onClick={() => setLanguage(lang.code)}
+                  className={language === lang.code ? "bg-accent" : ""}
+                >
+                  <span className="mr-2">{lang.flag}</span>
+                  <span>{lang.name}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 const UserMenu = () => {
   const { user, logoutUser } = useWeb3();
-  const balance = user?.balance || '0.00';
   
   return (
     <DropdownMenu>
@@ -195,6 +318,9 @@ const Header = () => {
             <h1 className="text-xl font-bold text-primary">BlockFinaX</h1>
           </div>
           <div className="flex items-center">
+            {/* Language Switcher - visible regardless of login state */}
+            <LanguageSwitcher />
+            
             {isLoggedIn ? (
               <UserMenu />
             ) : (

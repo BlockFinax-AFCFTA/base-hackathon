@@ -1,14 +1,29 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 // Define available languages
-export type Language = 'en' | 'es' | 'zh' | 'fr' | 'ar' | 'ru';
+export type Language = 'en' | 'es' | 'zh' | 'fr' | 'ar' | 'ru' | 'sw' | 'am' | 'ha' | 'yo' | 'ig' | 'zu' | 'xh' | 'st' | 'mg';
 
+// Languages include major African Union languages
 export const languageOptions = [
+  // Global languages
   { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'ar', name: 'العربية', flag: '🇪🇬' },
+  
+  // African Union languages
+  { code: 'sw', name: 'Kiswahili', flag: '🇹🇿' },   // Tanzania/Kenya/East Africa
+  { code: 'am', name: 'አማርኛ', flag: '🇪🇹' },        // Amharic - Ethiopia
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬' },       // Nigeria/Niger/Ghana
+  { code: 'yo', name: 'Yorùbá', flag: '🇳🇬' },      // Nigeria/Benin
+  { code: 'ig', name: 'Igbo', flag: '🇳🇬' },        // Nigeria
+  { code: 'zu', name: 'isiZulu', flag: '🇿🇦' },     // South Africa
+  { code: 'xh', name: 'isiXhosa', flag: '🇿🇦' },    // South Africa
+  { code: 'st', name: 'Sesotho', flag: '🇱🇸' },     // Lesotho/South Africa
+  { code: 'mg', name: 'Malagasy', flag: '🇲🇬' },    // Madagascar
+  
+  // Other global languages
   { code: 'es', name: 'Español', flag: '🇪🇸' },
   { code: 'zh', name: '中文', flag: '🇨🇳' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'ar', name: 'العربية', flag: '🇦🇪' },
   { code: 'ru', name: 'Русский', flag: '🇷🇺' },
 ];
 
@@ -32,6 +47,63 @@ interface LanguageProviderProps {
 
 // Default translations for key phrases
 const translations: Record<Language, Record<string, string>> = {
+  // New African languages
+  sw: {
+    // Swahili translations
+    'app.title': 'BlockFinaX',
+    'app.slogan': 'Fedha za Biashara Salama kwa Biashara ya Kimataifa',
+    'app.welcome': 'Karibu kwenye BlockFinaX',
+    
+    'nav.dashboard': 'Dashibodi',
+    'nav.contracts': 'Mikataba',
+    'nav.wallet': 'Pochi',
+    'nav.documents': 'Nyaraka',
+    'nav.logistics': 'Usafirishaji',
+    'nav.tradeFinance': 'Ufadhili wa Biashara',
+    'nav.kyc': 'Uthibitishaji wa Utambulisho',
+    
+    'dashboard.overview': 'Muhtasari',
+    'dashboard.recentTransactions': 'Miamala ya Hivi Karibuni',
+    'dashboard.activeContracts': 'Mikataba Inayoendelea',
+    'dashboard.riskAssessment': 'Tathmini ya Hatari',
+
+    'language.select': 'Chagua Lugha',
+  },
+  
+  // Add minimal translations for other African languages (placeholders)
+  am: { 
+    'app.title': 'BlockFinaX',
+    'language.select': 'ቋንቋ ይምረጡ' 
+  }, // Amharic
+  ha: { 
+    'app.title': 'BlockFinaX',
+    'language.select': 'Zaɓi Harshe' 
+  }, // Hausa
+  yo: { 
+    'app.title': 'BlockFinaX',
+    'language.select': 'Yan Èdè' 
+  }, // Yoruba
+  ig: { 
+    'app.title': 'BlockFinaX',
+    'language.select': 'Họrọ Asụsụ' 
+  }, // Igbo
+  zu: { 
+    'app.title': 'BlockFinaX',
+    'language.select': 'Khetha Ulimi' 
+  }, // Zulu
+  xh: { 
+    'app.title': 'BlockFinaX',
+    'language.select': 'Khetha Ulwimi' 
+  }, // Xhosa
+  st: { 
+    'app.title': 'BlockFinaX',
+    'language.select': 'Kgetha Puo' 
+  }, // Sesotho
+  mg: { 
+    'app.title': 'BlockFinaX',
+    'language.select': 'Fidio fiteny' 
+  }, // Malagasy
+  
   en: {
     // General
     'app.title': 'BlockFinaX',
