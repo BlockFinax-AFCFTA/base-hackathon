@@ -10,6 +10,7 @@ import { logisticsTranslations } from './logistics';
 import { kycTranslations } from './kyc';
 import { regulatoryTranslations } from './regulatory';
 import { onboardingTranslations } from './onboarding';
+import { commonTranslations } from './common';
 
 /**
  * Combined translation resources for all namespaces
@@ -25,6 +26,7 @@ export const translationResources = {
     kyc: kycTranslations.en,
     regulatory: regulatoryTranslations.en,
     onboarding: onboardingTranslations.en,
+    common: commonTranslations.en,
   },
   es: {
     contracts: contractsTranslations.es,
@@ -35,6 +37,7 @@ export const translationResources = {
     kyc: kycTranslations.es,
     regulatory: regulatoryTranslations.es,
     onboarding: onboardingTranslations.es,
+    common: commonTranslations.es,
   },
   fr: {
     contracts: contractsTranslations.fr,
@@ -45,6 +48,7 @@ export const translationResources = {
     kyc: kycTranslations.fr,
     regulatory: regulatoryTranslations.fr,
     onboarding: onboardingTranslations.fr,
+    common: commonTranslations.fr,
   },
   pt: {
     contracts: contractsTranslations.pt,
@@ -55,6 +59,7 @@ export const translationResources = {
     kyc: kycTranslations.pt,
     regulatory: regulatoryTranslations.pt,
     onboarding: onboardingTranslations.pt,
+    common: commonTranslations.pt,
   },
   ar: {
     contracts: contractsTranslations.ar,
@@ -65,13 +70,14 @@ export const translationResources = {
     kyc: kycTranslations.ar,
     regulatory: regulatoryTranslations.ar,
     onboarding: onboardingTranslations.ar,
+    common: commonTranslations.ar,
   },
 };
 
 /**
  * Valid page namespaces for translations
  */
-export type TranslationNamespace = 'contracts' | 'documents' | 'invoices' | 'wallet' | 'logistics' | 'kyc' | 'regulatory' | 'onboarding';
+export type TranslationNamespace = 'contracts' | 'documents' | 'invoices' | 'wallet' | 'logistics' | 'kyc' | 'regulatory' | 'onboarding' | 'common';
 
 /**
  * Valid language codes

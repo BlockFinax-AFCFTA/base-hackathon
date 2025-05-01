@@ -52,21 +52,21 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
       <DialogContent className="sm:max-w-[425px]">
         <Tabs defaultValue="login" value={tab} onValueChange={(value) => setTab(value as 'login' | 'register')}>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="register">Register</TabsTrigger>
+            <TabsTrigger value="login"><Translate text="common.actions.login" /></TabsTrigger>
+            <TabsTrigger value="register"><Translate text="common.actions.register" /></TabsTrigger>
           </TabsList>
           
           <TabsContent value="login">
             <form onSubmit={handleLogin}>
               <DialogHeader>
-                <DialogTitle>Login to your account</DialogTitle>
+                <DialogTitle><Translate text="common.dialog.login.title" /></DialogTitle>
                 <DialogDescription>
-                  Enter your credentials to access your account.
+                  <Translate text="common.dialog.login.description" />
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="username"><Translate text="common.labels.username" /></Label>
                   <Input 
                     id="username" 
                     value={username} 
@@ -75,7 +75,7 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password"><Translate text="common.labels.password" /></Label>
                   <Input 
                     id="password" 
                     type="password" 
@@ -86,7 +86,7 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Login</Button>
+                <Button type="submit"><Translate text="common.actions.login" /></Button>
               </DialogFooter>
             </form>
           </TabsContent>
@@ -94,14 +94,14 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
           <TabsContent value="register">
             <form onSubmit={handleRegister}>
               <DialogHeader>
-                <DialogTitle>Create your account</DialogTitle>
+                <DialogTitle><Translate text="common.dialog.register.title" /></DialogTitle>
                 <DialogDescription>
-                  Register to create your account and wallet.
+                  <Translate text="common.dialog.register.description" />
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="reg-username">Username</Label>
+                  <Label htmlFor="reg-username"><Translate text="common.labels.username" /></Label>
                   <Input 
                     id="reg-username" 
                     value={username} 
@@ -110,7 +110,7 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="reg-password">Password</Label>
+                  <Label htmlFor="reg-password"><Translate text="common.labels.password" /></Label>
                   <Input 
                     id="reg-password" 
                     type="password" 
@@ -121,7 +121,7 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Register</Button>
+                <Button type="submit"><Translate text="common.actions.register" /></Button>
               </DialogFooter>
             </form>
           </TabsContent>
@@ -157,20 +157,20 @@ const UserMenu = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled>
           <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
+          <span><Translate text="common.actions.profile" /></span>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link href="/wallet">
             <div className="flex items-center cursor-pointer w-full">
               <Menu className="mr-2 h-4 w-4" />
-              <span>Wallet</span>
+              <span><Translate text="common.actions.wallet" /></span>
             </div>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logoutUser}>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <span><Translate text="common.actions.logout" /></span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -218,7 +218,7 @@ const Header = () => {
                   className="flex items-center gap-1 text-gray-700"
                 >
                   <LogIn className="h-4 w-4" />
-                  <span><Translate text="$actions.login" /></span>
+                  <span><Translate text="common.actions.login" /></span>
                 </Button>
                 <Button 
                   variant="default" 
@@ -229,7 +229,7 @@ const Header = () => {
                   className="flex items-center gap-1 bg-blue-700 text-white"
                 >
                   <UserPlus className="h-4 w-4" />
-                  <span><Translate text="$actions.register" /></span>
+                  <span><Translate text="common.actions.register" /></span>
                 </Button>
                 
                 <LoginDialog 
