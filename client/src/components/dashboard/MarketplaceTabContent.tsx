@@ -376,8 +376,8 @@ const MarketplaceTabContent: React.FC = () => {
       product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.origin.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesCategory = categoryFilter === '' || product.category === categoryFilter;
-    const matchesCountry = countryFilter === '' || product.origin === COUNTRIES.find(c => c.code === countryFilter)?.name;
+    const matchesCategory = categoryFilter === '' || categoryFilter === 'all' || product.category === categoryFilter;
+    const matchesCountry = countryFilter === '' || countryFilter === 'all' || product.origin === COUNTRIES.find(c => c.code === countryFilter)?.name;
     const matchesVerified = !isVerifiedOnly || product.sellerVerified;
     
     return matchesSearch && matchesCategory && matchesCountry && matchesVerified;
@@ -504,7 +504,7 @@ const MarketplaceTabContent: React.FC = () => {
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   {PRODUCT_CATEGORIES.map(cat => (
                     <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                   ))}
@@ -516,7 +516,7 @@ const MarketplaceTabContent: React.FC = () => {
                   <SelectValue placeholder="All Countries" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Countries</SelectItem>
+                  <SelectItem value="all">All Countries</SelectItem>
                   {COUNTRIES.map(country => (
                     <SelectItem key={country.code} value={country.code}>{country.name}</SelectItem>
                   ))}
