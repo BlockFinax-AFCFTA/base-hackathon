@@ -397,14 +397,14 @@ const MarketplaceTabContent: React.FC = () => {
         <div className="flex items-center gap-3">
           <a 
             className="flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800"
-            href="#"
+            href="/marketplace/sellers"
           >
             <Store className="h-4 w-4 mr-1" />
             Become a Seller
           </a>
           <a 
             className="flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800"
-            href="#"
+            href="/marketplace/watchlist"
           >
             <Star className="h-4 w-4 mr-1" />
             Watchlist
