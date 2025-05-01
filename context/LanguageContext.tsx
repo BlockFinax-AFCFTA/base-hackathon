@@ -142,6 +142,9 @@ const translations: Record<Language, Record<string, string>> = {
     'translation.withComponents': 'Click the <bold>highlighted text</bold> or <button>this button</button> to perform an action.',
     
     // Regulatory AI
+    'regulatory.title': 'Export Regulatory Assistant',
+    'regulatory.viewTool': 'View Full Tool',
+    'regulatory.quickGuidance': 'Get quick regulatory guidance for exporting your products',
     'regulatory.description': 'Our Export Regulatory Assistant helps traders navigate the complex landscape of international export regulations by providing guidance tailored to specific products and destinations.',
     'regulatory.documentation': 'Required Documentation',
     'regulatory.documentationDesc': 'Understand what paperwork is needed for your export',
@@ -152,6 +155,14 @@ const translations: Record<Language, Record<string, string>> = {
     'regulatory.restrictions': 'Restrictions & Prohibitions',
     'regulatory.restrictionsDesc': 'Identify potential import restrictions at destination',
     'regulatory.accessFull': 'Access Full Regulatory AI Assistant',
+    'regulatory.product': 'Product',
+    'regulatory.productPlaceholder': 'e.g. Medical Equipment, Coffee Beans',
+    'regulatory.origin': 'Origin',
+    'regulatory.destination': 'Destination',
+    'regulatory.category': 'Category',
+    'regulatory.selectCountry': 'Select country',
+    'regulatory.selectCategory': 'Select category',
+    'regulatory.analyze': 'Analyze Export Requirements',
   },
   es: {
     // Spanish translations
@@ -215,8 +226,42 @@ const translations: Record<Language, Record<string, string>> = {
     'language.select': 'Seleccionar Idioma',
     
     'translation.demo': 'Demostración de Traducción',
+    'translation.testSystem': 'Prueba el sistema de traducción mejorado con IA con tu propio texto',
+    'translation.selectLanguage': 'Por favor selecciona un idioma diferente al inglés para ver la traducción',
     'translation.withVariables': 'Actualmente estás usando {{language}} como tu idioma preferido. Hay {{count}} idiomas compatibles en el sistema.',
     'translation.withComponents': 'Haz clic en el <bold>texto resaltado</bold> o <button>este botón</button> para realizar una acción.',
+    
+    // Dashboard tabs
+    'dashboard.financial': 'Panel Financiero',
+    'dashboard.risk': 'Inteligencia de Riesgo',
+    'dashboard.regulatory': 'IA Regulatoria',
+    'dashboard.translation': 'Herramienta de Traducción',
+    'dashboard.logistics': 'Logística',
+    'dashboard.aiTranslation': 'Sistema de Traducción Mejorado por IA',
+    'dashboard.aiRegulatoryDesc': 'Orientación impulsada por IA para navegar por las regulaciones comerciales internacionales',
+    
+    // Regulatory AI
+    'regulatory.title': 'Asistente Regulatorio de Exportación',
+    'regulatory.viewTool': 'Ver Herramienta Completa',
+    'regulatory.quickGuidance': 'Obtén orientación regulatoria rápida para exportar tus productos',
+    'regulatory.description': 'Nuestro Asistente Regulatorio de Exportación ayuda a los comerciantes a navegar por el complejo panorama de las regulaciones de exportación internacionales proporcionando orientación adaptada a productos y destinos específicos.',
+    'regulatory.documentation': 'Documentación Requerida',
+    'regulatory.documentationDesc': 'Entiende qué documentación se necesita para tu exportación',
+    'regulatory.tariffs': 'Aranceles e Impuestos',
+    'regulatory.tariffsDesc': 'Obtén información sobre aranceles aplicables a tus mercancías',
+    'regulatory.compliance': 'Requisitos de Cumplimiento',
+    'regulatory.complianceDesc': 'Aprende sobre regulaciones y estándares relevantes',
+    'regulatory.restrictions': 'Restricciones y Prohibiciones',
+    'regulatory.restrictionsDesc': 'Identifica posibles restricciones de importación en el destino',
+    'regulatory.accessFull': 'Acceder al Asistente Completo de IA Regulatoria',
+    'regulatory.product': 'Producto',
+    'regulatory.productPlaceholder': 'ej. Equipo Médico, Granos de Café',
+    'regulatory.origin': 'Origen',
+    'regulatory.destination': 'Destino',
+    'regulatory.category': 'Categoría',
+    'regulatory.selectCountry': 'Seleccionar país',
+    'regulatory.selectCategory': 'Seleccionar categoría',
+    'regulatory.analyze': 'Analizar Requisitos de Exportación',
   },
   pt: {
     // Portuguese translations
