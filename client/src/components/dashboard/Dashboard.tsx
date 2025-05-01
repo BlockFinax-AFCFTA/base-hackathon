@@ -3,7 +3,6 @@ import DashboardStats from './DashboardStats';
 import RecentTransactions from './RecentTransactions';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Link } from 'wouter';
 import { useWeb3 } from '@/hooks/useWeb3';
 import { 
   Plus, Upload, Check, LineChart, 
@@ -19,7 +18,7 @@ import {
 } from "@/components/ui/tabs";
 import RiskDashboard from '../risk/RiskDashboard';
 import RegulatoryAITabContent from './RegulatoryAITabContent';
-import AfricanMarketplaceTabContent from './AfricanMarketplaceTabContent';
+import MarketplaceTabContent from './MarketplaceTabContent';
 
 const ContractStatusOverview = () => {
   const { contracts, isLoadingContracts } = useContracts();
@@ -107,7 +106,7 @@ const QuickActions = () => {
         </CardHeader>
         <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Link href="/contracts/new">
+            <a href="/contracts/new">
               <div className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-md flex items-center space-x-3 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
                 <div className="flex-shrink-0 h-10 w-10 rounded-md bg-primary flex items-center justify-center">
                   <Plus className="h-6 w-6 text-white" />
@@ -117,9 +116,9 @@ const QuickActions = () => {
                   <p className="text-sm text-gray-500">Initiate escrow transaction</p>
                 </div>
               </div>
-            </Link>
+            </a>
             
-            <Link href="/documents/upload">
+            <a href="/documents/upload">
               <div className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-md flex items-center space-x-3 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
                 <div className="flex-shrink-0 h-10 w-10 rounded-md bg-slate-800 flex items-center justify-center">
                   <Upload className="h-6 w-6 text-white" />
@@ -129,9 +128,9 @@ const QuickActions = () => {
                   <p className="text-sm text-gray-500">Upload verification files</p>
                 </div>
               </div>
-            </Link>
+            </a>
             
-            <Link href="/contracts">
+            <a href="/contracts">
               <div className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-md flex items-center space-x-3 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
                 <div className="flex-shrink-0 h-10 w-10 rounded-md bg-green-600 flex items-center justify-center">
                   <Check className="h-6 w-6 text-white" />
@@ -141,9 +140,9 @@ const QuickActions = () => {
                   <p className="text-sm text-gray-500">Confirm & settle transaction</p>
                 </div>
               </div>
-            </Link>
+            </a>
             
-            <Link href="/risk-dashboard">
+            <a href="/risk-dashboard">
               <div className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-md flex items-center space-x-3 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
                 <div className="flex-shrink-0 h-10 w-10 rounded-md bg-indigo-600 flex items-center justify-center">
                   <LineChart className="h-6 w-6 text-white" />
@@ -153,7 +152,7 @@ const QuickActions = () => {
                   <p className="text-sm text-gray-500">View predictive insights</p>
                 </div>
               </div>
-            </Link>
+            </a>
           </div>
         </CardContent>
       </Card>
@@ -179,12 +178,12 @@ const RiskSummary = () => {
                 </p>
               </div>
             </div>
-            <Link href="/risk-dashboard">
+            <a href="/risk-dashboard">
               <Button className="whitespace-nowrap">
                 View Risk Dashboard
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-            </Link>
+            </a>
           </div>
         </CardContent>
       </Card>
@@ -217,7 +216,7 @@ const Dashboard = () => {
               </TabsTrigger>
               <TabsTrigger value="marketplace" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
                 <ShoppingCart className="h-4 w-4 mr-2" />
-                African Marketplace
+                Marketplace
               </TabsTrigger>
             </TabsList>
           </div>
@@ -244,7 +243,7 @@ const Dashboard = () => {
         </TabsContent>
         
         <TabsContent value="marketplace" className="mt-0">
-          <AfricanMarketplaceTabContent />
+          <MarketplaceTabContent />
         </TabsContent>
       </Tabs>
     </div>
