@@ -13,6 +13,8 @@ import { useWeb3 } from "./hooks/useWeb3";
 import { AppProvider } from "./context/AppContext";
 import { Web3Provider } from "./context/Web3Context";
 import { LanguageProvider } from "../../context/LanguageContext";
+import { OnboardingProvider } from "../../context/OnboardingContext";
+import OnboardingWizard from "../../components/onboarding/OnboardingWizard";
 
 // Import new components
 import EnhancedWalletPage from "@/components/wallet/WalletPage";
