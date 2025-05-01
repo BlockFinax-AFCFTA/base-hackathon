@@ -4,7 +4,6 @@ import Sidebar from './Sidebar';
 import { useWeb3 } from '@/hooks/useWeb3';
 import { useAppContext } from '@/hooks/useAppContext';
 import { AlertCircle } from 'lucide-react';
-import { useLanguage } from '../../../../context/LanguageContext';
 
 
 interface LayoutProps {
@@ -13,7 +12,6 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const { isKYCCompleted, kycStatus } = useAppContext();
-  const { translate } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background">
