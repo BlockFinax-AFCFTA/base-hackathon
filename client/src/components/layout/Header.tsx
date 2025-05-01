@@ -134,30 +134,23 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   );
 };
 
-// Simple local language types and options
-type Language = 'en' | 'fr' | 'ar' | 'sw' | 'am' | 'ha' | 'yo' | 'ig' | 'zu' | 'xh';
+// Simple local language types and options for official African Union languages
+type Language = 'en' | 'fr' | 'ar' | 'pt' | 'es';
 
 type LanguageOption = {
   code: Language;
   name: string;
   flag: string;
+  region: string;
 };
 
-// Language options with focus on African Union languages
+// Official languages of the African Union only
 const languageOptions: LanguageOption[] = [
-  // Global languages
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'ar', name: 'العربية', flag: '🇪🇬' },
-  
-  // African Union languages
-  { code: 'sw', name: 'Kiswahili', flag: '🇹🇿' },   // Tanzania/Kenya/East Africa
-  { code: 'am', name: 'አማርኛ', flag: '🇪🇹' },        // Amharic - Ethiopia
-  { code: 'ha', name: 'Hausa', flag: '🇳🇬' },       // Nigeria/Niger/Ghana
-  { code: 'yo', name: 'Yorùbá', flag: '🇳🇬' },      // Nigeria/Benin
-  { code: 'ig', name: 'Igbo', flag: '🇳🇬' },        // Nigeria
-  { code: 'zu', name: 'isiZulu', flag: '🇿🇦' },     // South Africa
-  { code: 'xh', name: 'isiXhosa', flag: '🇿🇦' },    // South Africa
+  { code: 'en', name: 'English', flag: '🇺🇸', region: 'African Union Official' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', region: 'African Union Official' },
+  { code: 'ar', name: 'العربية', flag: '🇪🇬', region: 'African Union Official' },
+  { code: 'pt', name: 'Português', flag: '🇵🇹', region: 'African Union Official' },
+  { code: 'es', name: 'Español', flag: '🇪🇸', region: 'African Union Official' },
 ];
 
 // Language Provider Context for the Header
@@ -188,15 +181,6 @@ const useLanguage = () => {
 const LanguageSwitcher = () => {
   const [language, setLanguage] = useState<Language>('en');
   
-  // Group languages by region
-  const africanLanguages = languageOptions.filter(lang => 
-    ['sw', 'am', 'ha', 'yo', 'ig', 'zu', 'xh'].includes(lang.code)
-  );
-  
-  const globalLanguages = languageOptions.filter(lang => 
-    ['en', 'fr', 'ar'].includes(lang.code)
-  );
-  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -205,48 +189,19 @@ const LanguageSwitcher = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>Select Language</DropdownMenuLabel>
+        <DropdownMenuLabel>African Union Official Languages</DropdownMenuLabel>
         <DropdownMenuSeparator />
         
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            <span className="font-medium">African Union Languages</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuPortal>
-            <DropdownMenuSubContent>
-              {africanLanguages.map((lang) => (
-                <DropdownMenuItem
-                  key={lang.code}
-                  onClick={() => setLanguage(lang.code)}
-                  className={language === lang.code ? "bg-accent" : ""}
-                >
-                  <span className="mr-2">{lang.flag}</span>
-                  <span>{lang.name}</span>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuSubContent>
-          </DropdownMenuPortal>
-        </DropdownMenuSub>
-        
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            <span className="font-medium">Global Languages</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuPortal>
-            <DropdownMenuSubContent>
-              {globalLanguages.map((lang) => (
-                <DropdownMenuItem
-                  key={lang.code}
-                  onClick={() => setLanguage(lang.code)}
-                  className={language === lang.code ? "bg-accent" : ""}
-                >
-                  <span className="mr-2">{lang.flag}</span>
-                  <span>{lang.name}</span>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuSubContent>
-          </DropdownMenuPortal>
-        </DropdownMenuSub>
+        {languageOptions.map((lang) => (
+          <DropdownMenuItem
+            key={lang.code}
+            onClick={() => setLanguage(lang.code)}
+            className={language === lang.code ? "bg-accent" : ""}
+          >
+            <span className="mr-2">{lang.flag}</span>
+            <span>{lang.name}</span>
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
