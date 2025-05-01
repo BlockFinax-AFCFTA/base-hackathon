@@ -600,17 +600,65 @@ const translations: Record<Language, Record<string, string>> = {
 
 };
 
+// Import structured translations from our namespaces
+import { translationResources } from '../translations';
+
 // Initialize i18next
 i18next
   .use(initReactI18next) // passes i18next down to react-i18next
   .use(LanguageDetector) // detects user language
   .init({
     resources: {
-      en: { translation: translations.en },
-      fr: { translation: translations.fr },
-      ar: { translation: translations.ar },
-      pt: { translation: translations.pt },
-      es: { translation: translations.es }
+      en: { 
+        translation: translations.en,
+        contracts: translationResources.en.contracts,
+        documents: translationResources.en.documents,
+        invoices: translationResources.en.invoices,
+        wallet: translationResources.en.wallet,
+        logistics: translationResources.en.logistics,
+        kyc: translationResources.en.kyc,
+        regulatory: translationResources.en.regulatory,
+      },
+      fr: { 
+        translation: translations.fr,
+        contracts: translationResources.fr.contracts,
+        documents: translationResources.fr.documents,
+        invoices: translationResources.fr.invoices,
+        wallet: translationResources.fr.wallet,
+        logistics: translationResources.fr.logistics,
+        kyc: translationResources.fr.kyc,
+        regulatory: translationResources.fr.regulatory,
+      },
+      ar: { 
+        translation: translations.ar,
+        contracts: translationResources.ar.contracts,
+        documents: translationResources.ar.documents,
+        invoices: translationResources.ar.invoices,
+        wallet: translationResources.ar.wallet,
+        logistics: translationResources.ar.logistics,
+        kyc: translationResources.ar.kyc,
+        regulatory: translationResources.ar.regulatory,
+      },
+      pt: { 
+        translation: translations.pt,
+        contracts: translationResources.pt.contracts,
+        documents: translationResources.pt.documents,
+        invoices: translationResources.pt.invoices,
+        wallet: translationResources.pt.wallet,
+        logistics: translationResources.pt.logistics,
+        kyc: translationResources.pt.kyc,
+        regulatory: translationResources.pt.regulatory,
+      },
+      es: { 
+        translation: translations.es,
+        contracts: translationResources.es.contracts,
+        documents: translationResources.es.documents,
+        invoices: translationResources.es.invoices,
+        wallet: translationResources.es.wallet,
+        logistics: translationResources.es.logistics,
+        kyc: translationResources.es.kyc,
+        regulatory: translationResources.es.regulatory,
+      }
     },
     fallbackLng: 'en',
     interpolation: {
@@ -619,7 +667,9 @@ i18next
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage']
-    }
+    },
+    ns: ['translation', 'contracts', 'documents', 'invoices', 'wallet', 'logistics', 'kyc', 'regulatory'],
+    defaultNS: 'translation'
   });
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
