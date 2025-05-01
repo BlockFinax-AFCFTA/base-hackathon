@@ -8,7 +8,7 @@ import { useWeb3 } from '@/hooks/useWeb3';
 import { 
   Plus, Upload, Check, LineChart, 
   AlertTriangle, ArrowRight, CreditCard,
-  Globe, Clock
+  Globe, Clock, ShoppingCart
 } from 'lucide-react';
 import { useContracts } from '@/hooks/useContracts';
 import { 
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/tabs";
 import RiskDashboard from '../risk/RiskDashboard';
 import RegulatoryAITabContent from './RegulatoryAITabContent';
+import AfricanMarketplaceTabContent from './AfricanMarketplaceTabContent';
 
 const ContractStatusOverview = () => {
   const { contracts, isLoadingContracts } = useContracts();
