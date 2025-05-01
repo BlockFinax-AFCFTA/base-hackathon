@@ -215,6 +215,10 @@ const Dashboard = () => {
                 <Globe className="h-4 w-4 mr-2" />
                 Regulatory AI
               </TabsTrigger>
+              <TabsTrigger value="marketplace" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                African Marketplace
+              </TabsTrigger>
             </TabsList>
           </div>
           <div className="text-sm text-gray-500 flex items-center bg-white px-3 py-1.5 rounded-md border border-gray-200 shadow-sm">
@@ -237,6 +241,10 @@ const Dashboard = () => {
         
         <TabsContent value="regulatory" className="mt-0">
           <RegulatoryAITabContent />
+        </TabsContent>
+        
+        <TabsContent value="marketplace" className="mt-0">
+          <AfricanMarketplaceTabContent />
         </TabsContent>
       </Tabs>
     </div>
