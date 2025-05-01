@@ -84,13 +84,13 @@ const DocumentList = () => {
   return (
     <div>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900 mb-4 md:mb-0">Documents</h1>
+        <h1 className="text-2xl font-semibold text-gray-900 mb-4 md:mb-0">{translate('documents.title')}</h1>
         <div className="flex flex-col sm:flex-row gap-2">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
             <Input
               type="text"
-              placeholder="Search documents..."
+              placeholder={translate('documents.searchDocuments')}
               className="pl-9"
               value={searchTerm}
               onChange={handleSearchChange}
@@ -99,7 +99,7 @@ const DocumentList = () => {
           <Link href="/documents/upload">
             <Button>
               <FilePlus className="mr-2 h-4 w-4" />
-              Upload Document
+              {translate('documents.uploadDocument')}
             </Button>
           </Link>
         </div>
@@ -107,7 +107,7 @@ const DocumentList = () => {
       
       <Card>
         <CardHeader className="pb-3">
-          <h2 className="text-lg font-medium">Your Documents</h2>
+          <h2 className="text-lg font-medium">{translate('documents.yourDocuments')}</h2>
         </CardHeader>
         
         <CardContent>
@@ -118,17 +118,17 @@ const DocumentList = () => {
           ) : documentsList.length === 0 ? (
             <div className="py-12 text-center text-gray-500">
               <AlertCircle className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <p className="mb-2">No documents found</p>
+              <p className="mb-2">{translate('documents.noDocuments')}</p>
               <Link href="/documents/upload">
                 <Button>
                   <FilePlus className="mr-2 h-4 w-4" />
-                  Upload Your First Document
+                  {translate('documents.uploadNew')}
                 </Button>
               </Link>
             </div>
           ) : filteredDocuments?.length === 0 ? (
             <div className="py-12 text-center text-gray-500">
-              <p>No documents match your search</p>
+              <p>{translate('documents.noDocuments')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -155,7 +155,7 @@ const DocumentList = () => {
                               <Link2 className="h-4 w-4 mr-1 text-gray-400" />
                               <Link href={`/contracts/${document.contractId}`}>
                                 <span className="text-primary hover:text-primary-700 cursor-pointer">
-                                  View Contract
+                                  {translate('actions.view')} {translate('nav.contracts')}
                                 </span>
                               </Link>
                             </span>
@@ -169,7 +169,7 @@ const DocumentList = () => {
                           rel="noopener noreferrer"
                           className="text-sm text-primary hover:text-primary-700"
                         >
-                          View
+                          {translate('actions.view')}
                         </a>
                         <Button
                           variant="ghost"
@@ -201,7 +201,7 @@ const DocumentList = () => {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogTitle>{translate('actions.confirm')}</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete this document? This action cannot be undone.
             </DialogDescription>
@@ -211,14 +211,14 @@ const DocumentList = () => {
               variant="outline" 
               onClick={() => setIsDeleteDialogOpen(false)}
             >
-              Cancel
+              {translate('actions.cancel')}
             </Button>
             <Button 
               variant="destructive" 
               onClick={confirmDelete}
               disabled={isDeleting}
             >
-              {isDeleting ? 'Deleting...' : 'Delete'}
+              {isDeleting ? 'Deleting...' : translate('actions.delete')}
             </Button>
           </DialogFooter>
         </DialogContent>
