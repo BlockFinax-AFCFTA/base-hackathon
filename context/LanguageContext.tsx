@@ -50,6 +50,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.logistics': 'Logistics',
     'nav.tradeFinance': 'Trade Finance',
     'nav.kyc': 'Identity Verification',
+    'nav.invoices': 'Invoices',
     
     // Dashboard
     'dashboard.overview': 'Overview',
@@ -242,6 +243,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.logistics': 'Logística',
     'nav.tradeFinance': 'Financiación Comercial',
     'nav.kyc': 'Verificación de Identidad',
+    'nav.invoices': 'Facturas',
     
     'dashboard.overview': 'Resumen',
     'dashboard.recentTransactions': 'Transacciones Recientes',
@@ -386,6 +388,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.logistics': 'Logística',
     'nav.tradeFinance': 'Financiamento Comercial',
     'nav.kyc': 'Verificação de Identidade',
+    'nav.invoices': 'Faturas',
     
     'dashboard.overview': 'Visão Geral',
     'dashboard.recentTransactions': 'Transações Recentes',
@@ -459,6 +462,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.logistics': 'Logistique',
     'nav.tradeFinance': 'Financement Commercial',
     'nav.kyc': 'Vérification d\'Identité',
+    'nav.invoices': 'Factures',
     
     'dashboard.overview': 'Aperçu',
     'dashboard.recentTransactions': 'Transactions Récentes',
@@ -532,6 +536,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.logistics': 'الخدمات اللوجستية',
     'nav.tradeFinance': 'التمويل التجاري',
     'nav.kyc': 'التحقق من الهوية',
+    'nav.invoices': 'الفواتير',
     
     'dashboard.overview': 'نظرة عامة',
     'dashboard.recentTransactions': 'المعاملات الأخيرة',
