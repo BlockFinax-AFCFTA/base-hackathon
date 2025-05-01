@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import i18n from 'i18next';
-import { initReactI18next, useTranslation } from 'react-i18next';
+import i18next from 'i18next';
+import { initReactI18next, useTranslation, Trans as I18nTrans } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 // Define available languages - only official African Union languages
@@ -384,8 +384,8 @@ const translations: Record<Language, Record<string, string>> = {
 };
 
 // Initialize i18next
-i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
+i18next
+  .use(initReactI18next) // passes i18next down to react-i18next
   .use(LanguageDetector) // detects user language
   .init({
     resources: {
@@ -412,7 +412,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   // Create a wrapped setLanguage function that also updates i18next
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    i18n.changeLanguage(lang);
+    i18next.changeLanguage(lang);
   };
 
   // Load language preference from localStorage on mount
@@ -422,7 +422,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
       setLanguage(savedLanguage);
     } else {
       // Use the language detected by i18next if no saved preference
-      const detectedLang = i18n.language.split('-')[0] as Language; 
+      const detectedLang = i18next.language.split('-')[0] as Language; 
       if (languageOptions.some(option => option.code === detectedLang)) {
         setLanguage(detectedLang);
       }
@@ -492,6 +492,6 @@ export const Trans: React.FC<I18nTransProps> = ({ i18nKey, values, components })
 };
 
 // Re-export i18next 
-export { i18n };
+export { i18next };
 
 export default LanguageContext;
