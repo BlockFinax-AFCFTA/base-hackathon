@@ -338,8 +338,8 @@ const ProductCard = ({ product, onViewDetails }: { product: any, onViewDetails: 
 const MarketplaceTabContent: React.FC = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [countryFilter, setCountryFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [countryFilter, setCountryFilter] = useState('all');
   const [isVerifiedOnly, setIsVerifiedOnly] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -573,8 +573,8 @@ const MarketplaceTabContent: React.FC = () => {
               variant="outline"
               onClick={() => {
                 setSearchTerm('');
-                setCategoryFilter('');
-                setCountryFilter('');
+                setCategoryFilter('all');
+                setCountryFilter('all');
                 setIsVerifiedOnly(false);
               }}
             >
