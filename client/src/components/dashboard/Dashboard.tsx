@@ -19,9 +19,11 @@ import {
 import RiskDashboard from '../risk/RiskDashboard';
 import RegulatoryAITabContent from './RegulatoryAITabContent';
 import MarketplaceTabContent from './MarketplaceTabContent';
+import { useLanguage } from '../../../../context/LanguageContext';
 
 const ContractStatusOverview = () => {
   const { contracts, isLoadingContracts } = useContracts();
+  const { translate } = useLanguage();
   
   const countByStatus = {
     DRAFT: 0,
@@ -48,8 +50,8 @@ const ContractStatusOverview = () => {
     <div className="mt-8">
       <Card className="bg-gradient-to-r from-slate-50 to-slate-100 shadow-md">
         <CardHeader className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-primary">Contract Portfolio Status</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">Asset distribution by contract status</p>
+          <h3 className="text-lg leading-6 font-medium text-primary">{translate('dashboard.contractPortfolio')}</h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">{translate('dashboard.assetDistribution')}</p>
         </CardHeader>
         <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
           <div className="flex flex-col">
@@ -58,32 +60,32 @@ const ContractStatusOverview = () => {
                 <div>
                   <dl className="grid grid-cols-1 gap-5 sm:grid-cols-4">
                     <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-slate-500">
-                      <dt className="text-sm font-medium text-gray-500 truncate">Draft</dt>
+                      <dt className="text-sm font-medium text-gray-500 truncate">{translate('dashboard.draft')}</dt>
                       <dd className="mt-1 text-3xl font-semibold text-gray-900">
                         {isLoadingContracts ? '...' : countByStatus.DRAFT}
                       </dd>
-                      <div className="mt-1 text-sm text-gray-500">Pending finalization</div>
+                      <div className="mt-1 text-sm text-gray-500">{translate('dashboard.pendingFinalization')}</div>
                     </div>
                     <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-amber-500">
-                      <dt className="text-sm font-medium text-gray-500 truncate">Escrow Required</dt>
+                      <dt className="text-sm font-medium text-gray-500 truncate">{translate('dashboard.escrowRequired')}</dt>
                       <dd className="mt-1 text-3xl font-semibold text-gray-900">
                         {isLoadingContracts ? '...' : countByStatus.AWAITING_FUNDS}
                       </dd>
-                      <div className="mt-1 text-sm text-gray-500">Awaiting deposit</div>
+                      <div className="mt-1 text-sm text-gray-500">{translate('dashboard.awaitingDeposit')}</div>
                     </div>
                     <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-primary">
-                      <dt className="text-sm font-medium text-gray-500 truncate">Active</dt>
+                      <dt className="text-sm font-medium text-gray-500 truncate">{translate('dashboard.active')}</dt>
                       <dd className="mt-1 text-3xl font-semibold text-primary">
                         {isLoadingContracts ? '...' : countByStatus.ACTIVE}
                       </dd>
-                      <div className="mt-1 text-sm text-gray-500">In-transit assets</div>
+                      <div className="mt-1 text-sm text-gray-500">{translate('dashboard.inTransitAssets')}</div>
                     </div>
                     <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-green-600">
-                      <dt className="text-sm font-medium text-gray-500 truncate">Completed</dt>
+                      <dt className="text-sm font-medium text-gray-500 truncate">{translate('dashboard.completed')}</dt>
                       <dd className="mt-1 text-3xl font-semibold text-green-600">
                         {isLoadingContracts ? '...' : countByStatus.COMPLETED}
                       </dd>
-                      <div className="mt-1 text-sm text-gray-500">Settled transactions</div>
+                      <div className="mt-1 text-sm text-gray-500">{translate('dashboard.settledTransactions')}</div>
                     </div>
                   </dl>
                 </div>
@@ -97,12 +99,13 @@ const ContractStatusOverview = () => {
 };
 
 const QuickActions = () => {
+  const { translate } = useLanguage();
   return (
     <div className="mt-8">
       <Card className="bg-gradient-to-r from-slate-50 to-slate-100 shadow-md">
         <CardHeader className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-primary">Financial Actions</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">Execute trade operations</p>
+          <h3 className="text-lg leading-6 font-medium text-primary">{translate('dashboard.financialActions')}</h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">{translate('dashboard.executeTradeOps')}</p>
         </CardHeader>
         <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -112,8 +115,8 @@ const QuickActions = () => {
                   <Plus className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">New Trade Contract</p>
-                  <p className="text-sm text-gray-500">Initiate escrow transaction</p>
+                  <p className="text-sm font-medium text-gray-900">{translate('dashboard.newTradeContract')}</p>
+                  <p className="text-sm text-gray-500">{translate('dashboard.initiateEscrow')}</p>
                 </div>
               </div>
             </a>
@@ -124,8 +127,8 @@ const QuickActions = () => {
                   <Upload className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">Secure Documents</p>
-                  <p className="text-sm text-gray-500">Upload verification files</p>
+                  <p className="text-sm font-medium text-gray-900">{translate('dashboard.secureDocuments')}</p>
+                  <p className="text-sm text-gray-500">{translate('dashboard.uploadVerification')}</p>
                 </div>
               </div>
             </a>
