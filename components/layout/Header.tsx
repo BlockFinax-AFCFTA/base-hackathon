@@ -193,13 +193,19 @@ const Header = () => {
             <div className="ml-10 flex items-center">
               <div className="flex space-x-4">
                 <Link href="/">
-                  <div className="px-3 py-2 text-sm font-medium text-blue-700 cursor-pointer">Home</div>
+                  <div className="px-3 py-2 text-sm font-medium text-blue-700 cursor-pointer">
+                    <Translate text="common.navigation.home" />
+                  </div>
                 </Link>
                 <Link href="/api">
-                  <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">API</div>
+                  <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">
+                    <Translate text="common.navigation.api" />
+                  </div>
                 </Link>
                 <Link href="/documentation">
-                  <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">Documentation</div>
+                  <div className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer">
+                    <Translate text="common.navigation.documentation" />
+                  </div>
                 </Link>
               </div>
             </div>
