@@ -10,6 +10,8 @@ export const onboardingTranslations = {
     'onboarding.back': 'Back',
     'onboarding.finish': 'Finish',
     'onboarding.progress': 'Step {{current}} of {{total}}',
+    'onboarding.startTutorial': 'Interactive Tutorial',
+    'onboarding.restartTutorial': 'Restart Tutorial',
 
     // Step 1: Welcome
     'onboarding.step1.title': 'Welcome to BlockFinaX',
@@ -143,7 +145,9 @@ export const onboardingTranslations = {
     'onboarding.next': 'Siguiente',
     'onboarding.back': 'Atrás',
     'onboarding.finish': 'Finalizar',
-    'onboarding.progress': 'Paso {{current}} de {{total}}'
+    'onboarding.progress': 'Paso {{current}} de {{total}}',
+    'onboarding.startTutorial': 'Tutorial Interactivo',
+    'onboarding.restartTutorial': 'Reiniciar Tutorial'
   },
   fr: {
     'onboarding.title': 'Bienvenue sur BlockFinaX',
@@ -152,7 +156,9 @@ export const onboardingTranslations = {
     'onboarding.next': 'Suivant',
     'onboarding.back': 'Précédent',
     'onboarding.finish': 'Terminer',
-    'onboarding.progress': 'Étape {{current}} sur {{total}}'
+    'onboarding.progress': 'Étape {{current}} sur {{total}}',
+    'onboarding.startTutorial': 'Tutoriel Interactif',
+    'onboarding.restartTutorial': 'Redémarrer le Tutoriel'
   },
   pt: {
     'onboarding.title': 'Bem-vindo ao BlockFinaX',
@@ -161,7 +167,9 @@ export const onboardingTranslations = {
     'onboarding.next': 'Próximo',
     'onboarding.back': 'Voltar',
     'onboarding.finish': 'Concluir',
-    'onboarding.progress': 'Passo {{current}} de {{total}}'
+    'onboarding.progress': 'Passo {{current}} de {{total}}',
+    'onboarding.startTutorial': 'Tutorial Interativo',
+    'onboarding.restartTutorial': 'Reiniciar Tutorial'
   },
   ar: {
     'onboarding.title': 'مرحبًا بك في BlockFinaX',
@@ -170,6 +178,8 @@ export const onboardingTranslations = {
     'onboarding.next': 'التالي',
     'onboarding.back': 'رجوع',
     'onboarding.finish': 'إنهاء',
-    'onboarding.progress': 'الخطوة {{current}} من {{total}}'
+    'onboarding.progress': 'الخطوة {{current}} من {{total}}',
+    'onboarding.startTutorial': 'برنامج تعليمي تفاعلي',
+    'onboarding.restartTutorial': 'إعادة تشغيل البرنامج التعليمي'
   }
 };
