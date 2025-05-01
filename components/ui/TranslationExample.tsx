@@ -1,7 +1,7 @@
 import React from 'react';
-import { Trans, useLanguage } from '../../../../context/LanguageContext';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Trans, useLanguage } from '../../context/LanguageContext';
+import { Button } from "./button";
+import { Card, CardContent, CardHeader, CardTitle } from "./card";
 
 /**
  * Component that demonstrates the use of the Trans component for complex translations

@@ -15,6 +15,7 @@ import {
 } from "../ui/tabs";
 import RiskDashboard from '../risk/RiskDashboard';
 import RegulatoryAIWidget from './RegulatoryAIWidget';
+import TranslationExample from '../ui/TranslationExample';
 
 const ContractStatusOverview = () => {
   const { contracts, isLoadingContracts } = useContracts();
@@ -310,17 +311,20 @@ const Dashboard = () => {
                 <p className="mt-1 max-w-2xl text-sm text-gray-500">Test our AI-powered translation system</p>
               </CardHeader>
               <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
-                <div className="p-6 bg-blue-50 rounded-lg text-center">
+                <div className="p-6 bg-blue-50 rounded-lg text-center mb-6">
                   <h3 className="text-lg font-medium mb-2">AI-Powered Translation System</h3>
                   <p className="mb-4">Switch languages using the language selector in the top-right corner of the page</p>
-                  <div className="flex justify-center">
+                  <div className="flex flex-wrap justify-center gap-2">
                     <Button variant="outline" className="mx-1">English</Button>
                     <Button variant="outline" className="mx-1">Español</Button>
-                    <Button variant="outline" className="mx-1">中文</Button>
                     <Button variant="outline" className="mx-1">Français</Button>
                     <Button variant="outline" className="mx-1">العربية</Button>
-                    <Button variant="outline" className="mx-1">Русский</Button>
+                    <Button variant="outline" className="mx-1">Português</Button>
                   </div>
+                </div>
+                
+                <div className="mt-8">
+                  <TranslationExample />
                 </div>
               </CardContent>
             </Card>
