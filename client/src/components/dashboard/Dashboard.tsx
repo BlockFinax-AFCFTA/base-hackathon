@@ -139,8 +139,8 @@ const QuickActions = () => {
                   <Check className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">Release Payment</p>
-                  <p className="text-sm text-gray-500">Confirm & settle transaction</p>
+                  <p className="text-sm font-medium text-gray-900">{translate('dashboard.releasePayment')}</p>
+                  <p className="text-sm text-gray-500">{translate('dashboard.confirmSettle')}</p>
                 </div>
               </div>
             </a>
@@ -151,8 +151,8 @@ const QuickActions = () => {
                   <LineChart className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">Risk Assessment</p>
-                  <p className="text-sm text-gray-500">View predictive insights</p>
+                  <p className="text-sm font-medium text-gray-900">{translate('dashboard.riskAssessment')}</p>
+                  <p className="text-sm text-gray-500">{translate('dashboard.viewPredictive')}</p>
                 </div>
               </div>
             </a>
@@ -164,6 +164,7 @@ const QuickActions = () => {
 };
 
 const RiskSummary = () => {
+  const { translate } = useLanguage();
   return (
     <div className="mt-8">
       <Card className="border border-amber-200 bg-amber-50/50 shadow-md">
@@ -174,16 +175,13 @@ const RiskSummary = () => {
                 <AlertTriangle className="h-6 w-6 text-amber-600" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-900">Trade Risk Assessment</h3>
-                <p className="text-gray-600 mt-1">
-                  AI-powered risk analysis has identified 3 potential issues in your trade portfolio that require attention.
-                  These include geopolitical factors, payment reliability concerns, and shipping logistics vulnerabilities.
-                </p>
+                <h3 className="text-lg font-medium text-gray-900">{translate('dashboard.tradeRiskAssessment')}</h3>
+                <p className="text-gray-600 mt-1">{translate('dashboard.riskAnalysisDetails')}</p>
               </div>
             </div>
             <a href="/risk-dashboard">
               <Button className="whitespace-nowrap">
-                View Risk Dashboard
+                {translate('dashboard.viewRiskDashboard')}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </a>
@@ -197,6 +195,7 @@ const RiskSummary = () => {
 const Dashboard = () => {
   const { isLoggedIn } = useWeb3();
   const { contracts } = useContracts();
+  const { translate } = useLanguage();
   const [activeTab, setActiveTab] = useState<string>('overview');
 
   return (
@@ -207,19 +206,19 @@ const Dashboard = () => {
             <TabsList className="bg-transparent">
               <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
                 <CreditCard className="h-4 w-4 mr-2" />
-                Financial Dashboard
+                {translate('dashboard.financialDashboard')}
               </TabsTrigger>
               <TabsTrigger value="risk" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
                 <LineChart className="h-4 w-4 mr-2" />
-                Risk Intelligence
+                {translate('dashboard.riskIntelligence')}
               </TabsTrigger>
               <TabsTrigger value="regulatory" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
                 <Globe className="h-4 w-4 mr-2" />
-                Regulatory AI
+                {translate('dashboard.regulatoryAI')}
               </TabsTrigger>
               <TabsTrigger value="marketplace" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
                 <ShoppingCart className="h-4 w-4 mr-2" />
-                Marketplace
+                {translate('dashboard.marketplace')}
               </TabsTrigger>
             </TabsList>
           </div>
