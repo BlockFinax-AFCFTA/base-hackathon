@@ -41,7 +41,7 @@ const ContractsPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-4">
         <div>
           <h1 className="text-3xl font-bold">{t('contracts.title')}</h1>
           <p className="text-gray-600">{t('contracts.subtitle')}</p>
@@ -51,6 +51,26 @@ const ContractsPage: React.FC = () => {
           <span>{t('contracts.create')}</span>
         </Button>
       </div>
+      
+      {/* Help and guide section */}
+      <Card className="mb-6 bg-blue-50 border-blue-200">
+        <CardContent className="pt-6">
+          <div className="mb-4">
+            <p className="text-blue-800 mb-2">{t('contracts.description')}</p>
+          </div>
+          <details className="cursor-pointer">
+            <summary className="font-medium text-blue-700 mb-2">{t('contracts.guide.title')}</summary>
+            <div className="pl-4 pt-2 text-sm text-blue-800 space-y-1">
+              <p>{t('contracts.guide.step1')}</p>
+              <p>{t('contracts.guide.step2')}</p>
+              <p>{t('contracts.guide.step3')}</p>
+              <p>{t('contracts.guide.step4')}</p>
+              <p>{t('contracts.guide.step5')}</p>
+              <p>{t('contracts.guide.step6')}</p>
+            </div>
+          </details>
+        </CardContent>
+      </Card>
 
       <div className="flex flex-col gap-4 md:flex-row mb-6">
         <div className="flex-grow relative">
