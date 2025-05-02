@@ -22,6 +22,14 @@ const ContractsPage: React.FC = () => {
   const { t } = useLocalization('contracts');
   const [searchTerm, setSearchTerm] = useState('');
   
+  // Debug translations
+  console.log('Translation keys available:', {
+    description: t('contracts.description'),
+    title: t('contracts.title'),
+    subtitle: t('contracts.subtitle'),
+    guideTitle: t('contracts.guide.title')
+  });
+  
   // Mock contracts data - in real implementation, this would come from an API
   const contracts = [
     /* This would be fetched from an API in a real implementation */
