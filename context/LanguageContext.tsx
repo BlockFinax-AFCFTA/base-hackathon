@@ -618,6 +618,8 @@ i18next
         logistics: translationResources.en.logistics,
         kyc: translationResources.en.kyc,
         regulatory: translationResources.en.regulatory,
+        onboarding: translationResources.en.onboarding,
+        common: translationResources.en.common,
       },
       fr: { 
         translation: translations.fr,
@@ -628,6 +630,8 @@ i18next
         logistics: translationResources.fr.logistics,
         kyc: translationResources.fr.kyc,
         regulatory: translationResources.fr.regulatory,
+        onboarding: translationResources.fr.onboarding,
+        common: translationResources.fr.common,
       },
       ar: { 
         translation: translations.ar,
@@ -638,6 +642,8 @@ i18next
         logistics: translationResources.ar.logistics,
         kyc: translationResources.ar.kyc,
         regulatory: translationResources.ar.regulatory,
+        onboarding: translationResources.ar.onboarding,
+        common: translationResources.ar.common,
       },
       pt: { 
         translation: translations.pt,
@@ -648,6 +654,8 @@ i18next
         logistics: translationResources.pt.logistics,
         kyc: translationResources.pt.kyc,
         regulatory: translationResources.pt.regulatory,
+        onboarding: translationResources.pt.onboarding,
+        common: translationResources.pt.common,
       },
       es: { 
         translation: translations.es,
@@ -658,6 +666,8 @@ i18next
         logistics: translationResources.es.logistics,
         kyc: translationResources.es.kyc,
         regulatory: translationResources.es.regulatory,
+        onboarding: translationResources.es.onboarding,
+        common: translationResources.es.common,
       }
     },
     fallbackLng: 'en',
@@ -668,7 +678,7 @@ i18next
       order: ['localStorage', 'navigator'],
       caches: ['localStorage']
     },
-    ns: ['translation', 'contracts', 'documents', 'invoices', 'wallet', 'logistics', 'kyc', 'regulatory'],
+    ns: ['translation', 'contracts', 'documents', 'invoices', 'wallet', 'logistics', 'kyc', 'regulatory', 'onboarding', 'common'],
     defaultNS: 'translation'
   });
 
