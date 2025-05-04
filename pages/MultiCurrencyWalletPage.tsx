@@ -115,6 +115,16 @@ const MultiCurrencyWalletPage: React.FC = () => {
   const [selectedWalletType, setSelectedWalletType] = useState<'fiat' | 'crypto' | 'escrow'>('fiat');
   const [isReceiveOpen, setIsReceiveOpen] = useState(false);
   const [isSendOpen, setIsSendOpen] = useState(false);
+  const [isDepositOpen, setIsDepositOpen] = useState(false);
+  const [depositMethod, setDepositMethod] = useState<'bank' | 'mobile_money' | null>(null);
+  const [depositAmount, setDepositAmount] = useState('');
+  const [depositCurrency, setDepositCurrency] = useState('NGN');
+  const [depositBank, setDepositBank] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [mobileProvider, setMobileProvider] = useState('');
+  const [isDepositProcessing, setIsDepositProcessing] = useState(false);
+  const [depositSuccess, setDepositSuccess] = useState(false);
   const { account, user } = useWeb3();
   
   // Fetch multi-currency wallet data
@@ -304,7 +314,13 @@ const MultiCurrencyWalletPage: React.FC = () => {
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-col sm:flex-row gap-2">
-                  <Button variant="outline" className="flex-1">
+                  <Button variant="outline" className="flex-1" onClick={() => {
+                    setIsDepositOpen(true);
+                    setDepositMethod(null);
+                    setDepositAmount('');
+                    setDepositCurrency(wallet.balances[0]?.currency || 'NGN');
+                    setDepositSuccess(false);
+                  }}>
                     <ArrowDownLeft className="h-4 w-4 mr-2" />
                     Deposit
                   </Button>
@@ -512,6 +528,233 @@ const MultiCurrencyWalletPage: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      {/* Deposit Dialog */}
+      <Dialog open={isDepositOpen} onOpenChange={setIsDepositOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>
+              {depositSuccess ? (
+                <div className="flex items-center text-green-500">
+                  <Check className="mr-2 h-6 w-6" />
+                  Deposit Successful
+                </div>
+              ) : (
+                'Deposit Funds'
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {depositSuccess 
+                ? 'Your deposit has been processed successfully.' 
+                : 'Add funds to your multi-currency wallet via bank transfer or mobile money.'}
+            </DialogDescription>
+          </DialogHeader>
+
+          {depositSuccess ? (
+            <div className="py-6 text-center">
+              <div className="mx-auto w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                <Check className="h-6 w-6 text-green-600" />
+              </div>
+              <p className="text-xl font-semibold mb-2">Deposit Completed</p>
+              <p className="text-gray-500 mb-4">Your funds have been added to your account.</p>
+              <div className="bg-gray-50 rounded-md p-4 mb-4">
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Amount:</span>
+                  <span className="font-medium">{depositCurrency} {depositAmount}</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Reference:</span>
+                  <span className="font-medium">PAPSS-{Math.floor(Math.random() * 10000)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Status:</span>
+                  <span className="text-green-600 font-medium">Completed</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            depositMethod === null ? (
+              <div className="grid grid-cols-2 gap-4 py-4">
+                <Button 
+                  variant="outline" 
+                  className="h-24 flex flex-col items-center justify-center" 
+                  onClick={() => setDepositMethod('bank')}
+                >
+                  <CreditCard className="h-8 w-8 mb-2" />
+                  <span>Bank Transfer</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="h-24 flex flex-col items-center justify-center" 
+                  onClick={() => setDepositMethod('mobile_money')}
+                >
+                  <Smartphone className="h-8 w-8 mb-2" />
+                  <span>Mobile Money</span>
+                </Button>
+              </div>
+            ) : (
+              <div className="py-4 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="currency">Currency</Label>
+                  <Select defaultValue={depositCurrency} onValueChange={setDepositCurrency}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Currency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="NGN">Nigerian Naira (NGN)</SelectItem>
+                      <SelectItem value="XOF">West African CFA Franc (XOF)</SelectItem>
+                      <SelectItem value="GHS">Ghanaian Cedi (GHS)</SelectItem>
+                      <SelectItem value="KES">Kenyan Shilling (KES)</SelectItem>
+                      <SelectItem value="ZAR">South African Rand (ZAR)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="amount">Amount</Label>
+                  <Input 
+                    id="amount" 
+                    type="number" 
+                    value={depositAmount} 
+                    onChange={(e) => setDepositAmount(e.target.value)} 
+                    placeholder="Enter amount" 
+                    min="1"
+                  />
+                </div>
+
+                {depositMethod === 'bank' ? (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="bank">Bank Name</Label>
+                      <Select defaultValue="" onValueChange={setDepositBank}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Bank" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="first_bank">First Bank Nigeria</SelectItem>
+                          <SelectItem value="gtb">Guaranty Trust Bank</SelectItem>
+                          <SelectItem value="uba">United Bank for Africa</SelectItem>
+                          <SelectItem value="zenith">Zenith Bank</SelectItem>
+                          <SelectItem value="access">Access Bank</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="account">Account Number</Label>
+                      <Input 
+                        id="account" 
+                        value={accountNumber} 
+                        onChange={(e) => setAccountNumber(e.target.value)} 
+                        placeholder="Enter account number" 
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="provider">Mobile Money Provider</Label>
+                      <Select defaultValue="" onValueChange={setMobileProvider}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Provider" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="mtn">MTN Mobile Money</SelectItem>
+                          <SelectItem value="airtel">Airtel Money</SelectItem>
+                          <SelectItem value="orange">Orange Money</SelectItem>
+                          <SelectItem value="mpesa">M-Pesa</SelectItem>
+                          <SelectItem value="wave">Wave</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="mobile">Mobile Number</Label>
+                      <Input 
+                        id="mobile" 
+                        value={mobileNumber} 
+                        onChange={(e) => setMobileNumber(e.target.value)} 
+                        placeholder="Enter mobile number" 
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+            )
+          )}
+
+          <DialogFooter>
+            {depositSuccess ? (
+              <Button 
+                onClick={() => {
+                  setIsDepositOpen(false);
+                  setDepositSuccess(false);
+                }}
+              >
+                Close
+              </Button>
+            ) : depositMethod === null ? (
+              <Button variant="outline" onClick={() => setIsDepositOpen(false)}>Cancel</Button>
+            ) : (
+              <>
+                <Button variant="outline" onClick={() => setDepositMethod(null)}>Back</Button>
+                <Button 
+                  disabled={
+                    !depositAmount || 
+                    (depositMethod === 'bank' && (!depositBank || !accountNumber)) ||
+                    (depositMethod === 'mobile_money' && (!mobileProvider || !mobileNumber)) ||
+                    isDepositProcessing
+                  }
+                  onClick={async () => {
+                    if (!user?.id || !multiCurrencyWallet) return;
+                    
+                    setIsDepositProcessing(true);
+                    
+                    try {
+                      // Simulate API call
+                      await new Promise(resolve => setTimeout(resolve, 1500));
+                      
+                      // Create a deposit transaction
+                      const depositData = {
+                        amount: depositAmount,
+                        currency: depositCurrency,
+                        description: `Deposit via ${depositMethod === 'bank' ? 'bank transfer' : 'mobile money'}`,
+                        txType: 'DEPOSIT',
+                        walletId: multiCurrencyWallet.id,
+                        metadata: {
+                          depositMethod,
+                          ...(depositMethod === 'bank' 
+                            ? { bank: depositBank, accountNumber } 
+                            : { provider: mobileProvider, mobileNumber })
+                        }
+                      };
+                      
+                      // In a real app, you would make an API call here
+                      // const response = await apiRequest('POST', '/api/transactions', depositData);
+                      
+                      setDepositSuccess(true);
+                      setIsDepositProcessing(false);
+                      
+                      // Refetch wallet data and transactions
+                    } catch (error) {
+                      console.error('Error processing deposit:', error);
+                      setIsDepositProcessing(false);
+                    }
+                  }}
+                >
+                  {isDepositProcessing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Continue'
+                  )}
+                </Button>
+              </>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
