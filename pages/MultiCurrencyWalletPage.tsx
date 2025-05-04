@@ -55,7 +55,7 @@ const MultiCurrencyWalletPage: React.FC = () => {
   const [isSendOpen, setIsSendOpen] = useState(false);
   const { account } = useWeb3();
   
-  // Mock wallet data with USD balance
+  // Mock wallet data with USD balance and African currencies
   const wallets = {
     fiat: [{
       id: 1,
@@ -64,8 +64,11 @@ const MultiCurrencyWalletPage: React.FC = () => {
       primaryCurrency: 'USD',
       balances: [
         { amount: '25,000.00', currency: 'USD', currencyType: 'fiat' },
-        { amount: '15,000.00', currency: 'NGN', currencyType: 'fiat' },
-        { amount: '5,000.00', currency: 'XOF', currencyType: 'fiat' },
+        { amount: '9,850,000.00', currency: 'NGN', currencyType: 'fiat' }, // Nigerian Naira
+        { amount: '14,750,000.00', currency: 'XOF', currencyType: 'fiat' }, // West African CFA Franc
+        { amount: '456,250.00', currency: 'GHS', currencyType: 'fiat' }, // Ghanaian Cedi
+        { amount: '3,275,000.00', currency: 'KES', currencyType: 'fiat' }, // Kenyan Shilling
+        { amount: '430,000.00', currency: 'ZAR', currencyType: 'fiat' }, // South African Rand
       ]
     }],
     crypto: [{
@@ -210,6 +213,9 @@ const MultiCurrencyWalletPage: React.FC = () => {
                           {balance.currency === 'USD' ? 'US Dollar' : 
                            balance.currency === 'NGN' ? 'Nigerian Naira' : 
                            balance.currency === 'XOF' ? 'West African CFA Franc' : 
+                           balance.currency === 'GHS' ? 'Ghanaian Cedi' :
+                           balance.currency === 'KES' ? 'Kenyan Shilling' :
+                           balance.currency === 'ZAR' ? 'South African Rand' :
                            balance.currency}
                         </div>
                         <div className="text-2xl font-bold">{balance.currency} {balance.amount}</div>

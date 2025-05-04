@@ -47,7 +47,7 @@ function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" exact>
+        <Route path="/">
           {() => <Redirect to="/wallet/multi-currency" />}
         </Route>
         <Route path="/home" component={HomePage} />
