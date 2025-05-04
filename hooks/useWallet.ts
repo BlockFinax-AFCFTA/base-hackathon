@@ -1,8 +1,8 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
-import { queryClient } from '@/lib/queryClient';
-import { useWeb3 } from '@/hooks/useWeb3';
-import { useToast } from '@/hooks/use-toast';
+import { apiRequest } from '../lib/queryClient';
+import { queryClient } from '../lib/queryClient';
+import { useWeb3 } from '../hooks/useWeb3';
+import { useToast } from '../hooks/use-toast';
 
 interface Balance {
   amount: string;
