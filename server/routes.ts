@@ -279,7 +279,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         walletProvider: "papss",
         primaryCurrency: "USD",
         balances: [
-          { amount: "25000.00", currency: "USD", currencyType: "fiat" },
           { amount: "9850000.00", currency: "NGN", currencyType: "fiat" }, // Nigerian Naira
           { amount: "14750000.00", currency: "XOF", currencyType: "fiat" }, // West African CFA Franc
           { amount: "456250.00", currency: "GHS", currencyType: "fiat" }, // Ghanaian Cedi
@@ -479,16 +478,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
             toWalletId: 999,
             fromAddress: null,
             toAddress: null,
-            amount: "25000.00",
-            currency: "USD",
+            amount: "2500000.00",
+            currency: "NGN",
             currencyType: "fiat",
             txType: "DEPOSIT",
             status: "COMPLETED",
-            description: "Initial deposit",
+            description: "Initial NGN deposit",
             contractId: null,
             createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
             completedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-            provider: "internal",
+            provider: "papss",
+            papssReference: "PAPSS-24-58290",
+            papssStatus: "SETTLED",
+            sourceBank: "First Bank Nigeria",
+            exchangeRate: "1520.40",
             metadata: null
           },
           {
@@ -497,8 +500,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             toWalletId: null,
             fromAddress: null, 
             toAddress: null,
-            amount: "5000.00",
-            currency: "USD",
+            amount: "100000.00",
+            currency: "GHS",
             currencyType: "fiat",
             txType: "CROSS_BORDER_PAYMENT",
             status: "COMPLETED",
@@ -511,10 +514,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             papssStatus: "SETTLED",
             sourceBank: "First Bank Nigeria",
             destinationBank: "GCB Bank Ghana",
-            exchangeRate: "12.85",
+            exchangeRate: "0.078",
             metadata: {
-              equivalentValue: "64250.00",
-              equivalentCurrency: "GHS"
+              equivalentValue: "7800.00",
+              equivalentCurrency: "NGN"
             }
           },
           {
@@ -538,8 +541,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             sourceBank: "Société Générale Sénégal",
             exchangeRate: "655.957",
             metadata: {
-              equivalentValue: "1524.49",
-              equivalentCurrency: "USD"
+              equivalentValue: "1542290.00",
+              equivalentCurrency: "NGN"
             }
           },
           {
@@ -563,8 +566,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             destinationBank: "First Bank Nigeria",
             exchangeRate: "1520.40",
             metadata: {
-              equivalentValue: "657.72",
-              equivalentCurrency: "USD"
+              equivalentValue: "229842.28",
+              equivalentCurrency: "XOF"
             }
           }
         ]);

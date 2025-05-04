@@ -36,7 +36,9 @@ import {
   QrCode,
   Share,
   ShieldCheck,
-  Loader2
+  Loader2,
+  Smartphone,
+  Check
 } from 'lucide-react';
 import { useWeb3 } from '../client/src/hooks/useWeb3';
 import { useQuery } from '@tanstack/react-query';
@@ -289,8 +291,7 @@ const MultiCurrencyWalletPage: React.FC = () => {
                     {wallet.balances.map((balance, index) => (
                       <div key={index} className="bg-gray-50 p-4 rounded-lg">
                         <div className="text-sm text-gray-500 mb-1">
-                          {balance.currency === 'USD' ? 'US Dollar' : 
-                           balance.currency === 'NGN' ? 'Nigerian Naira' : 
+                          {balance.currency === 'NGN' ? 'Nigerian Naira' : 
                            balance.currency === 'XOF' ? 'West African CFA Franc' : 
                            balance.currency === 'GHS' ? 'Ghanaian Cedi' :
                            balance.currency === 'KES' ? 'Kenyan Shilling' :
@@ -471,11 +472,11 @@ const MultiCurrencyWalletPage: React.FC = () => {
                               )}
                             </div>
                           )}
-                          {transaction.exchangeRate && (
+                          {transaction.exchangeRate && transaction.metadata?.equivalentCurrency && (
                             <div className="text-xs text-gray-500 mt-1">
-                              Rate: 1 {transaction.currency === 'USD' ? transaction.metadata?.equivalentCurrency : 'USD'} = 
+                              Rate: 1 {transaction.metadata.equivalentCurrency} = 
                               {' '}{parseFloat(transaction.exchangeRate).toFixed(2)}{' '}
-                              {transaction.currency === 'USD' ? 'USD' : transaction.currency}
+                              {transaction.currency}
                             </div>
                           )}
                         </div>
