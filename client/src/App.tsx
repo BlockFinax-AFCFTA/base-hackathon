@@ -47,7 +47,10 @@ function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={HomePage} />
+        <Route path="/" exact>
+          {() => <Redirect to="/wallet/multi-currency" />}
+        </Route>
+        <Route path="/home" component={HomePage} />
         
         {/* Contract routes */}
         <PrivateRoute path="/contracts" component={ContractsPage} />
@@ -59,9 +62,9 @@ function Router() {
         <PrivateRoute path="/documents/upload" component={DocumentsPage} />
         
         {/* Wallet routes */}
-        <PrivateRoute path="/wallet/multi-currency" component={MultiCurrencyWalletPage} />
-        <PrivateRoute path="/wallet" component={EnhancedWalletPage} />
-        <PrivateRoute path="/wallet/legacy" component={WalletPage} />
+        <Route path="/wallet/multi-currency" component={MultiCurrencyWalletPage} />
+        <Route path="/wallet" component={EnhancedWalletPage} />
+        <Route path="/wallet/legacy" component={WalletPage} />
         
         {/* Invoice routes */}
         <PrivateRoute path="/invoices" component={InvoicePage} />

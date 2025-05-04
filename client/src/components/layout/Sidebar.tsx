@@ -78,23 +78,21 @@ const Sidebar = () => {
               active={isGroupActive(["/contracts"])} 
             />
 
-            <div className="space-y-1">
-              <NavItem 
-                href="/wallet" 
-                icon={<Wallet className="mr-3 h-5 w-5" />} 
-                label={translate('nav.wallet')} 
-                active={isGroupActive(["/wallet"])} 
-              />
-              
-              <div className={`pl-8 space-y-1 ${isGroupActive(["/wallet"]) ? "block" : "hidden"}`}>
-                <NavItem 
-                  href="/wallet/multi-currency" 
-                  icon={<CreditCard className="mr-3 h-5 w-5" />} 
-                  label={"Multi-Currency Wallet"} 
-                  active={location === "/wallet/multi-currency"} 
-                />
-              </div>
-            </div>
+            {/* Make multi-currency wallet the primary wallet */}
+            <NavItem 
+              href="/wallet/multi-currency" 
+              icon={<CreditCard className="mr-3 h-5 w-5" />} 
+              label={"Multi-Currency Wallet"} 
+              active={location === "/wallet/multi-currency"} 
+            />
+            
+            {/* Legacy wallet as secondary option */}
+            <NavItem 
+              href="/wallet" 
+              icon={<Wallet className="mr-3 h-5 w-5" />} 
+              label={translate('nav.wallet')} 
+              active={location === "/wallet" || (isGroupActive(["/wallet"]) && location !== "/wallet/multi-currency")} 
+            />
 
             <NavItem 
               href="/invoices" 

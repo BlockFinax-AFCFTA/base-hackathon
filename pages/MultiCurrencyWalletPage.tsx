@@ -137,8 +137,13 @@ const MultiCurrencyWalletPage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Multi-Currency Wallet</h1>
-        <p className="text-gray-600">Manage your finances across multiple currencies</p>
+        <h1 className="text-3xl font-bold">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-green-500">
+            Multi-Currency Wallet
+          </span>
+          <Badge className="ml-2 bg-blue-100 text-blue-800 hover:bg-blue-200">NEW</Badge>
+        </h1>
+        <p className="text-gray-600">Manage your global trade finances across multiple currencies with PAPSS integration</p>
       </div>
 
       <Tabs defaultValue="wallets" className="mb-8" onValueChange={(value) => setActiveTab(value)}>
