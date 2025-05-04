@@ -30,7 +30,7 @@ import {
   Plus,
   ExternalLink,
   Copy,
-  Bank,
+  Building,
   ChevronsUpDown,
   Landmark,
   Coins,
@@ -212,7 +212,7 @@ const WalletPageI18n: React.FC = () => {
 
   const renderWalletTypeIcon = (type: string) => {
     switch (type) {
-      case 'fiat': return <Bank className="h-6 w-6 mr-3 text-blue-500" />;
+      case 'fiat': return <Building className="h-6 w-6 mr-3 text-blue-500" />;
       case 'crypto': return <Coins className="h-6 w-6 mr-3 text-orange-500" />;
       case 'escrow': return <ShieldCheck className="h-6 w-6 mr-3 text-green-500" />;
       default: return <Wallet className="h-6 w-6 mr-3 text-primary" />;
@@ -250,7 +250,7 @@ const WalletPageI18n: React.FC = () => {
                 onClick={() => setSelectedWalletType('fiat')}
                 className="flex items-center"
               >
-                <Bank className="h-4 w-4 mr-2" />
+                <Building className="h-4 w-4 mr-2" />
                 {t('wallet.fiatWallet')}
               </Button>
               <Button 

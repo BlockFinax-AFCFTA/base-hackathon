@@ -18,6 +18,7 @@ import OnboardingWizard from "../../components/onboarding/OnboardingWizard";
 
 // Import new components
 import EnhancedWalletPage from "@/components/wallet/WalletPage";
+import MultiCurrencyWalletPage from "../../components/wallet/WalletPageI18n";
 import InvoicePage from "@/components/invoice/InvoicePage";
 import TradeFinancePage from "@/components/tradeFinance/TradeFinancePage";
 import KYCPage from "@/components/kyc/KYCPage";
@@ -58,6 +59,7 @@ function Router() {
         <PrivateRoute path="/documents/upload" component={DocumentsPage} />
         
         {/* Wallet routes */}
+        <PrivateRoute path="/wallet/multi-currency" component={MultiCurrencyWalletPage} />
         <PrivateRoute path="/wallet" component={EnhancedWalletPage} />
         <PrivateRoute path="/wallet/legacy" component={WalletPage} />
         
