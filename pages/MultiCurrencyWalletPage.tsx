@@ -251,7 +251,21 @@ const MultiCurrencyWalletPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {selectedWalletType === 'fiat' && wallets.fiat.map(wallet => (
+            {isLoadingWallet && selectedWalletType === 'fiat' ? (
+              <Card className="lg:col-span-3">
+                <CardContent className="flex items-center justify-center py-8">
+                  <Loader2 className="h-8 w-8 text-primary animate-spin" />
+                  <p className="ml-2 text-gray-500">Loading wallet data...</p>
+                </CardContent>
+              </Card>
+            ) : walletError && selectedWalletType === 'fiat' ? (
+              <Card className="lg:col-span-3">
+                <CardContent className="text-center py-8">
+                  <AlertCircle className="h-8 w-8 mx-auto text-red-500" />
+                  <p className="mt-2 text-gray-500">Error loading wallet data</p>
+                </CardContent>
+              </Card>
+            ) : selectedWalletType === 'fiat' && wallets.fiat.map(wallet => (
               <Card key={wallet.id} className="lg:col-span-3">
                 <CardHeader>
                   <div className="flex justify-between items-center">
@@ -426,21 +440,13 @@ const MultiCurrencyWalletPage: React.FC = () => {
                   <AlertCircle className="h-8 w-8 mx-auto text-red-500" />
                   <p className="mt-2 text-gray-500">Error loading transactions</p>
                 </div>
-              ) : transactions && transactions.length > 0 ? (
+              ) : transactions && Array.isArray(transactions) && transactions.length > 0 ? (
                 <div className="space-y-4">
                   {transactions.map((transaction) => (
                     <div key={transaction.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center">
                         <div className="mr-4 p-2 bg-gray-100 rounded-full">
-                          {transaction.txType === 'DEPOSIT' ? 
-                            <ArrowDownLeft className="h-5 w-5 text-green-500" /> :
-                           transaction.txType === 'WITHDRAWAL' ? 
-                            <ArrowUpRight className="h-5 w-5 text-red-500" /> :
-                           transaction.txType === 'TRANSFER' || transaction.txType === 'CROSS_BORDER_PAYMENT' ? 
-                            <Upload className="h-5 w-5 text-orange-500" /> :
-                           transaction.txType === 'ESCROW_LOCK' ? 
-                            <ShieldCheck className="h-5 w-5 text-purple-500" /> :
-                            <AlertCircle className="h-5 w-5 text-gray-500" />}
+                          {getTransactionIcon(transaction.txType)}
                         </div>
                         <div>
                           <div className="font-medium">
@@ -487,11 +493,7 @@ const MultiCurrencyWalletPage: React.FC = () => {
                           </div>
                         )}
                         <div className="mt-1">
-                          <Badge className={
-                            transaction.status === 'COMPLETED' ? 'bg-green-100 text-green-800' : 
-                            transaction.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : 
-                            transaction.status === 'FAILED' ? 'bg-red-100 text-red-800' : 
-                            'bg-gray-100 text-gray-800'}>
+                          <Badge className={getStatusClass(transaction.status)}>
                             {transaction.status.charAt(0) + transaction.status.slice(1).toLowerCase()}
                           </Badge>
                         </div>
