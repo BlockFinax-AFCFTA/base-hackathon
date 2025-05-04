@@ -18,7 +18,7 @@ import OnboardingWizard from "../../components/onboarding/OnboardingWizard";
 
 // Import new components
 import EnhancedWalletPage from "@/components/wallet/WalletPage";
-import MultiCurrencyWalletPage from "./pages/MultiCurrencyWalletPage";
+import MultiCurrencyWalletPage from "../../pages/MultiCurrencyWalletPage";
 import InvoicePage from "@/components/invoice/InvoicePage";
 import TradeFinancePage from "@/components/tradeFinance/TradeFinancePage";
 import KYCPage from "@/components/kyc/KYCPage";
