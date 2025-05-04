@@ -141,7 +141,11 @@ const WalletPageI18n: React.FC = () => {
   ];
 
   // Mock exchange rates
-  const mockExchangeRates = {
+  const mockExchangeRates: {
+    USD: { NGN: number; XOF: number; ETH: number; };
+    NGN: { USD: number; XOF: number; ETH: number; };
+    ETH: { USD: number; NGN: number; USDT: number; USDC: number; };
+  } = {
     USD: { 
       NGN: 1530.25, 
       XOF: 605.50, 
@@ -291,7 +295,7 @@ const WalletPageI18n: React.FC = () => {
                       onClick={() => setCreateWalletType('fiat')}
                       className="w-full"
                     >
-                      <Bank className="h-4 w-4 mr-2" />
+                      <Building className="h-4 w-4 mr-2" />
                       {t('wallet.fiatWallet')}
                     </Button>
                     <Button 
@@ -380,7 +384,7 @@ const WalletPageI18n: React.FC = () => {
                   <div className="flex justify-between items-center">
                     <div>
                       <CardTitle className="flex items-center">
-                        <Bank className="h-6 w-6 mr-2 text-primary" />
+                        <Building className="h-6 w-6 mr-2 text-primary" />
                         {t('wallet.fiatWallet')}
                       </CardTitle>
                       <CardDescription className="flex items-center mt-1">
@@ -599,7 +603,7 @@ const WalletPageI18n: React.FC = () => {
                         <div className="text-sm text-gray-500 mt-1">
                           ≈ ${(
                             parseFloat(balance.amount.replace(/,/g, '')) * 
-                            (mockExchangeRates[balance.currency as keyof typeof mockExchangeRates]?.USD || 0)
+                            (balance.currency === 'ETH' ? mockExchangeRates.ETH.USD : 0)
                           ).toFixed(2)}
                         </div>
                       </div>
