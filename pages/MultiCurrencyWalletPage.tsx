@@ -14,6 +14,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '../client/src/components/ui/input';
 import { Label } from '../client/src/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../client/src/components/ui/select';
+import { Alert, AlertDescription, AlertTitle } from '../client/src/components/ui/alert';
+import { useToast } from '../client/src/hooks/use-toast';
 import {
   Wallet,
   CreditCard,
@@ -38,7 +40,8 @@ import {
   ShieldCheck,
   Loader2,
   Smartphone,
-  Check
+  Check,
+  Info
 } from 'lucide-react';
 import { useWeb3 } from '../client/src/hooks/useWeb3';
 import { useQuery } from '@tanstack/react-query';
@@ -113,8 +116,8 @@ interface Transaction {
 const MultiCurrencyWalletPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('wallets');
   const [selectedWalletType, setSelectedWalletType] = useState<'fiat' | 'crypto' | 'escrow'>('fiat');
-  const [isReceiveOpen, setIsReceiveOpen] = useState(false);
-  const [isSendOpen, setIsSendOpen] = useState(false);
+  
+  // Fiat wallet deposit states
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [depositMethod, setDepositMethod] = useState<'bank' | 'mobile_money' | null>(null);
   const [depositAmount, setDepositAmount] = useState('');
@@ -125,7 +128,17 @@ const MultiCurrencyWalletPage: React.FC = () => {
   const [mobileProvider, setMobileProvider] = useState('');
   const [isDepositProcessing, setIsDepositProcessing] = useState(false);
   const [depositSuccess, setDepositSuccess] = useState(false);
+  
+  // Crypto wallet states
+  const [isReceiveOpen, setIsReceiveOpen] = useState(false);
+  const [isSendOpen, setIsSendOpen] = useState(false);
+  const [sendAmount, setSendAmount] = useState('');
+  const [sendCurrency, setSendCurrency] = useState('ETH');
+  const [recipientAddress, setRecipientAddress] = useState('');
+  const [isSendProcessing, setIsSendProcessing] = useState(false);
+  const [sendSuccess, setSendSuccess] = useState(false);
   const { account, user } = useWeb3();
+  const { toast } = useToast();
   const userId = 1; // Hardcoded user ID for demo purposes
   
   // Fetch multi-currency wallet data
@@ -388,11 +401,27 @@ const MultiCurrencyWalletPage: React.FC = () => {
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-col sm:flex-row gap-2">
-                  <Button variant="outline" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => {
+                      setIsReceiveOpen(true);
+                    }}
+                  >
                     <QrCode className="h-4 w-4 mr-2" />
                     Receive
                   </Button>
-                  <Button variant="outline" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => {
+                      setIsSendOpen(true);
+                      setSendAmount('');
+                      setSendCurrency(wallet.balances[0]?.currency || 'ETH');
+                      setRecipientAddress('');
+                      setSendSuccess(false);
+                    }}
+                  >
                     <Upload className="h-4 w-4 mr-2" />
                     Send
                   </Button>
@@ -541,7 +570,7 @@ const MultiCurrencyWalletPage: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
-      {/* Deposit Dialog */}
+      {/* Deposit Dialog for Fiat Wallet */}
       <Dialog open={isDepositOpen} onOpenChange={setIsDepositOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -762,6 +791,234 @@ const MultiCurrencyWalletPage: React.FC = () => {
                     </>
                   ) : (
                     'Continue'
+                  )}
+                </Button>
+              </>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Receive Dialog for Crypto Wallet */}
+      <Dialog open={isReceiveOpen} onOpenChange={setIsReceiveOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Receive Crypto</DialogTitle>
+            <DialogDescription>
+              Scan the QR code or copy the wallet address to receive cryptocurrency
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-6 flex flex-col items-center">
+            <div className="bg-white p-4 border rounded-lg mb-4">
+              <QrCode className="h-48 w-48 text-gray-800" />
+            </div>
+            
+            <div className="w-full flex flex-col mb-4">
+              <Label htmlFor="wallet-address" className="mb-2">Wallet Address</Label>
+              <div className="flex">
+                <Input 
+                  id="wallet-address" 
+                  readOnly 
+                  value={wallets.crypto[0]?.walletAddress || '0x1a2b3c4d5e6f7g8h9i0j'} 
+                  className="flex-1 bg-gray-50"
+                />
+                <Button 
+                  variant="outline"
+                  className="ml-2"
+                  onClick={() => {
+                    navigator.clipboard.writeText(wallets.crypto[0]?.walletAddress || '0x1a2b3c4d5e6f7g8h9i0j');
+                    toast({
+                      title: "Address Copied",
+                      description: "Wallet address copied to clipboard",
+                    });
+                  }}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            
+            <Alert className="bg-amber-50 border-amber-200">
+              <AlertCircle className="h-4 w-4 text-amber-600" />
+              <AlertTitle className="text-amber-800">Important</AlertTitle>
+              <AlertDescription className="text-amber-700">
+                Only send ETH and ERC-20 tokens to this address. Sending other types of tokens may result in permanent loss.
+              </AlertDescription>
+            </Alert>
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              onClick={() => setIsReceiveOpen(false)}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Send Dialog for Crypto Wallet */}
+      <Dialog open={isSendOpen} onOpenChange={setIsSendOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>
+              {sendSuccess ? (
+                <div className="flex items-center text-green-500">
+                  <Check className="mr-2 h-6 w-6" />
+                  Transaction Submitted
+                </div>
+              ) : (
+                'Send Crypto'
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {sendSuccess 
+                ? 'Your transaction has been submitted to the blockchain.' 
+                : 'Send cryptocurrency to another wallet address.'}
+            </DialogDescription>
+          </DialogHeader>
+
+          {sendSuccess ? (
+            <div className="py-6 text-center">
+              <div className="mx-auto w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                <Check className="h-6 w-6 text-green-600" />
+              </div>
+              <p className="text-xl font-semibold mb-2">Transaction Sent</p>
+              <p className="text-gray-500 mb-4">Your transaction is being processed on the blockchain.</p>
+              <div className="bg-gray-50 rounded-md p-4 mb-4">
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Amount:</span>
+                  <span className="font-medium">{sendAmount} {sendCurrency}</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">To:</span>
+                  <span className="font-medium">{shortenAddress(recipientAddress)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Status:</span>
+                  <span className="text-yellow-600 font-medium">Pending</span>
+                </div>
+              </div>
+              <div className="text-sm text-gray-500">
+                <span className="block mb-1">Transaction Hash:</span>
+                <div className="bg-gray-100 p-2 rounded flex items-center justify-between">
+                  <span className="font-mono text-xs truncate">0x{Array(64).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('')}</span>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    className="h-6 w-6 p-0"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`0x${Array(64).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('')}`);
+                      toast({
+                        title: "Copied",
+                        description: "Transaction hash copied to clipboard",
+                      });
+                    }}
+                  >
+                    <Copy className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="py-4 space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="sendCurrency">Currency</Label>
+                <Select defaultValue={sendCurrency} onValueChange={setSendCurrency}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ETH">Ethereum (ETH)</SelectItem>
+                    <SelectItem value="USDT">Tether USD (USDT)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="sendAmount">Amount</Label>
+                <Input 
+                  id="sendAmount" 
+                  type="number" 
+                  value={sendAmount} 
+                  onChange={(e) => setSendAmount(e.target.value)} 
+                  placeholder="Enter amount" 
+                  min="0.001"
+                  step="0.001"
+                />
+                <div className="text-xs text-right text-gray-500">
+                  Balance: {
+                    wallets.crypto[0]?.balances.find(b => b.currency === sendCurrency)?.amount || '0'
+                  } {sendCurrency}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="recipientAddress">Recipient Address</Label>
+                <Input 
+                  id="recipientAddress" 
+                  value={recipientAddress} 
+                  onChange={(e) => setRecipientAddress(e.target.value)} 
+                  placeholder="Enter wallet address (0x...)" 
+                />
+              </div>
+
+              <Alert className="bg-gray-50 border-gray-200">
+                <Info className="h-4 w-4 text-gray-600" />
+                <AlertTitle>Network Fee</AlertTitle>
+                <AlertDescription className="text-sm">
+                  Estimated Gas Fee: 0.00041 ETH (~$1.23 USD)
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
+
+          <DialogFooter>
+            {sendSuccess ? (
+              <Button 
+                onClick={() => {
+                  setIsSendOpen(false);
+                  setSendSuccess(false);
+                }}
+              >
+                Close
+              </Button>
+            ) : (
+              <>
+                <Button variant="outline" onClick={() => setIsSendOpen(false)}>Cancel</Button>
+                <Button 
+                  disabled={!sendAmount || !recipientAddress || isSendProcessing}
+                  onClick={async () => {
+                    setIsSendProcessing(true);
+                    
+                    try {
+                      // Simulate blockchain transaction delay
+                      await new Promise(resolve => setTimeout(resolve, 2000));
+                      
+                      // In a real app, you would send a blockchain transaction here
+                      
+                      setSendSuccess(true);
+                      setIsSendProcessing(false);
+                    } catch (error) {
+                      console.error('Error sending transaction:', error);
+                      setIsSendProcessing(false);
+                      
+                      toast({
+                        title: "Transaction Failed",
+                        description: "There was an error sending your transaction.",
+                        variant: "destructive"
+                      });
+                    }
+                  }}
+                >
+                  {isSendProcessing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Send'
                   )}
                 </Button>
               </>
