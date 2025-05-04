@@ -126,6 +126,7 @@ const MultiCurrencyWalletPage: React.FC = () => {
   const [isDepositProcessing, setIsDepositProcessing] = useState(false);
   const [depositSuccess, setDepositSuccess] = useState(false);
   const { account, user } = useWeb3();
+  const userId = 1; // Hardcoded user ID for demo purposes
   
   // Fetch multi-currency wallet data
   const {
@@ -133,13 +134,19 @@ const MultiCurrencyWalletPage: React.FC = () => {
     isLoading: isLoadingWallet,
     error: walletError,
   } = useQuery({
-    queryKey: ['/api/users', user?.id, 'multicurrency-wallet'],
+    queryKey: ['/api/users', userId, 'multicurrency-wallet'],
     queryFn: async () => {
-      if (!user?.id) return null;
-      const res = await apiRequest('GET', `/api/users/${user.id}/multicurrency-wallet`);
-      return res.json() as Promise<MultiCurrencyWallet>;
+      try {
+        console.log('Fetching wallet data for user ID:', userId);
+        const res = await apiRequest('GET', `/api/users/${userId}/multicurrency-wallet`);
+        const data = await res.json() as MultiCurrencyWallet;
+        console.log('Wallet data received:', data);
+        return data;
+      } catch (err) {
+        console.error('Failed to fetch wallet balance:', err);
+        throw err;
+      }
     },
-    enabled: !!user?.id,
   });
   
   // Fetch transaction history with multi-currency support
@@ -148,13 +155,19 @@ const MultiCurrencyWalletPage: React.FC = () => {
     isLoading: isLoadingTransactions,
     error: transactionsError,
   } = useQuery({
-    queryKey: ['/api/users', user?.id, 'transactions', 'multicurrency'],
+    queryKey: ['/api/users', userId, 'transactions', 'multicurrency'],
     queryFn: async () => {
-      if (!user?.id) return [];
-      const res = await apiRequest('GET', `/api/users/${user.id}/transactions?multiCurrency=true`);
-      return res.json() as Promise<Transaction[]>;
+      try {
+        console.log('Fetching transactions for user ID:', userId);
+        const res = await apiRequest('GET', `/api/users/${userId}/transactions?multiCurrency=true`);
+        const data = await res.json() as Transaction[];
+        console.log('Transactions received:', data);
+        return data;
+      } catch (err) {
+        console.error('Failed to fetch transactions:', err);
+        throw err;
+      }
     },
-    enabled: !!user?.id,
   });
   
   // Set up wallets object for display
@@ -705,7 +718,7 @@ const MultiCurrencyWalletPage: React.FC = () => {
                     isDepositProcessing
                   }
                   onClick={async () => {
-                    if (!user?.id || !multiCurrencyWallet) return;
+                    if (!multiCurrencyWallet) return;
                     
                     setIsDepositProcessing(true);
                     
@@ -720,6 +733,7 @@ const MultiCurrencyWalletPage: React.FC = () => {
                         description: `Deposit via ${depositMethod === 'bank' ? 'bank transfer' : 'mobile money'}`,
                         txType: 'DEPOSIT',
                         walletId: multiCurrencyWallet.id,
+                        userId: userId,
                         metadata: {
                           depositMethod,
                           ...(depositMethod === 'bank' 
