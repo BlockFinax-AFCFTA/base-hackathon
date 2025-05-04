@@ -129,6 +129,18 @@ const MultiCurrencyWalletPage: React.FC = () => {
   const [isDepositProcessing, setIsDepositProcessing] = useState(false);
   const [depositSuccess, setDepositSuccess] = useState(false);
   
+  // Fiat wallet withdrawal states
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
+  const [withdrawMethod, setWithdrawMethod] = useState<'bank' | 'mobile_money' | null>(null);
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [withdrawCurrency, setWithdrawCurrency] = useState('NGN');
+  const [withdrawBank, setWithdrawBank] = useState('');
+  const [withdrawAccountNumber, setWithdrawAccountNumber] = useState('');
+  const [withdrawMobileNumber, setWithdrawMobileNumber] = useState('');
+  const [withdrawMobileProvider, setWithdrawMobileProvider] = useState('');
+  const [isWithdrawProcessing, setIsWithdrawProcessing] = useState(false);
+  const [withdrawSuccess, setWithdrawSuccess] = useState(false);
+  
   // Crypto wallet states
   const [isReceiveOpen, setIsReceiveOpen] = useState(false);
   const [isSendOpen, setIsSendOpen] = useState(false);
@@ -350,7 +362,17 @@ const MultiCurrencyWalletPage: React.FC = () => {
                     <ArrowDownLeft className="h-4 w-4 mr-2" />
                     Deposit
                   </Button>
-                  <Button variant="outline" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => {
+                      setIsWithdrawOpen(true);
+                      setWithdrawMethod(null);
+                      setWithdrawAmount('');
+                      setWithdrawCurrency(wallet.balances[0]?.currency || 'NGN');
+                      setWithdrawSuccess(false);
+                    }}
+                  >
                     <ArrowUpRight className="h-4 w-4 mr-2" />
                     Withdraw
                   </Button>
@@ -1021,6 +1043,273 @@ const MultiCurrencyWalletPage: React.FC = () => {
                     'Send'
                   )}
                 </Button>
+              </>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Withdrawal Dialog for Fiat Wallet */}
+      <Dialog open={isWithdrawOpen} onOpenChange={setIsWithdrawOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>
+              {withdrawSuccess ? (
+                <div className="flex items-center text-green-500">
+                  <Check className="mr-2 h-6 w-6" />
+                  Withdrawal Successful
+                </div>
+              ) : (
+                'Withdraw Funds'
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {withdrawSuccess 
+                ? 'Your withdrawal has been processed successfully.' 
+                : 'Withdraw funds from your multi-currency wallet to your bank account or mobile money.'}
+            </DialogDescription>
+          </DialogHeader>
+
+          {withdrawSuccess ? (
+            <div className="py-6 text-center">
+              <div className="mx-auto w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                <Check className="h-6 w-6 text-green-600" />
+              </div>
+              <h3 className="font-medium text-xl mb-2">Withdrawal Initiated</h3>
+              <p className="text-gray-500 mb-4">
+                Your withdrawal of {withdrawCurrency} {withdrawAmount} is being processed.
+              </p>
+              <div className="bg-gray-50 rounded-md p-4 mb-4 text-left">
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Transaction ID:</span>
+                  <span className="font-medium">TX-{Math.floor(Math.random() * 10000000)}</span>
+                </div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-gray-500">Status:</span>
+                  <Badge className="bg-yellow-100 text-yellow-800">Processing</Badge>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Estimated time:</span>
+                  <span className="font-medium">1-2 business days</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-6 py-4">
+              {withdrawMethod === null ? (
+                <>
+                  <div className="flex justify-around gap-4">
+                    <Button 
+                      variant="outline" 
+                      className="flex-1 flex flex-col items-center py-6"
+                      onClick={() => setWithdrawMethod('bank')}
+                    >
+                      <Building className="h-10 w-10 mb-2 text-primary" />
+                      <div className="font-medium">Bank Transfer</div>
+                      <div className="text-xs text-gray-500">2-3 business days</div>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="flex-1 flex flex-col items-center py-6"
+                      onClick={() => setWithdrawMethod('mobile_money')}
+                    >
+                      <Smartphone className="h-10 w-10 mb-2 text-primary" />
+                      <div className="font-medium">Mobile Money</div>
+                      <div className="text-xs text-gray-500">Instant transfer</div>
+                    </Button>
+                  </div>
+                </>
+              ) : withdrawMethod === 'bank' ? (
+                <>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawAmount">Amount</Label>
+                      <div className="flex space-x-2">
+                        <Select value={withdrawCurrency} onValueChange={setWithdrawCurrency}>
+                          <SelectTrigger className="w-[100px]">
+                            <SelectValue placeholder="Currency" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="NGN">NGN</SelectItem>
+                            <SelectItem value="XOF">XOF</SelectItem>
+                            <SelectItem value="GHS">GHS</SelectItem>
+                            <SelectItem value="KES">KES</SelectItem>
+                            <SelectItem value="ZAR">ZAR</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          id="withdrawAmount"
+                          placeholder="Enter amount"
+                          value={withdrawAmount}
+                          onChange={(e) => setWithdrawAmount(e.target.value)}
+                          type="number"
+                          min="0"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawBank">Bank</Label>
+                      <Select value={withdrawBank} onValueChange={setWithdrawBank}>
+                        <SelectTrigger id="withdrawBank">
+                          <SelectValue placeholder="Select bank" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="first_bank">First Bank Nigeria</SelectItem>
+                          <SelectItem value="gtb">Guaranty Trust Bank</SelectItem>
+                          <SelectItem value="zenith">Zenith Bank</SelectItem>
+                          <SelectItem value="uba">United Bank for Africa (UBA)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawAccountNumber">Account Number</Label>
+                      <Input 
+                        id="withdrawAccountNumber" 
+                        placeholder="Enter account number"
+                        value={withdrawAccountNumber}
+                        onChange={(e) => setWithdrawAccountNumber(e.target.value)}
+                      />
+                    </div>
+                    
+                    <Alert className="bg-gray-50 border-gray-200">
+                      <Info className="h-4 w-4 text-gray-600" />
+                      <AlertTitle>Processing Time</AlertTitle>
+                      <AlertDescription className="text-sm">
+                        Bank withdrawals typically take 2-3 business days to process.
+                      </AlertDescription>
+                    </Alert>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawAmount">Amount</Label>
+                      <div className="flex space-x-2">
+                        <Select value={withdrawCurrency} onValueChange={setWithdrawCurrency}>
+                          <SelectTrigger className="w-[100px]">
+                            <SelectValue placeholder="Currency" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="NGN">NGN</SelectItem>
+                            <SelectItem value="XOF">XOF</SelectItem>
+                            <SelectItem value="GHS">GHS</SelectItem>
+                            <SelectItem value="KES">KES</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          id="withdrawAmount"
+                          placeholder="Enter amount"
+                          value={withdrawAmount}
+                          onChange={(e) => setWithdrawAmount(e.target.value)}
+                          type="number"
+                          min="0"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawMobileProvider">Mobile Money Provider</Label>
+                      <Select value={withdrawMobileProvider} onValueChange={setWithdrawMobileProvider}>
+                        <SelectTrigger id="withdrawMobileProvider">
+                          <SelectValue placeholder="Select provider" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="mtn">MTN Mobile Money</SelectItem>
+                          <SelectItem value="airtel">Airtel Money</SelectItem>
+                          <SelectItem value="orange">Orange Money</SelectItem>
+                          <SelectItem value="mpesa">M-Pesa</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="withdrawMobileNumber">Mobile Number</Label>
+                      <Input 
+                        id="withdrawMobileNumber" 
+                        placeholder="Enter mobile number"
+                        value={withdrawMobileNumber}
+                        onChange={(e) => setWithdrawMobileNumber(e.target.value)}
+                      />
+                    </div>
+                    
+                    <Alert className="bg-gray-50 border-gray-200">
+                      <Info className="h-4 w-4 text-gray-600" />
+                      <AlertTitle>Instant Transfer</AlertTitle>
+                      <AlertDescription className="text-sm">
+                        Mobile money withdrawals are usually processed instantly.
+                      </AlertDescription>
+                    </Alert>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          <DialogFooter>
+            {withdrawSuccess ? (
+              <Button 
+                onClick={() => {
+                  setIsWithdrawOpen(false);
+                  setWithdrawSuccess(false);
+                }}
+              >
+                Close
+              </Button>
+            ) : (
+              <>
+                <Button variant="outline" onClick={() => {
+                  if (withdrawMethod) {
+                    setWithdrawMethod(null);
+                  } else {
+                    setIsWithdrawOpen(false);
+                  }
+                }}>
+                  {withdrawMethod ? 'Back' : 'Cancel'}
+                </Button>
+                {withdrawMethod && (
+                  <Button 
+                    disabled={!withdrawAmount || isWithdrawProcessing || 
+                      (withdrawMethod === 'bank' && (!withdrawBank || !withdrawAccountNumber)) ||
+                      (withdrawMethod === 'mobile_money' && (!withdrawMobileProvider || !withdrawMobileNumber))}
+                    onClick={async () => {
+                      setIsWithdrawProcessing(true);
+                      
+                      try {
+                        // Simulate API call
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        
+                        setWithdrawSuccess(true);
+                        setIsWithdrawProcessing(false);
+                        
+                        toast({
+                          title: "Withdrawal Initiated",
+                          description: `Your withdrawal of ${withdrawCurrency} ${withdrawAmount} has been initiated.`,
+                        });
+                      } catch (error) {
+                        console.error('Error processing withdrawal:', error);
+                        setIsWithdrawProcessing(false);
+                        
+                        toast({
+                          title: "Withdrawal Failed",
+                          description: "There was an error processing your withdrawal request.",
+                          variant: "destructive"
+                        });
+                      }
+                    }}
+                  >
+                    {isWithdrawProcessing ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      'Withdraw'
+                    )}
+                  </Button>
+                )}
               </>
             )}
           </DialogFooter>
