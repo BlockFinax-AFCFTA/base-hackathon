@@ -35,15 +35,75 @@ import {
   Globe,
   QrCode,
   Share,
-  ShieldCheck
+  ShieldCheck,
+  Loader2
 } from 'lucide-react';
 import { useWeb3 } from '../client/src/hooks/useWeb3';
+import { useQuery } from '@tanstack/react-query';
+import { apiRequest } from '../client/src/lib/queryClient';
+
 // Function to shorten addresses for display
 const shortenAddress = (address: string, startChars: number = 6, endChars: number = 4): string => {
   if (!address) return '';
   if (address.length < startChars + endChars) return address;
   return `${address.slice(0, startChars)}...${address.slice(-endChars)}`;
 };
+
+// Format currency
+const formatCurrency = (amount: string) => {
+  // Remove any existing commas
+  const cleanAmount = amount.replace(/,/g, '');
+  // Add commas for thousands separator
+  return parseFloat(cleanAmount).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
+
+// Define interface for balance
+interface Balance {
+  amount: string;
+  currency: string;
+  currencyType: 'fiat' | 'crypto';
+}
+
+// Define interface for multi-currency wallet
+interface MultiCurrencyWallet {
+  id: number;
+  userId: number;
+  walletType: string;
+  walletProvider: string;
+  primaryCurrency: string;
+  balances: Balance[];
+  contractId: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Define interface for transaction
+interface Transaction {
+  id: number;
+  fromWalletId: number | null;
+  toWalletId: number | null;
+  fromAddress: string | null;
+  toAddress: string | null;
+  amount: string;
+  currency: string;
+  currencyType: string;
+  txType: string;
+  status: string;
+  description: string;
+  contractId: number | null;
+  createdAt: Date;
+  completedAt?: Date;
+  provider: string;
+  papssReference?: string;
+  papssStatus?: string;
+  sourceBank?: string;
+  destinationBank?: string;
+  exchangeRate?: string;
+  metadata: any;
+}
 
 /**
  * Multi-currency wallet page with USD, NGN, XOF balances
@@ -53,24 +113,50 @@ const MultiCurrencyWalletPage: React.FC = () => {
   const [selectedWalletType, setSelectedWalletType] = useState<'fiat' | 'crypto' | 'escrow'>('fiat');
   const [isReceiveOpen, setIsReceiveOpen] = useState(false);
   const [isSendOpen, setIsSendOpen] = useState(false);
-  const { account } = useWeb3();
+  const { account, user } = useWeb3();
   
-  // Mock wallet data with USD balance and African currencies
+  // Fetch multi-currency wallet data
+  const {
+    data: multiCurrencyWallet,
+    isLoading: isLoadingWallet,
+    error: walletError,
+  } = useQuery({
+    queryKey: ['/api/users', user?.id, 'multicurrency-wallet'],
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const res = await apiRequest('GET', `/api/users/${user.id}/multicurrency-wallet`);
+      return res.json() as Promise<MultiCurrencyWallet>;
+    },
+    enabled: !!user?.id,
+  });
+  
+  // Fetch transaction history with multi-currency support
+  const {
+    data: transactions,
+    isLoading: isLoadingTransactions,
+    error: transactionsError,
+  } = useQuery({
+    queryKey: ['/api/users', user?.id, 'transactions', 'multicurrency'],
+    queryFn: async () => {
+      if (!user?.id) return [];
+      const res = await apiRequest('GET', `/api/users/${user.id}/transactions?multiCurrency=true`);
+      return res.json() as Promise<Transaction[]>;
+    },
+    enabled: !!user?.id,
+  });
+  
+  // Set up wallets object for display
   const wallets = {
-    fiat: [{
-      id: 1,
-      walletType: 'main',
-      walletProvider: 'papss',
-      primaryCurrency: 'USD',
-      balances: [
-        { amount: '25,000.00', currency: 'USD', currencyType: 'fiat' },
-        { amount: '9,850,000.00', currency: 'NGN', currencyType: 'fiat' }, // Nigerian Naira
-        { amount: '14,750,000.00', currency: 'XOF', currencyType: 'fiat' }, // West African CFA Franc
-        { amount: '456,250.00', currency: 'GHS', currencyType: 'fiat' }, // Ghanaian Cedi
-        { amount: '3,275,000.00', currency: 'KES', currencyType: 'fiat' }, // Kenyan Shilling
-        { amount: '430,000.00', currency: 'ZAR', currencyType: 'fiat' }, // South African Rand
-      ]
-    }],
+    fiat: multiCurrencyWallet ? [{
+      id: multiCurrencyWallet.id,
+      walletType: 'multi-currency',
+      walletProvider: multiCurrencyWallet.walletProvider,
+      primaryCurrency: multiCurrencyWallet.primaryCurrency,
+      balances: multiCurrencyWallet.balances.map(balance => ({
+        ...balance,
+        amount: formatCurrency(balance.amount)
+      }))
+    }] : [],
     crypto: [{
       id: 2,
       walletType: 'crypto',
@@ -94,46 +180,25 @@ const MultiCurrencyWalletPage: React.FC = () => {
     }]
   };
 
-  // Simplify transaction display
-  const transactions = [
-    {
-      id: 1,
-      type: 'deposit',
-      amount: '5,000.00',
-      currency: 'USD',
-      status: 'completed',
-      date: '2025-04-01T10:30:00Z',
-      description: 'Initial deposit'
-    },
-    {
-      id: 2,
-      type: 'withdrawal',
-      amount: '1,000.00',
-      currency: 'USD',
-      status: 'pending',
-      date: '2025-04-02T14:20:00Z',
-      description: 'Withdrawal to bank account'
-    }
-  ];
-
   // Helper function to get icon for transaction type
-  const getTransactionIcon = (type: string) => {
-    switch (type) {
-      case 'deposit': return <ArrowDownLeft className="h-5 w-5 text-green-500" />;
-      case 'withdrawal': return <ArrowUpRight className="h-5 w-5 text-red-500" />;
-      case 'sent': return <Upload className="h-5 w-5 text-orange-500" />;
-      case 'received': return <Download className="h-5 w-5 text-blue-500" />;
+  const getTransactionIcon = (txType: string) => {
+    switch (txType) {
+      case 'DEPOSIT': return <ArrowDownLeft className="h-5 w-5 text-green-500" />;
+      case 'WITHDRAWAL': return <ArrowUpRight className="h-5 w-5 text-red-500" />;
+      case 'TRANSFER': 
+      case 'CROSS_BORDER_PAYMENT': return <Upload className="h-5 w-5 text-orange-500" />;
+      case 'ESCROW_LOCK': return <ShieldCheck className="h-5 w-5 text-purple-500" />;
       default: return <AlertCircle className="h-5 w-5 text-gray-500" />;
     }
   };
 
-  // Helper function to get status badge color
-  const getStatusColor = (status: string) => {
+  // Helper function to get status badge class names
+  const getStatusClass = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-200 text-green-800';
-      case 'pending': return 'bg-yellow-200 text-yellow-800';
-      case 'failed': return 'bg-red-200 text-red-800';
-      default: return 'bg-gray-200 text-gray-800';
+      case 'COMPLETED': return 'bg-green-100 text-green-800';
+      case 'PENDING': return 'bg-yellow-100 text-yellow-800';
+      case 'FAILED': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -348,41 +413,86 @@ const MultiCurrencyWalletPage: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle>Transaction History</CardTitle>
-              <CardDescription>Your recent payment activity</CardDescription>
+              <CardDescription>Your recent payment activity across all currencies</CardDescription>
             </CardHeader>
             <CardContent>
-              {transactions.length > 0 ? (
+              {isLoadingTransactions ? (
+                <div className="text-center py-8">
+                  <Loader2 className="h-8 w-8 mx-auto text-primary animate-spin" />
+                  <p className="mt-2 text-gray-500">Loading transactions...</p>
+                </div>
+              ) : transactionsError ? (
+                <div className="text-center py-8">
+                  <AlertCircle className="h-8 w-8 mx-auto text-red-500" />
+                  <p className="mt-2 text-gray-500">Error loading transactions</p>
+                </div>
+              ) : transactions && transactions.length > 0 ? (
                 <div className="space-y-4">
                   {transactions.map((transaction) => (
                     <div key={transaction.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center">
                         <div className="mr-4 p-2 bg-gray-100 rounded-full">
-                          {getTransactionIcon(transaction.type)}
+                          {transaction.txType === 'DEPOSIT' ? 
+                            <ArrowDownLeft className="h-5 w-5 text-green-500" /> :
+                           transaction.txType === 'WITHDRAWAL' ? 
+                            <ArrowUpRight className="h-5 w-5 text-red-500" /> :
+                           transaction.txType === 'TRANSFER' || transaction.txType === 'CROSS_BORDER_PAYMENT' ? 
+                            <Upload className="h-5 w-5 text-orange-500" /> :
+                           transaction.txType === 'ESCROW_LOCK' ? 
+                            <ShieldCheck className="h-5 w-5 text-purple-500" /> :
+                            <AlertCircle className="h-5 w-5 text-gray-500" />}
                         </div>
                         <div>
                           <div className="font-medium">
-                            {transaction.type === 'deposit' ? 'Deposit' : 
-                             transaction.type === 'withdrawal' ? 'Withdrawal' : 
-                             transaction.type}
+                            {transaction.txType === 'DEPOSIT' ? 'Deposit' : 
+                             transaction.txType === 'WITHDRAWAL' ? 'Withdrawal' : 
+                             transaction.txType === 'TRANSFER' ? 'Transfer' :
+                             transaction.txType === 'CROSS_BORDER_PAYMENT' ? 'Cross-Border Payment' :
+                             transaction.txType === 'ESCROW_LOCK' ? 'Escrow Lock' :
+                             transaction.txType}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {new Date(transaction.date).toLocaleDateString()}
+                            {new Date(transaction.createdAt).toLocaleDateString()}
                           </div>
                           {transaction.description && (
                             <div className="text-sm">{transaction.description}</div>
                           )}
+                          {transaction.provider === 'papss' && (
+                            <div className="flex items-center mt-1">
+                              <Badge className="mr-2 bg-blue-100 text-blue-800">PAPSS</Badge>
+                              {transaction.papssReference && (
+                                <span className="text-xs text-gray-500">Ref: {transaction.papssReference}</span>
+                              )}
+                            </div>
+                          )}
+                          {transaction.exchangeRate && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              Rate: 1 {transaction.currency === 'USD' ? transaction.metadata?.equivalentCurrency : 'USD'} = 
+                              {' '}{parseFloat(transaction.exchangeRate).toFixed(2)}{' '}
+                              {transaction.currency === 'USD' ? 'USD' : transaction.currency}
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className={transaction.type === 'deposit' || transaction.type === 'received' 
-                          ? 'text-green-600 font-medium' 
-                          : 'text-red-600 font-medium'}>
-                          {transaction.type === 'deposit' || transaction.type === 'received' ? '+' : '-'} 
-                          {transaction.currency} {transaction.amount}
+                        <div className={transaction.fromWalletId === null
+                          ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
+                          {transaction.fromWalletId === null ? '+' : '-'} {transaction.currency}{' '}
+                          {formatCurrency(transaction.amount)}
                         </div>
+                        {transaction.metadata?.equivalentValue && (
+                          <div className="text-sm text-gray-500">
+                            ≈ {transaction.metadata.equivalentCurrency}{' '}
+                            {formatCurrency(transaction.metadata.equivalentValue)}
+                          </div>
+                        )}
                         <div className="mt-1">
-                          <Badge className={getStatusColor(transaction.status)}>
-                            {transaction.status}
+                          <Badge className={
+                            transaction.status === 'COMPLETED' ? 'bg-green-100 text-green-800' : 
+                            transaction.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : 
+                            transaction.status === 'FAILED' ? 'bg-red-100 text-red-800' : 
+                            'bg-gray-100 text-gray-800'}>
+                            {transaction.status.charAt(0) + transaction.status.slice(1).toLowerCase()}
                           </Badge>
                         </div>
                       </div>
@@ -391,7 +501,8 @@ const MultiCurrencyWalletPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <p>No transactions found.</p>
+                  <AlertCircle className="h-8 w-8 mx-auto text-gray-400" />
+                  <p className="mt-2 text-gray-500">No transactions found</p>
                 </div>
               )}
             </CardContent>
