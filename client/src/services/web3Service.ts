@@ -1,5 +1,11 @@
 import { ethers } from 'ethers';
 
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
 // ERC20 ABI for stablecoin interactions
 const ERC20_ABI = [
   "function name() view returns (string)",
@@ -48,15 +54,15 @@ export const BASE_TESTNET = {
 };
 
 export class Web3Service {
-  private provider: ethers.providers.Web3Provider | null = null;
+  private provider: ethers.BrowserProvider | null = null;
   private signer: ethers.Signer | null = null;
   
-  constructor(provider?: ethers.providers.Web3Provider, signer?: ethers.Signer) {
+  constructor(provider?: ethers.BrowserProvider, signer?: ethers.Signer) {
     this.provider = provider || null;
     this.signer = signer || null;
   }
   
-  setProvider(provider: ethers.providers.Web3Provider) {
+  setProvider(provider: ethers.BrowserProvider) {
     this.provider = provider;
   }
   
@@ -74,19 +80,19 @@ export class Web3Service {
       await window.ethereum.request({ method: 'eth_requestAccounts' });
       
       // Create provider
-      this.provider = new ethers.providers.Web3Provider(window.ethereum);
-      this.signer = this.provider.getSigner();
+      this.provider = new ethers.BrowserProvider(window.ethereum);
+      this.signer = await this.provider.getSigner();
       
       // Check if user is on the correct network
       const network = await this.provider.getNetwork();
       const targetNetwork = useTestnet ? BASE_TESTNET : BASE_NETWORK;
       
-      if (network.chainId !== targetNetwork.chainId) {
+      if (Number(network.chainId) !== targetNetwork.chainId) {
         try {
           // Try to switch to Base network
           await window.ethereum.request({
             method: 'wallet_switchEthereumChain',
-            params: [{ chainId: ethers.utils.hexValue(targetNetwork.chainId) }]
+            params: [{ chainId: ethers.toBeHex(targetNetwork.chainId) }]
           });
         } catch (switchError: any) {
           // If network is not added, add it
@@ -94,7 +100,7 @@ export class Web3Service {
             await window.ethereum.request({
               method: 'wallet_addEthereumChain',
               params: [{
-                chainId: ethers.utils.hexValue(targetNetwork.chainId),
+                chainId: ethers.toBeHex(targetNetwork.chainId),
                 chainName: targetNetwork.name,
                 rpcUrls: [targetNetwork.rpcUrl],
                 blockExplorerUrls: [targetNetwork.blockExplorer],
@@ -111,8 +117,8 @@ export class Web3Service {
         }
         
         // Get updated provider and signer after network switch
-        this.provider = new ethers.providers.Web3Provider(window.ethereum);
-        this.signer = this.provider.getSigner();
+        this.provider = new ethers.BrowserProvider(window.ethereum);
+        this.signer = await this.provider.getSigner();
       }
       
       return {
@@ -159,7 +165,7 @@ export class Web3Service {
     
     return {
       raw: balance,
-      formatted: ethers.utils.formatUnits(balance, decimals)
+      formatted: ethers.formatUnits(balance, decimals)
     };
   }
   
@@ -170,7 +176,7 @@ export class Web3Service {
     
     const contract = await this.getStablecoinContract(tokenAddress);
     const decimals = await contract.decimals();
-    const parsedAmount = ethers.utils.parseUnits(amount, decimals);
+    const parsedAmount = ethers.parseUnits(amount, decimals);
     
     const tx = await contract.transfer(recipientAddress, parsedAmount);
     return await tx.wait();
@@ -183,7 +189,7 @@ export class Web3Service {
     
     const contract = await this.getStablecoinContract(tokenAddress);
     const decimals = await contract.decimals();
-    const parsedAmount = ethers.utils.parseUnits(amount, decimals);
+    const parsedAmount = ethers.parseUnits(amount, decimals);
     
     const tx = await contract.approve(spenderAddress, parsedAmount);
     return await tx.wait();
@@ -202,7 +208,7 @@ export class Web3Service {
     
     const tokenContract = await this.getStablecoinContract(tokenAddress);
     const decimals = await tokenContract.decimals();
-    const parsedAmount = ethers.utils.parseUnits(amount, decimals);
+    const parsedAmount = ethers.parseUnits(amount, decimals);
     
     // First approve the payment processor to spend tokens
     const approveTx = await tokenContract.approve(paymentProcessorAddress, parsedAmount);
@@ -239,15 +245,19 @@ export class Web3Service {
       throw new Error('Provider not set');
     }
     
-    const targetAddress = address || (await this.signer?.getAddress());
-    if (!targetAddress) {
+    let targetAddress: string;
+    if (address) {
+      targetAddress = address;
+    } else if (this.signer) {
+      targetAddress = await this.signer.getAddress();
+    } else {
       throw new Error('No address specified');
     }
     
     const balance = await this.provider.getBalance(targetAddress);
     return {
       raw: balance,
-      formatted: ethers.utils.formatEther(balance)
+      formatted: ethers.formatEther(balance)
     };
   }
 }
