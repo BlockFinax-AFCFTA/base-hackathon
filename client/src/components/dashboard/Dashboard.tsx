@@ -1,29 +1,22 @@
 import React, { useState } from 'react';
 import DashboardStats from './DashboardStats';
 import RecentTransactions from './RecentTransactions';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useWeb3 } from '@/hooks/useWeb3';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '../ui/card';
+import { Button } from '../ui/button';
+import { useWeb3 } from '../../hooks/useWeb3';
 import { 
-  Plus, Upload, Check, LineChart, 
-  AlertTriangle, ArrowRight, CreditCard,
-  Globe, Clock, ShoppingCart
+  Plus, Upload, Check, CreditCard, Clock, Wallet
 } from 'lucide-react';
-import { useContracts } from '@/hooks/useContracts';
+import { useContracts } from '../../hooks/useContracts';
 import { 
   Tabs, 
   TabsContent, 
   TabsList, 
   TabsTrigger 
-} from "@/components/ui/tabs";
-import RiskDashboard from '../risk/RiskDashboard';
-import RegulatoryAITabContent from './RegulatoryAITabContent';
-import MarketplaceTabContent from './MarketplaceTabContent';
-import { useLanguage } from '../../../../context/LanguageContext';
+} from "../ui/tabs";
 
 const ContractStatusOverview = () => {
   const { contracts, isLoadingContracts } = useContracts();
-  const { translate } = useLanguage();
   
   const countByStatus = {
     DRAFT: 0,
@@ -50,8 +43,8 @@ const ContractStatusOverview = () => {
     <div className="mt-8">
       <Card className="bg-gradient-to-r from-slate-50 to-slate-100 shadow-md">
         <CardHeader className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-primary">{translate('dashboard.contractPortfolio')}</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">{translate('dashboard.assetDistribution')}</p>
+          <h3 className="text-lg leading-6 font-medium text-primary">Contract Portfolio</h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">Asset Distribution</p>
         </CardHeader>
         <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
           <div className="flex flex-col">
@@ -60,32 +53,32 @@ const ContractStatusOverview = () => {
                 <div>
                   <dl className="grid grid-cols-1 gap-5 sm:grid-cols-4">
                     <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-slate-500">
-                      <dt className="text-sm font-medium text-gray-500 truncate">{translate('dashboard.draft')}</dt>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Draft</dt>
                       <dd className="mt-1 text-3xl font-semibold text-gray-900">
                         {isLoadingContracts ? '...' : countByStatus.DRAFT}
                       </dd>
-                      <div className="mt-1 text-sm text-gray-500">{translate('dashboard.pendingFinalization')}</div>
+                      <div className="mt-1 text-sm text-gray-500">Pending Finalization</div>
                     </div>
                     <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-amber-500">
-                      <dt className="text-sm font-medium text-gray-500 truncate">{translate('dashboard.escrowRequired')}</dt>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Escrow Required</dt>
                       <dd className="mt-1 text-3xl font-semibold text-gray-900">
                         {isLoadingContracts ? '...' : countByStatus.AWAITING_FUNDS}
                       </dd>
-                      <div className="mt-1 text-sm text-gray-500">{translate('dashboard.awaitingDeposit')}</div>
+                      <div className="mt-1 text-sm text-gray-500">Awaiting Deposit</div>
                     </div>
                     <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-primary">
-                      <dt className="text-sm font-medium text-gray-500 truncate">{translate('dashboard.active')}</dt>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Active</dt>
                       <dd className="mt-1 text-3xl font-semibold text-primary">
                         {isLoadingContracts ? '...' : countByStatus.ACTIVE}
                       </dd>
-                      <div className="mt-1 text-sm text-gray-500">{translate('dashboard.inTransitAssets')}</div>
+                      <div className="mt-1 text-sm text-gray-500">In-Transit Assets</div>
                     </div>
                     <div className="px-4 py-5 bg-white shadow-md rounded-lg overflow-hidden sm:p-6 border-l-4 border-l-green-600">
-                      <dt className="text-sm font-medium text-gray-500 truncate">{translate('dashboard.completed')}</dt>
+                      <dt className="text-sm font-medium text-gray-500 truncate">Completed</dt>
                       <dd className="mt-1 text-3xl font-semibold text-green-600">
                         {isLoadingContracts ? '...' : countByStatus.COMPLETED}
                       </dd>
-                      <div className="mt-1 text-sm text-gray-500">{translate('dashboard.settledTransactions')}</div>
+                      <div className="mt-1 text-sm text-gray-500">Settled Transactions</div>
                     </div>
                   </dl>
                 </div>
@@ -99,24 +92,23 @@ const ContractStatusOverview = () => {
 };
 
 const QuickActions = () => {
-  const { translate } = useLanguage();
   return (
     <div className="mt-8">
       <Card className="bg-gradient-to-r from-slate-50 to-slate-100 shadow-md">
         <CardHeader className="px-4 py-5 sm:px-6">
-          <h3 className="text-lg leading-6 font-medium text-primary">{translate('dashboard.financialActions')}</h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">{translate('dashboard.executeTradeOps')}</p>
+          <h3 className="text-lg leading-6 font-medium text-primary">Stablecoin Actions</h3>
+          <p className="mt-1 max-w-2xl text-sm text-gray-500">Manage your stablecoins on Base Network</p>
         </CardHeader>
         <CardContent className="border-t border-gray-200 px-4 py-5 sm:p-6">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <a href="/contracts/new">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <a href="/stablecoin">
               <div className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-md flex items-center space-x-3 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
                 <div className="flex-shrink-0 h-10 w-10 rounded-md bg-primary flex items-center justify-center">
-                  <Plus className="h-6 w-6 text-white" />
+                  <Wallet className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">{translate('dashboard.newTradeContract')}</p>
-                  <p className="text-sm text-gray-500">{translate('dashboard.initiateEscrow')}</p>
+                  <p className="text-sm font-medium text-gray-900">Stablecoin Wallet</p>
+                  <p className="text-sm text-gray-500">Manage USDC, USDT, and DAI on Base</p>
                 </div>
               </div>
             </a>
@@ -127,63 +119,22 @@ const QuickActions = () => {
                   <Upload className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">{translate('dashboard.secureDocuments')}</p>
-                  <p className="text-sm text-gray-500">{translate('dashboard.uploadVerification')}</p>
+                  <p className="text-sm font-medium text-gray-900">Secure Documents</p>
+                  <p className="text-sm text-gray-500">Upload verification docs</p>
                 </div>
               </div>
             </a>
             
-            <a href="/contracts">
+            <a href="/invoice">
               <div className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-md flex items-center space-x-3 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
                 <div className="flex-shrink-0 h-10 w-10 rounded-md bg-green-600 flex items-center justify-center">
                   <Check className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">{translate('dashboard.releasePayment')}</p>
-                  <p className="text-sm text-gray-500">{translate('dashboard.confirmSettle')}</p>
+                  <p className="text-sm font-medium text-gray-900">Invoice Payments</p>
+                  <p className="text-sm text-gray-500">Pay with stablecoins</p>
                 </div>
               </div>
-            </a>
-            
-            <a href="/risk-dashboard">
-              <div className="relative rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-md flex items-center space-x-3 hover:border-primary hover:shadow-lg transition-all duration-200 cursor-pointer">
-                <div className="flex-shrink-0 h-10 w-10 rounded-md bg-indigo-600 flex items-center justify-center">
-                  <LineChart className="h-6 w-6 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">{translate('dashboard.riskAssessment')}</p>
-                  <p className="text-sm text-gray-500">{translate('dashboard.viewPredictive')}</p>
-                </div>
-              </div>
-            </a>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
-const RiskSummary = () => {
-  const { translate } = useLanguage();
-  return (
-    <div className="mt-8">
-      <Card className="border border-amber-200 bg-amber-50/50 shadow-md">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-start">
-              <div className="p-2 bg-amber-100 rounded-full mr-3 mt-1">
-                <AlertTriangle className="h-6 w-6 text-amber-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-medium text-gray-900">{translate('dashboard.tradeRiskAssessment')}</h3>
-                <p className="text-gray-600 mt-1">{translate('dashboard.riskAnalysisDetails')}</p>
-              </div>
-            </div>
-            <a href="/risk-dashboard">
-              <Button className="whitespace-nowrap">
-                {translate('dashboard.viewRiskDashboard')}
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
             </a>
           </div>
         </CardContent>
@@ -195,7 +146,6 @@ const RiskSummary = () => {
 const Dashboard = () => {
   const { isLoggedIn } = useWeb3();
   const { contracts } = useContracts();
-  const { translate } = useLanguage();
   const [activeTab, setActiveTab] = useState<string>('overview');
 
   return (
@@ -206,19 +156,11 @@ const Dashboard = () => {
             <TabsList className="bg-transparent">
               <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
                 <CreditCard className="h-4 w-4 mr-2" />
-                {translate('dashboard.financialDashboard')}
+                Stablecoin Dashboard
               </TabsTrigger>
-              <TabsTrigger value="risk" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
-                <LineChart className="h-4 w-4 mr-2" />
-                {translate('dashboard.riskIntelligence')}
-              </TabsTrigger>
-              <TabsTrigger value="regulatory" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
-                <Globe className="h-4 w-4 mr-2" />
-                {translate('dashboard.regulatoryAI')}
-              </TabsTrigger>
-              <TabsTrigger value="marketplace" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                {translate('dashboard.marketplace')}
+              <TabsTrigger value="transactions" className="data-[state=active]:bg-white data-[state=active]:shadow-md rounded-md px-4 py-2.5">
+                <Wallet className="h-4 w-4 mr-2" />
+                Transactions
               </TabsTrigger>
             </TabsList>
           </div>
@@ -230,22 +172,12 @@ const Dashboard = () => {
         
         <TabsContent value="overview" className="space-y-6 mt-0">
           <DashboardStats />
-          <RecentTransactions />
-          <RiskSummary />
-          <ContractStatusOverview />
           <QuickActions />
+          <ContractStatusOverview />
         </TabsContent>
         
-        <TabsContent value="risk" className="mt-0">
-          <RiskDashboard />
-        </TabsContent>
-        
-        <TabsContent value="regulatory" className="mt-0">
-          <RegulatoryAITabContent />
-        </TabsContent>
-        
-        <TabsContent value="marketplace" className="mt-0">
-          <MarketplaceTabContent />
+        <TabsContent value="transactions" className="mt-0">
+          <RecentTransactions />
         </TabsContent>
       </Tabs>
     </div>

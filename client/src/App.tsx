@@ -7,21 +7,16 @@ import HomePage from "@/pages/HomePage";
 import ContractsPage from "@/pages/ContractsPage";
 import DocumentsPage from "@/pages/DocumentsPage";
 import WalletPage from "@/pages/WalletPage";
-import LogisticsPage from "../../components/logistics/LogisticsPage";
 import Layout from "@/components/layout/Layout";
 import { useWeb3 } from "./hooks/useWeb3";
 import { AppProvider } from "./context/AppContext";
 import { Web3Provider } from "./context/Web3Context";
-import { LanguageProvider } from "../../context/LanguageContext";
-import { OnboardingProvider } from "../../context/OnboardingContext";
-import OnboardingWizard from "../../components/onboarding/OnboardingWizard";
 
-// Import new components
-import EnhancedWalletPage from "@/components/wallet/WalletPage";
+// Import stablecoin components
+import StablecoinWallet from "../../components/wallet/StablecoinWallet";
+import StablecoinInvoice from "../../components/invoice/StablecoinInvoice";
+import StablecoinDemoPage from "../../pages/StablecoinDemoPage";
 import InvoicePage from "@/components/invoice/InvoicePage";
-import TradeFinancePage from "@/components/tradeFinance/TradeFinancePage";
-import KYCPage from "@/components/kyc/KYCPage";
-import RegulatoryAIPage from "../../pages/RegulatoryAIPage";
 
 // Auth-protected route component
 const PrivateRoute = ({ component: Component, path, ...rest }: { component: React.ComponentType<any>, path: string }) => {
@@ -48,6 +43,9 @@ function Router() {
       <Switch>
         <Route path="/" component={HomePage} />
         
+        {/* Stablecoin routes */}
+        <Route path="/stablecoin" component={StablecoinDemoPage} />
+        
         {/* Contract routes */}
         <PrivateRoute path="/contracts" component={ContractsPage} />
         <PrivateRoute path="/contracts/:id" component={ContractsPage} />
@@ -58,24 +56,12 @@ function Router() {
         <PrivateRoute path="/documents/upload" component={DocumentsPage} />
         
         {/* Wallet routes */}
-        <PrivateRoute path="/wallet" component={EnhancedWalletPage} />
+        <PrivateRoute path="/wallet" component={StablecoinWallet} />
         <PrivateRoute path="/wallet/legacy" component={WalletPage} />
         
         {/* Invoice routes */}
+        <PrivateRoute path="/invoice" component={StablecoinInvoice} />
         <PrivateRoute path="/invoices" component={InvoicePage} />
-        
-        {/* Trade Finance routes */}
-        <PrivateRoute path="/trade-finance" component={TradeFinancePage} />
-        
-        {/* Logistics routes */}
-        <PrivateRoute path="/logistics" component={LogisticsPage} />
-        
-        {/* KYC & Passport routes */}
-        <PrivateRoute path="/kyc" component={KYCPage} />
-        <PrivateRoute path="/passport" component={KYCPage} />
-        
-        {/* Regulatory AI routes */}
-        <PrivateRoute path="/regulatory-ai" component={RegulatoryAIPage} />
         
         {/* Other routes */}
         <Route path="/api">
@@ -94,19 +80,14 @@ function Router() {
 
 function App() {
   return (
-    <LanguageProvider>
-      <AppProvider>
-        <Web3Provider>
-          <OnboardingProvider>
-            <QueryClientProvider client={queryClient}>
-              <Router />
-              <OnboardingWizard />
-              <Toaster />
-            </QueryClientProvider>
-          </OnboardingProvider>
-        </Web3Provider>
-      </AppProvider>
-    </LanguageProvider>
+    <AppProvider>
+      <Web3Provider>
+        <QueryClientProvider client={queryClient}>
+          <Router />
+          <Toaster />
+        </QueryClientProvider>
+      </Web3Provider>
+    </AppProvider>
   );
 }
 

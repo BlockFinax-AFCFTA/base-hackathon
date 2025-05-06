@@ -1,43 +1,33 @@
 import React, { useState } from 'react';
-import { useLanguage, languageOptions, Language } from '../../../../context/LanguageContext';
-import { Menu, X, LogOut, User, LogIn, UserPlus, Globe } from 'lucide-react';
+import { Menu, X, LogOut, User, LogIn, UserPlus, Wallet } from 'lucide-react';
 import { Link } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { useWeb3 } from '@/hooks/useWeb3';
-import { useAppContext } from '@/hooks/useAppContext';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '../ui/button';
+import { useWeb3 } from '../../hooks/useWeb3';
+import { useAppContext } from '../../hooks/useAppContext';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
   DropdownMenuLabel, 
   DropdownMenuSeparator, 
-  DropdownMenuTrigger,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuPortal
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger
+} from "../ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+  DialogTitle
+} from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 const RegisterDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { createAccount } = useWeb3();
-  const { translate } = useLanguage();
   
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +40,7 @@ const RegisterDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleRegister}>
           <DialogHeader>
-            <DialogTitle>{translate('actions.register')}</DialogTitle>
+            <DialogTitle>Register</DialogTitle>
             <DialogDescription>
               Register to create your account and wallet.
             </DialogDescription>
@@ -77,7 +67,7 @@ const RegisterDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">{translate('actions.register')}</Button>
+            <Button type="submit">Register</Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -85,44 +75,8 @@ const RegisterDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
   );
 };
 
-// Now using the shared LanguageContext module from context/LanguageContext.tsx
-
-// Language switcher dropdown
-const LanguageSwitcher = () => {
-  const { language, setLanguage, translate } = useLanguage();
-  
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="mr-2">
-          <Globe className="h-[1.2rem] w-[1.2rem]" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>{translate('language.select')}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        
-        {languageOptions.map((lang) => (
-          <DropdownMenuItem
-            key={lang.code}
-            onClick={() => setLanguage(lang.code as Language)}
-            className={language === lang.code ? "bg-accent" : ""}
-          >
-            <span className="mr-2">{lang.flag}</span>
-            <span>{lang.name}</span>
-            {language === lang.code && (
-              <span className="ml-auto text-primary">✓</span>
-            )}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
-
 const UserMenu = () => {
   const { user, logoutUser } = useWeb3();
-  const { translate } = useLanguage();
   
   return (
     <DropdownMenu>
@@ -146,20 +100,20 @@ const UserMenu = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled>
           <User className="mr-2 h-4 w-4" />
-          <span>{translate('profile.view')}</span>
+          <span>Profile</span>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link href="/wallet">
             <div className="flex items-center cursor-pointer w-full">
-              <Menu className="mr-2 h-4 w-4" />
-              <span>{translate('wallet.view')}</span>
+              <Wallet className="mr-2 h-4 w-4" />
+              <span>Wallet</span>
             </div>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logoutUser}>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>{translate('actions.logout')}</span>
+          <span>Logout</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -169,7 +123,6 @@ const UserMenu = () => {
 const Header = () => {
   const { toggleSidebar } = useAppContext();
   const { isLoggedIn } = useWeb3();
-  const { translate } = useLanguage();
   const [registerDialogOpen, setRegisterDialogOpen] = useState(false);
 
   return (
@@ -185,12 +138,9 @@ const Header = () => {
             >
               <Menu className="h-6 w-6" />
             </Button>
-            <h1 className="text-xl font-bold text-primary">{translate('app.title')}</h1>
+            <h1 className="text-xl font-bold text-primary">Base Stablecoins</h1>
           </div>
           <div className="flex items-center">
-            {/* Language Switcher - visible regardless of login state */}
-            <LanguageSwitcher />
-            
             {isLoggedIn ? (
               <UserMenu />
             ) : (
@@ -204,7 +154,7 @@ const Header = () => {
                   className="flex items-center gap-1"
                 >
                   <UserPlus className="h-4 w-4" />
-                  <span>{translate('actions.register')}</span>
+                  <span>Register</span>
                 </Button>
                 
                 <RegisterDialog 

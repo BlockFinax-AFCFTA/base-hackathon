@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import StablecoinWallet from '@/components/wallet/StablecoinWallet'
-import StablecoinInvoice from '@/components/invoice/StablecoinInvoice'
+import StablecoinWallet from '../components/wallet/StablecoinWallet'
+import StablecoinInvoice from '../components/invoice/StablecoinInvoice'
 import { Button } from '@/components/ui/button'
 import { Info, AlertTriangle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'

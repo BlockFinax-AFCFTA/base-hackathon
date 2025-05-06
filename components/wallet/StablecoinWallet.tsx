@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useWeb3 } from '@/hooks/useWeb3'
+import { useWeb3 } from '../../hooks/useWeb3'
 import { 
   Card, 
   CardContent, 
@@ -9,10 +9,10 @@ import {
   CardFooter, 
   CardHeader, 
   CardTitle 
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '../ui/card'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
 import {
   Dialog,
   DialogContent,
@@ -21,14 +21,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '../ui/dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '../ui/select'
 import { 
   CreditCard, 
   RefreshCw, 
@@ -39,12 +39,12 @@ import {
   ExternalLink,
   Copy
 } from 'lucide-react'
-import { Separator } from '@/components/ui/separator'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { BASE_NETWORK, BASE_TESTNET } from '@/client/src/services/web3Service'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
-import { useToast } from '@/hooks/use-toast'
+import { Separator } from '../ui/separator'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
+import { BASE_NETWORK, BASE_TESTNET } from '../../client/src/services/web3Service'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { Badge } from '../ui/badge'
+import { useToast } from '../../hooks/use-toast'
 
 const StablecoinWallet = () => {
   const { 
