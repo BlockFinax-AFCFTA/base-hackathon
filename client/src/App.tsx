@@ -15,7 +15,6 @@ import { Web3Provider } from "./context/Web3Context";
 // Import stablecoin components
 import StablecoinWallet from "../../components/wallet/StablecoinWallet";
 import StablecoinInvoice from "../../components/invoice/StablecoinInvoice";
-import StablecoinDemoPage from "../../pages/StablecoinDemoPage";
 import InvoicePage from "@/components/invoice/InvoicePage";
 
 // Auth-protected route component
@@ -43,8 +42,7 @@ function Router() {
       <Switch>
         <Route path="/" component={HomePage} />
         
-        {/* Stablecoin routes */}
-        <Route path="/stablecoin" component={StablecoinDemoPage} />
+        {/* No more stablecoin demo routes */}
         
         {/* Contract routes */}
         <PrivateRoute path="/contracts" component={ContractsPage} />

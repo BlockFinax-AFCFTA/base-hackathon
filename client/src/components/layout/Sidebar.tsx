@@ -73,17 +73,10 @@ const Sidebar = () => {
             />
 
             <NavItem 
-              href="/stablecoin" 
-              icon={<DollarSign className="mr-3 h-5 w-5" />} 
-              label="Stablecoin Demo" 
-              active={isGroupActive(["/stablecoin"])} 
-            />
-
-            <NavItem 
-              href="/contracts" 
-              icon={<FileText className="mr-3 h-5 w-5" />} 
-              label="Contracts" 
-              active={isGroupActive(["/contracts"])} 
+              href="/invoice" 
+              icon={<Receipt className="mr-3 h-5 w-5" />} 
+              label="Invoices" 
+              active={isGroupActive(["/invoice"])} 
             />
 
             <NavItem 
@@ -92,12 +85,12 @@ const Sidebar = () => {
               label="Wallet" 
               active={isGroupActive(["/wallet"])} 
             />
-
+            
             <NavItem 
-              href="/invoice" 
-              icon={<Receipt className="mr-3 h-5 w-5" />} 
-              label="Invoice Payments" 
-              active={isGroupActive(["/invoice"])} 
+              href="/contracts" 
+              icon={<FileText className="mr-3 h-5 w-5" />} 
+              label="Contracts" 
+              active={isGroupActive(["/contracts"])} 
             />
 
             <NavItem 
