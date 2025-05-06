@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/HomePage";
-import DashboardPage from "@/pages/DashboardPage";
+import DashboardPage from "./pages/DashboardPage";
 import ContractsPage from "@/pages/ContractsPage";
 import DocumentsPage from "@/pages/DocumentsPage";
 import WalletPage from "@/pages/WalletPage";

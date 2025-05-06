@@ -65,10 +65,10 @@ const Sidebar = () => {
         <div className="flex flex-col flex-grow overflow-y-auto">
           <nav className="flex-1 px-2 py-4 space-y-1">
             <NavItem 
-              href="/" 
+              href="/dashboard" 
               icon={<Home className="mr-3 h-5 w-5" />} 
               label={translate('nav.dashboard')} 
-              active={isActive("/")} 
+              active={isActive("/dashboard") || isActive("/")} 
             />
 
             <NavItem 
