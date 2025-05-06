@@ -46,42 +46,50 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Badge } from '../ui/badge'
 import { useToast } from '../../hooks/use-toast'
 
+// Simulated token data for Base Network - in a real app this would come from an API
+const mockTokenData = [
+  {
+    name: "USD Coin",
+    symbol: "USDC",
+    address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    decimals: 6,
+    balance: "150.00"
+  },
+  {
+    name: "Tether USD",
+    symbol: "USDT",
+    address: "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb",
+    decimals: 6,
+    balance: "250.00"
+  },
+  {
+    name: "Dai Stablecoin",
+    symbol: "DAI",
+    address: "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb",
+    decimals: 18,
+    balance: "75.00"
+  }
+];
+
 const StablecoinWallet = () => {
-  const { 
-    account, 
-    isConnected, 
-    connectWallet, 
-    networkName,
-    isBaseNetwork,
-    tokens,
-    selectedToken,
-    selectToken,
-    refreshBalances,
-    transferTokens,
-    ethBalance
-  } = useWeb3()
+  // Mock wallet data
+  const [walletAddress, setWalletAddress] = useState<string>("0x7C4E46d9D576B32598Bc4D77A91Ad4a00B188Deb")
+  const [tokens, setTokens] = useState(mockTokenData)
+  const [selectedToken, setSelectedToken] = useState(mockTokenData[0])
+  const [ethBalance, setEthBalance] = useState("0.25")
   
   const [amount, setAmount] = useState('')
   const [recipient, setRecipient] = useState('')
   const [isTransferOpen, setIsTransferOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
-
-  // Handle wallet connection
-  const handleConnectWallet = async () => {
-    try {
-      setIsLoading(true)
-      await connectWallet(false) // Use mainnet
-    } catch (error) {
-      console.error('Failed to connect wallet:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
+  
   // Handle token selection
   const handleTokenSelect = (tokenAddress: string) => {
-    selectToken(tokenAddress)
+    const token = tokens.find(t => t.address === tokenAddress)
+    if (token) {
+      setSelectedToken(token)
+    }
   }
 
   // Handle token transfer
@@ -90,12 +98,34 @@ const StablecoinWallet = () => {
     
     try {
       setIsLoading(true)
-      await transferTokens(recipient, amount)
+      
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      // Update token balance
+      const numAmount = parseFloat(amount)
+      setTokens(tokens.map(token => 
+        token.address === selectedToken.address 
+          ? { ...token, balance: (parseFloat(token.balance) - numAmount).toFixed(2) }
+          : token
+      ))
+      
+      // Clear form and close dialog
       setAmount('')
       setRecipient('')
       setIsTransferOpen(false)
+      
+      // Show success message
+      toast({
+        title: "Transfer Successful",
+        description: `${amount} ${selectedToken.symbol} was sent to ${formatAddress(recipient)}`,
+      })
     } catch (error: any) {
-      console.error('Transfer failed:', error)
+      toast({
+        title: "Transfer Failed",
+        description: "There was an error processing your transfer",
+        variant: "destructive"
+      })
     } finally {
       setIsLoading(false)
     }
@@ -105,7 +135,10 @@ const StablecoinWallet = () => {
   const handleRefresh = async () => {
     try {
       setIsLoading(true)
-      await refreshBalances()
+      
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
       toast({
         title: "Balances Updated",
         description: "Your token balances have been refreshed.",
@@ -131,43 +164,6 @@ const StablecoinWallet = () => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`
   }
 
-  // Render wallet connection UI if not connected
-  if (!isConnected) {
-    return (
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Base Network Stablecoin Wallet</CardTitle>
-          <CardDescription>
-            Connect your wallet to access Base Network stablecoins
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center p-6">
-          <div className="rounded-full bg-primary/10 p-6 mb-4">
-            <CreditCard className="h-12 w-12 text-primary" />
-          </div>
-          <h3 className="text-xl font-semibold mb-2">Connect Your Wallet</h3>
-          <p className="text-center text-muted-foreground mb-6">
-            Connect your Web3 wallet to view your stablecoin balances and make transfers on Base Network.
-          </p>
-          <Button onClick={handleConnectWallet} disabled={isLoading} className="w-full md:w-auto">
-            {isLoading ? 'Connecting...' : 'Connect Wallet'}
-          </Button>
-        </CardContent>
-      </Card>
-    )
-  }
-
-  // Show warning if not on Base Network
-  const networkWarning = !isBaseNetwork && (
-    <Alert variant="destructive" className="mb-4">
-      <AlertCircle className="h-4 w-4" />
-      <AlertTitle>Wrong Network</AlertTitle>
-      <AlertDescription>
-        Please switch to Base Network in your wallet to access stablecoin features.
-      </AlertDescription>
-    </Alert>
-  )
-
   return (
     <Card className="w-full">
       <CardHeader>
@@ -175,26 +171,24 @@ const StablecoinWallet = () => {
           <div>
             <CardTitle>Base Network Stablecoin Wallet</CardTitle>
             <CardDescription>
-              Manage your stablecoins on {networkName}
+              Manage your stablecoins on Base Network
             </CardDescription>
           </div>
-          <Badge variant={isBaseNetwork ? "default" : "destructive"} className="ml-2">
-            {networkName || "Unsupported Network"}
+          <Badge variant="default" className="ml-2">
+            Base Network
           </Badge>
         </div>
       </CardHeader>
       <CardContent>
-        {networkWarning}
-        
         <div className="flex flex-col md:flex-row justify-between mb-6">
           <div className="mb-4 md:mb-0">
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-muted-foreground">Account:</span>
-              <span className="font-mono">{formatAddress(account || '')}</span>
+              <span className="text-sm text-muted-foreground">Your Wallet:</span>
+              <span className="font-mono">{formatAddress(walletAddress)}</span>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={() => copyToClipboard(account || '')}
+                onClick={() => copyToClipboard(walletAddress)}
                 className="h-6 w-6"
               >
                 <Copy className="h-3 w-3" />
@@ -205,14 +199,14 @@ const StablecoinWallet = () => {
             </div>
           </div>
           <div className="flex space-x-2">
-            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading || !isBaseNetwork}>
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
               <RefreshCw className="mr-2 h-4 w-4" />
               Refresh
             </Button>
             <Button 
               onClick={() => setIsTransferOpen(true)} 
               size="sm" 
-              disabled={!isBaseNetwork || tokens.length === 0}
+              disabled={tokens.length === 0}
             >
               <Send className="mr-2 h-4 w-4" />
               Send Tokens
@@ -230,64 +224,76 @@ const StablecoinWallet = () => {
           
           <TabsContent value="tokens" className="p-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-              {tokens.length > 0 ? (
-                tokens.map((token) => (
-                  <Card key={token.address} className={`cursor-pointer ${selectedToken?.address === token.address ? 'border-primary' : ''}`} onClick={() => handleTokenSelect(token.address)}>
-                    <CardHeader className="p-4">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <CardTitle className="text-lg">{token.symbol}</CardTitle>
-                          <CardDescription>{token.name}</CardDescription>
-                        </div>
-                        {selectedToken?.address === token.address && (
-                          <Check className="h-5 w-5 text-primary" />
-                        )}
+              {tokens.map((token) => (
+                <Card 
+                  key={token.address} 
+                  className={`cursor-pointer ${selectedToken?.address === token.address ? 'border-primary' : 'border-muted'}`} 
+                  onClick={() => handleTokenSelect(token.address)}
+                >
+                  <CardHeader className="p-4">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <CardTitle className="text-lg">{token.symbol}</CardTitle>
+                        <CardDescription>{token.name}</CardDescription>
                       </div>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0">
-                      <p className="text-2xl font-bold">{parseFloat(token.balance).toFixed(4)}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Token address: {formatAddress(token.address)}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <div className="col-span-full text-center p-8">
-                  <AlertCircle className="h-8 w-8 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-medium">No Stablecoins Found</h3>
-                  <p className="text-muted-foreground mt-2">
-                    {isBaseNetwork 
-                      ? "You don't have any stablecoins in your wallet yet."
-                      : "Please connect to Base Network to view your stablecoins."}
-                  </p>
-                </div>
-              )}
+                      {selectedToken?.address === token.address && (
+                        <Check className="h-5 w-5 text-primary" />
+                      )}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                    <p className="text-2xl font-bold">{parseFloat(token.balance).toFixed(2)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Token address: {formatAddress(token.address)}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </TabsContent>
           
           <TabsContent value="transactions">
-            <div className="text-center p-8">
-              <h3 className="text-lg font-medium">Transaction History</h3>
-              <p className="text-muted-foreground mt-2">
-                Coming soon. Transaction history will be available in a future update.
-              </p>
-              <div className="mt-4">
-                <a 
-                  href={`${(networkName === BASE_NETWORK.name) 
-                    ? BASE_NETWORK.blockExplorer 
-                    : BASE_TESTNET.blockExplorer}/address/${account}`} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-primary hover:text-primary/80"
-                >
-                  View on Block Explorer
-                  <ExternalLink className="ml-1 h-3 w-3" />
-                </a>
+            <div className="border rounded-md overflow-hidden mt-4">
+              <div className="bg-muted p-3 font-medium grid grid-cols-12 gap-4">
+                <div className="col-span-3">Date</div>
+                <div className="col-span-3">Type</div>
+                <div className="col-span-3">Amount</div>
+                <div className="col-span-3">Status</div>
+              </div>
+              <Separator />
+              <div className="p-8 text-center">
+                <h3 className="text-lg font-medium">No Recent Transactions</h3>
+                <p className="text-muted-foreground mt-2">
+                  Your transactions will appear here once you start using your wallet.
+                </p>
+                <div className="mt-4">
+                  <a 
+                    href={`${BASE_NETWORK.blockExplorer}/address/${walletAddress}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-primary hover:text-primary/80"
+                  >
+                    View on Base Explorer
+                    <ExternalLink className="ml-1 h-3 w-3" />
+                  </a>
+                </div>
               </div>
             </div>
           </TabsContent>
         </Tabs>
+        
+        <Separator className="my-6" />
+        
+        <div className="bg-muted/40 rounded-lg p-4">
+          <h3 className="text-lg font-medium mb-2">Add Tokens to Your Wallet</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            This is your Base Network wallet built directly into the application. No external wallet connection required.
+          </p>
+          <Button variant="outline" disabled={true}>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Custom Token
+          </Button>
+        </div>
       </CardContent>
       
       <Dialog open={isTransferOpen} onOpenChange={setIsTransferOpen}>
@@ -312,7 +318,7 @@ const StablecoinWallet = () => {
                 <SelectContent>
                   {tokens.map((token) => (
                     <SelectItem key={token.address} value={token.address}>
-                      {token.symbol} - Balance: {parseFloat(token.balance).toFixed(4)}
+                      {token.symbol} - Balance: {parseFloat(token.balance).toFixed(2)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -326,13 +332,14 @@ const StablecoinWallet = () => {
                 type="number"
                 step="0.01"
                 min="0.01"
+                max={selectedToken ? parseFloat(selectedToken.balance) : 0}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
               />
               {selectedToken && (
                 <div className="text-xs text-muted-foreground">
-                  Available: {parseFloat(selectedToken.balance).toFixed(4)} {selectedToken.symbol}
+                  Available: {parseFloat(selectedToken.balance).toFixed(2)} {selectedToken.symbol}
                 </div>
               )}
             </div>
@@ -354,7 +361,13 @@ const StablecoinWallet = () => {
             </Button>
             <Button 
               onClick={handleTransfer} 
-              disabled={!amount || !recipient || isLoading || !selectedToken}
+              disabled={
+                !amount || 
+                !recipient || 
+                isLoading || 
+                !selectedToken ||
+                (selectedToken && parseFloat(amount) > parseFloat(selectedToken.balance))
+              }
             >
               {isLoading ? 'Sending...' : 'Send Tokens'}
             </Button>
