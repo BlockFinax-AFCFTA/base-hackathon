@@ -4,7 +4,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/HomePage";
-import DashboardPage from "./pages/DashboardPage";
 import ContractsPage from "@/pages/ContractsPage";
 import DocumentsPage from "@/pages/DocumentsPage";
 import WalletPage from "@/pages/WalletPage";
@@ -19,7 +18,6 @@ import OnboardingWizard from "../../components/onboarding/OnboardingWizard";
 
 // Import new components
 import EnhancedWalletPage from "@/components/wallet/WalletPage";
-import MultiCurrencyWalletPage from "../../pages/MultiCurrencyWalletPage";
 import InvoicePage from "@/components/invoice/InvoicePage";
 import TradeFinancePage from "@/components/tradeFinance/TradeFinancePage";
 import KYCPage from "@/components/kyc/KYCPage";
@@ -48,11 +46,7 @@ function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/">
-          {() => <Redirect to="/dashboard" />}
-        </Route>
-        <Route path="/dashboard" component={DashboardPage} />
-        <Route path="/home" component={HomePage} />
+        <Route path="/" component={HomePage} />
         
         {/* Contract routes */}
         <PrivateRoute path="/contracts" component={ContractsPage} />
@@ -64,9 +58,8 @@ function Router() {
         <PrivateRoute path="/documents/upload" component={DocumentsPage} />
         
         {/* Wallet routes */}
-        <Route path="/wallet/multi-currency" component={MultiCurrencyWalletPage} />
-        <Route path="/wallet" component={EnhancedWalletPage} />
-        <Route path="/wallet/legacy" component={WalletPage} />
+        <PrivateRoute path="/wallet" component={EnhancedWalletPage} />
+        <PrivateRoute path="/wallet/legacy" component={WalletPage} />
         
         {/* Invoice routes */}
         <PrivateRoute path="/invoices" component={InvoicePage} />

@@ -65,10 +65,10 @@ const Sidebar = () => {
         <div className="flex flex-col flex-grow overflow-y-auto">
           <nav className="flex-1 px-2 py-4 space-y-1">
             <NavItem 
-              href="/dashboard" 
+              href="/" 
               icon={<Home className="mr-3 h-5 w-5" />} 
               label={translate('nav.dashboard')} 
-              active={isActive("/dashboard") || isActive("/")} 
+              active={isActive("/")} 
             />
 
             <NavItem 
@@ -78,20 +78,11 @@ const Sidebar = () => {
               active={isGroupActive(["/contracts"])} 
             />
 
-            {/* Make multi-currency wallet the primary wallet */}
-            <NavItem 
-              href="/wallet/multi-currency" 
-              icon={<CreditCard className="mr-3 h-5 w-5" />} 
-              label={"Multi-Currency Wallet"} 
-              active={location === "/wallet/multi-currency"} 
-            />
-            
-            {/* Legacy wallet as secondary option */}
             <NavItem 
               href="/wallet" 
               icon={<Wallet className="mr-3 h-5 w-5" />} 
               label={translate('nav.wallet')} 
-              active={location === "/wallet" || (isGroupActive(["/wallet"]) && location !== "/wallet/multi-currency")} 
+              active={isGroupActive(["/wallet"])} 
             />
 
             <NavItem 
