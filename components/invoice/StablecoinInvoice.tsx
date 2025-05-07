@@ -729,7 +729,7 @@ const PaymentDialog = ({
         <DialogHeader>
           <DialogTitle>Pay Invoice #{invoice.invoiceNumber}</DialogTitle>
           <DialogDescription>
-            Make a payment using a stablecoin on Base Network
+            Make a payment using a stablecoin on BlockFinaX
           </DialogDescription>
         </DialogHeader>
         
