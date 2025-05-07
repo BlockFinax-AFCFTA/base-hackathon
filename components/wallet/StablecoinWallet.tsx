@@ -10,6 +10,7 @@ import {
   CardHeader, 
   CardTitle 
 } from '../ui/card'
+import EscrowWallet from './EscrowWallet'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
@@ -218,9 +219,10 @@ const StablecoinWallet = () => {
           <Separator className="my-4" />
           
           <Tabs defaultValue="tokens" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="tokens">Stablecoins</TabsTrigger>
               <TabsTrigger value="transactions">Transactions</TabsTrigger>
+              <TabsTrigger value="escrow">Escrow Wallet</TabsTrigger>
             </TabsList>
             
             <TabsContent value="tokens" className="p-1">
@@ -279,6 +281,12 @@ const StablecoinWallet = () => {
                     </a>
                   </div>
                 </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="escrow">
+              <div className="mt-4">
+                <EscrowWallet />
               </div>
             </TabsContent>
           </Tabs>
