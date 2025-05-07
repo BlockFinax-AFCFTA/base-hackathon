@@ -283,7 +283,7 @@ const InvoiceDetail = ({
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Network Error</AlertTitle>
             <AlertDescription>
-              Please switch to Base Network in your wallet to pay this invoice.
+              Please switch to the correct network in your wallet to pay this invoice.
             </AlertDescription>
           </Alert>
         )}
@@ -907,15 +907,8 @@ const StablecoinInvoice = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold">Stablecoin Invoices</h1>
-            <p className="text-muted-foreground">Create and manage invoices payable with stablecoins on Base Network</p>
+            <p className="text-muted-foreground">Create and manage invoices payable with stablecoins on BlockFinaX</p>
           </div>
-          
-          {!isConnected && (
-            <Button onClick={handleConnectWallet} disabled={isLoading}>
-              <CreditCard className="mr-2 h-4 w-4" />
-              {isLoading ? 'Connecting...' : 'Connect Wallet'}
-            </Button>
-          )}
         </div>
       </div>
       
