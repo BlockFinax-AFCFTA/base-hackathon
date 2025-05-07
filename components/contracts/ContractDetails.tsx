@@ -177,8 +177,24 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
     );
   }
 
+  // Helper to safely get the status
+  const getStatus = () => contract.status || '';
+  
+  // Helper to safely check status against a value or array of values
+  const checkStatus = (checkValue: string | string[]) => {
+    if (!contract.status) return false;
+    const statusLower = contract.status.toLowerCase();
+    
+    if (Array.isArray(checkValue)) {
+      return checkValue.includes(statusLower);
+    }
+    
+    return statusLower === checkValue;
+  };
+  
   // Helper to get the right status badge color
   const getStatusColor = (status: string) => {
+    if (!status) return "bg-gray-100 text-gray-800";
     switch (status.toLowerCase()) {
       case 'draft': return "bg-gray-100 text-gray-800";
       case 'pendingapproval': 
@@ -217,8 +233,8 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">{contract.title}</h2>
           <div className="flex items-center gap-2 mt-1">
-            <Badge className={getStatusColor(contract.status)}>
-              {contract.status.toUpperCase()}
+            <Badge className={getStatusColor(contract.status || '')}>
+              {contract.status ? contract.status.toUpperCase() : 'UNKNOWN'}
             </Badge>
             <span className="text-sm text-muted-foreground">
               Contract ID: {contractId}
@@ -227,25 +243,25 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
         </div>
         
         <div className="flex flex-wrap items-center gap-2">
-          {contract.status.toLowerCase() === 'draft' && (
+          {checkStatus('draft') && (
             <Button onClick={handleApproveContract} className="gap-1">
               <CheckCircle2 className="h-4 w-4 mr-1" /> Approve Contract
             </Button>
           )}
           
-          {contract.status.toLowerCase() === 'pendingapproval' && (
+          {checkStatus('pendingapproval') && (
             <Button onClick={handleFundContract} className="gap-1">
               <Wallet className="h-4 w-4 mr-1" /> Fund Escrow
             </Button>
           )}
           
-          {contract.status.toLowerCase() === 'goodsreceived' && (
+          {checkStatus('goodsreceived') && (
             <Button onClick={handleReleaseEscrow} className="gap-1">
               <Landmark className="h-4 w-4 mr-1" /> Release Funds
             </Button>
           )}
           
-          {['draft', 'pendingapproval'].includes(contract.status.toLowerCase()) && (
+          {checkStatus(['draft', 'pendingapproval']) && (
             <Button variant="outline" className="gap-1">
               <Pencil className="h-4 w-4 mr-1" /> Edit
             </Button>
@@ -279,8 +295,8 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="text-sm font-medium mb-1">Status</div>
-                    <Badge className={getStatusColor(contract.status)}>
-                      {contract.status.toUpperCase()}
+                    <Badge className={getStatusColor(contract.status || '')}>
+                      {contract.status ? contract.status.toUpperCase() : 'UNKNOWN'}
                     </Badge>
                   </div>
                   <div>
@@ -514,7 +530,7 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   <CardContent className="pt-6">
                     <div className="text-sm font-medium mb-1 text-muted-foreground">Current Balance</div>
                     <div className="text-2xl font-bold">
-                      {['funded', 'active', 'goodsshipped', 'goodsreceived'].includes(contract.status.toLowerCase()) 
+                      {checkStatus(['funded', 'active', 'goodsshipped', 'goodsreceived'])
                         ? (contract.tradeTerms?.value || "0") 
                         : "0"} {contract.tradeTerms?.currency || "USDC"}
                     </div>
@@ -525,12 +541,12 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   <CardContent className="pt-6">
                     <div className="text-sm font-medium mb-1 text-muted-foreground">Status</div>
                     <div className="flex items-center">
-                      {['funded', 'active', 'goodsshipped', 'goodsreceived'].includes(contract.status.toLowerCase()) ? (
+                      {checkStatus(['funded', 'active', 'goodsshipped', 'goodsreceived']) ? (
                         <>
                           <CheckCircle2 className="h-5 w-5 text-green-500 mr-2" />
                           <span className="text-lg font-medium">Funded</span>
                         </>
-                      ) : contract.status.toLowerCase() === 'completed' ? (
+                      ) : checkStatus('completed') ? (
                         <>
                           <CheckCircle2 className="h-5 w-5 text-blue-500 mr-2" />
                           <span className="text-lg font-medium">Released</span>
@@ -621,7 +637,7 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                     </div>
                     <div className="font-medium">Funds Released</div>
                     <div className="text-sm text-muted-foreground">
-                      {contract.status.toLowerCase() === 'completed' ? 
+                      {checkStatus('completed') ? 
                         `Payment of ${contract.tradeTerms?.value || "0"} ${contract.tradeTerms?.currency || "USDC"} sent to seller` :
                         "Awaiting confirmation to release funds"
                       }
