@@ -47,7 +47,7 @@ import { Badge } from '../ui/badge'
 import { useToast } from '../../hooks/use-toast'
 import EscrowWallet from './EscrowWallet'
 
-// Simulated token data for Base Network - in a real app this would come from an API
+// Simulated token data for BlockFinaX Network - in a real app this would come from an API
 const mockTokenData = [
   {
     name: "USD Coin",
@@ -171,13 +171,13 @@ const StablecoinWallet = () => {
         <CardHeader>
           <div className="flex justify-between items-center">
             <div>
-              <CardTitle>Base Network Stablecoin Wallet</CardTitle>
+              <CardTitle>BlockFinaX Stablecoin Wallet</CardTitle>
               <CardDescription>
-                Manage your stablecoins on Base Network
+                Manage your stablecoins on BlockFinaX Network
               </CardDescription>
             </div>
             <Badge variant="default" className="ml-2">
-              Base Network
+              BlockFinaX Network
             </Badge>
           </div>
         </CardHeader>
@@ -276,7 +276,7 @@ const StablecoinWallet = () => {
                       rel="noopener noreferrer"
                       className="inline-flex items-center text-primary hover:text-primary/80"
                     >
-                      View on Base Explorer
+                      View on BlockFinaX Explorer
                       <ExternalLink className="ml-1 h-3 w-3" />
                     </a>
                   </div>
@@ -296,7 +296,7 @@ const StablecoinWallet = () => {
           <div className="bg-muted/40 rounded-lg p-4">
             <h3 className="text-lg font-medium mb-2">Add Tokens to Your Wallet</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              This is your Base Network wallet built directly into the application. No external wallet connection required.
+              This is your BlockFinaX wallet built directly into the application. No external wallet connection required.
             </p>
             <Button variant="outline" disabled={true}>
               <Plus className="mr-2 h-4 w-4" />

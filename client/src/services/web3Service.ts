@@ -36,9 +36,9 @@ export const STABLECOIN_ADDRESSES = {
   DAI: "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb",  // Base Mainnet DAI
 };
 
-// Base network configuration
+// BlockFinaX network configuration
 export const BASE_NETWORK = {
-  name: "Base Mainnet",
+  name: "BlockFinaX Network",
   chainId: 8453,
   rpcUrl: "https://mainnet.base.org",
   blockExplorer: "https://basescan.org",
@@ -46,7 +46,7 @@ export const BASE_NETWORK = {
 };
 
 export const BASE_TESTNET = {
-  name: "Base Goerli",
+  name: "BlockFinaX Testnet",
   chainId: 84531,
   rpcUrl: "https://goerli.base.org",
   blockExplorer: "https://goerli.basescan.org",
