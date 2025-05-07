@@ -69,6 +69,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Login failed" });
     }
   });
+  
+  // Demo login route
+  app.post("/api/auth/demo-login", async (req, res) => {
+    try {
+      // Check if demo user exists
+      let demoUser = await storage.getUserByUsername("demo_user");
+      
+      if (!demoUser) {
+        // Create a demo user if it doesn't exist
+        demoUser = await storage.createUser({
+          username: "demo_user",
+          password: "demo_password", // Not actually used for login
+          walletAddress: "0xDEMO00000000000000000000000000000000DEMO",
+          profileImage: null,
+          kycStatus: KYC_STATUS.VERIFIED,
+          riskScore: 0,
+          kycData: {}
+        });
+        
+        // Create main wallet for demo user
+        await storage.createWallet({
+          userId: demoUser.id,
+          walletType: WALLET_TYPE.MAIN,
+          balance: "5000.00", // Demo account with funds
+          currency: "USD"
+        });
+        
+        // Create an escrow wallet for the demo user
+        await storage.createWallet({
+          userId: demoUser.id,
+          walletType: WALLET_TYPE.ESCROW,
+          contractId: 1, // Link to sample contract
+          balance: "2500.00",
+          currency: "USD"
+        });
+      }
+      
+      // Set user in session
+      if (req.session) {
+        req.session.userId = demoUser.id;
+      }
+      
+      // Don't send the password back
+      const { password: _, ...userData } = demoUser;
+      
+      res.json(userData);
+    } catch (error) {
+      res.status(500).json({ message: "Demo login failed" });
+    }
+  });
 
   app.post("/api/auth/register", async (req, res) => {
     try {
