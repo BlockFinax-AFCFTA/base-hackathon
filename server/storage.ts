@@ -116,6 +116,91 @@ export class MemStorage implements IStorage {
     this.logistics = new Map();
     this.logisticsProviders = new Map();
     
+    // Add sample contracts
+    this.contracts.set(1, {
+      id: 1,
+      contractAddress: '0x9a1fc8c0369d2f0374593a125e012750b6a952aa',
+      title: 'Supply Chain Agreement',
+      description: 'International supply chain services agreement for logistics and warehousing.',
+      status: 'ACTIVE',
+      createdBy: 'user1',
+      createdAt: new Date(2025, 3, 10),
+      updatedAt: new Date(2025, 3, 10),
+      parties: [
+        { name: 'Your Company', role: 'Provider', address: '0x7C4E46d9D576B32598Bc4D77A91Ad4a00B188Deb' },
+        { name: 'Global Logistics Inc.', role: 'Customer', address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F' }
+      ],
+      tradeTerms: {
+        value: '15000.00',
+        currency: 'USDC',
+        startDate: new Date(2025, 3, 10),
+        endDate: new Date(2026, 3, 10),
+        paymentTerms: 'Net 30'
+      },
+      milestones: [
+        { name: 'Initial Deposit', amount: '5000.00', status: 'COMPLETED', dueDate: new Date(2025, 3, 15) },
+        { name: 'First Shipment', amount: '5000.00', status: 'PENDING', dueDate: new Date(2025, 4, 15) },
+        { name: 'Final Payment', amount: '5000.00', status: 'PENDING', dueDate: new Date(2025, 5, 15) }
+      ],
+      escrowWalletId: null
+    });
+    
+    this.contracts.set(2, {
+      id: 2,
+      contractAddress: '0x8e7f6f8a1c08f58967b1af357fb2cc7e8ad1b4d7',
+      title: 'Cross-Border Payment Service',
+      description: 'Partnership agreement for cross-border payment services using stablecoins.',
+      status: 'DRAFT',
+      createdBy: 'user1',
+      createdAt: new Date(2025, 4, 5),
+      updatedAt: new Date(2025, 4, 5),
+      parties: [
+        { name: 'Your Company', role: 'Provider', address: '0x7C4E46d9D576B32598Bc4D77A91Ad4a00B188Deb' },
+        { name: 'International Payments Ltd.', role: 'Partner', address: '0x9e35b23dba3dfae7fbfc3b1f0dfde7b6ae619304' }
+      ],
+      tradeTerms: {
+        value: '25000.00',
+        currency: 'USDT',
+        startDate: new Date(2025, 4, 15),
+        endDate: null,
+        paymentTerms: 'Monthly'
+      },
+      milestones: [
+        { name: 'API Integration', amount: '10000.00', status: 'PENDING', dueDate: new Date(2025, 4, 30) },
+        { name: 'User Testing', amount: '5000.00', status: 'PENDING', dueDate: new Date(2025, 5, 15) },
+        { name: 'Launch', amount: '10000.00', status: 'PENDING', dueDate: new Date(2025, 6, 1) }
+      ],
+      escrowWalletId: null
+    });
+    
+    this.contracts.set(3, {
+      id: 3,
+      contractAddress: '0x1b3ab2e9edb7fd6c1cadb9fe823f699ea9456de1',
+      title: 'Equipment Purchase',
+      description: 'Purchase agreement for specialized manufacturing equipment with warranty terms.',
+      status: 'COMPLETED',
+      createdBy: 'user1',
+      createdAt: new Date(2025, 2, 20),
+      updatedAt: new Date(2025, 3, 25),
+      parties: [
+        { name: 'Your Company', role: 'Buyer', address: '0x7C4E46d9D576B32598Bc4D77A91Ad4a00B188Deb' },
+        { name: 'Industrial Equipment Co.', role: 'Seller', address: '0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db' }
+      ],
+      tradeTerms: {
+        value: '12000.00',
+        currency: 'USDC',
+        startDate: new Date(2025, 2, 20),
+        endDate: new Date(2025, 3, 25),
+        paymentTerms: 'Full payment on delivery'
+      },
+      milestones: [
+        { name: 'Order Placement', amount: '3000.00', status: 'COMPLETED', dueDate: new Date(2025, 2, 22) },
+        { name: 'Equipment Shipment', amount: '5000.00', status: 'COMPLETED', dueDate: new Date(2025, 3, 10) },
+        { name: 'Delivery & Inspection', amount: '4000.00', status: 'COMPLETED', dueDate: new Date(2025, 3, 20) }
+      ],
+      escrowWalletId: null
+    });
+    
     this.userId = 1;
     this.contractId = 1;
     this.documentId = 1;
