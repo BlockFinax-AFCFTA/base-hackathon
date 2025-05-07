@@ -48,8 +48,8 @@ const ContractForm = () => {
     
     if (!account) {
       toast({
-        title: "Wallet not connected",
-        description: "Please connect your wallet to create a contract",
+        title: "Wallet initialization",
+        description: "BlockFinaX is initializing your wallet. Please try again in a few seconds.",
         variant: "destructive"
       });
       return;
