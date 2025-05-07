@@ -160,7 +160,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
       await refreshBalances();
       
       toast({
-        title: "Wallet Connected",
+        title: "BlockFinaX Wallet Ready",
         description: `Connected to ${networkName}`,
       });
       
@@ -187,8 +187,8 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     setSelectedToken(null);
     
     toast({
-      title: "Wallet Disconnected",
-      description: "Your wallet has been disconnected",
+      title: "BlockFinaX Wallet Reset",
+      description: "Your wallet connection has been reset",
     });
   };
   
@@ -406,7 +406,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
           } else {
             toast({
               title: "Network Changed",
-              description: "Please switch back to Base Network for full functionality",
+              description: "Please switch back to BlockFinaX network for full functionality",
               variant: "destructive",
             });
           }
