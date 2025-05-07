@@ -42,32 +42,9 @@ function Router() {
       <Switch>
         <Route path="/" component={HomePage} />
         
-        {/* No more stablecoin demo routes */}
+        {/* All normal routes are now handled by Next.js pages */}
+        {/* Only redirect to Next.js pages or handle special routes here */}
         
-        {/* Contract routes */}
-        <PrivateRoute path="/contracts" component={ContractsPage} />
-        <PrivateRoute path="/contracts/new" component={ContractsPage} />
-        {/* Contract detail routes handled by Next.js pages directory */}
-        
-        {/* Document routes */}
-        <PrivateRoute path="/documents" component={DocumentsPage} />
-        <PrivateRoute path="/documents/upload" component={DocumentsPage} />
-        
-        {/* Wallet routes */}
-        <PrivateRoute path="/wallet" component={StablecoinWallet} />
-        <PrivateRoute path="/wallet/legacy" component={WalletPage} />
-        
-        {/* Invoice routes */}
-        <PrivateRoute path="/invoice" component={StablecoinInvoice} />
-        <PrivateRoute path="/invoices" component={InvoicePage} />
-        
-        {/* Other routes */}
-        <Route path="/api">
-          {() => <NotFound customMessage="API documentation coming soon" />}
-        </Route>
-        <Route path="/docs">
-          {() => <NotFound customMessage="Documentation coming soon" />}
-        </Route>
         <Route>
           {() => <NotFound customMessage="Page not found" />}
         </Route>
