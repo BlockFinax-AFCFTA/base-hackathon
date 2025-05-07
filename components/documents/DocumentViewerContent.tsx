@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface DocumentViewerContentProps {

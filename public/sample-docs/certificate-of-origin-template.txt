@@ -1,77 +1,68 @@
-                           CERTIFICATE OF ORIGIN
-                              No. KE-ECDB-2025-045
-                                ORIGINAL COPY
+CERTIFICATE OF ORIGIN
 
-1. Exporter (Name, Address, Country):        2. Importer (Name, Address, Country):
-   African Coffee Exporters Ltd.                European Coffee Distributors B.V.
-   123 Export Drive                             Havenlaan 42
-   Mombasa, Kenya                               3000 Rotterdam
-   Registration No.: KE-2015-7458               Netherlands
-   Tel: +254-700-123-456                        VAT: NL123456789B01
+Exporter:
+East Asia Trading Co., Ltd.
+123 Harbor Road, Shanghai, China
+Tax ID: CN-9876543210
+Email: exports@eastatrade.cn
 
-3. Country of Origin:                        4. Transport Details:
-   KENYA                                        Sea Freight
-                                                Vessel: MV Atlantic Navigator
-                                                From: Port of Mombasa, Kenya
-                                                To: Port of Rotterdam, Netherlands
+Importer:
+Global Imports Inc.
+456 Ocean Avenue, Los Angeles, CA, USA
+Tax ID: US-1234567890
+Email: imports@globalimports.com
 
-5. Remarks:
-   This certificate is issued in accordance with the provisions of the 
-   Kenya-EU Economic Partnership Agreement (EPA)
-   Shipment Date: April 17, 2025
-   
-6. Item  7. Marks & Numbers   8. No. & Kind   9. HS Code     10. Description of Goods          11. Gross     12. Invoice
-   No.     Container/Package    of Packages                                                     Weight (kg)   No. & Date
-   
-   1     ECDB-4591-KE        320 bags       0901.11.00    Green Coffee Beans                 19,200 kg     INV-25042
-         SEAL: KPA-45912-A                                Kenyan AA Grade                                   2025-04-15
-                                                          Certified Organic
-                                                          Harvest: March 2025
+Country of Origin:
+CHINA
 
-13. EXPORTER'S DECLARATION:
+Transport Details:
+Vessel: MV Pacific Star
+Voyage: VOY123
+ETD: May 5, 2025
+ETA: May 28, 2025
 
-I, the undersigned, declare that the goods 
-described above originate in the country 
-specified in Box 3 and comply with the 
-origin requirements for export to the 
-country specified in Box 2.
+Item Number:
+SH-2025-0512-EL
 
-Place and Date: Mombasa, April 17, 2025
-Name: Sarah Mwangi
-Title: Export Manager
+Marks and Numbers:
+GTI-SHAN-2025-05
+Shipping Marks: Handle with care
 
-Signature: _________________________
+No. & Type of Packages:
+250 Cartons, Palletized
 
-Company Stamp:
-[AFRICAN COFFEE EXPORTERS LTD.]
+HS Code:
+8542.31.00
 
-14. CERTIFICATION:
+Description of Goods:
+Electronic Components
+Model: AB-3000
+250 boxes of semiconductor integrated circuits
+Country of Manufacture: China
 
-It is hereby certified on the basis of control 
-carried out that the declaration by the
-exporter is correct.
+Gross Weight:
+2,500 KG
 
-KENYA EXPORT PROMOTION AND BRANDING AGENCY
+Invoice:
+INV-20250503-GT123
+Date: May 3, 2025
 
-Issuing Authority: Kenya Chamber of Commerce
-Place and Date: Nairobi, April 17, 2025
-Name: John Kimani
-Title: Certification Officer
+EXPORTER DECLARATION:
+The undersigned hereby declares that the above details and statements are correct and that all the goods were produced in CHINA and comply with the origin requirements specified for these goods in the preferential trade agreement between CHINA and UNITED STATES OF AMERICA.
 
-Signature: _________________________
+This Certificate of Origin is valid for a period of 12 months from the date of issuance.
 
-Official Stamp:
-[KENYA CHAMBER OF COMMERCE]
+CERTIFICATION:
 
-This Certificate comprises 1 page including any annexes.
+Place: Shanghai, China
+Date: May 4, 2025
 
-----------------------------------------------------------------------------------
-                              BLOCKCHAIN VERIFICATION
-----------------------------------------------------------------------------------
-Transaction Hash: 0xc8a49da5e3b57fc9f3a4b0de8b60a14169d88f59e61c298ceae4fbe8d01d8c63
-Block Number: 9278257
-Network: Base Mainnet
-Verified: April 17, 2025 11:20:45 UTC
-Verification URL: https://baseexplorer.org/tx/0xc8a49da5e3b57fc9f3a4b0de8b60a14169d88f59e61c298ceae4fbe8d01d8c63
-Smart Contract: 0x5F7A021349eFDe188a0Ee79E1047E646faE2A6Af
-----------------------------------------------------------------------------------
+________________
+Authorized Signature
+
+________________
+Name and Title of Signatory
+
+CHAMBER OF COMMERCE STAMP
+Shanghai Chamber of Commerce
+Certificate Number: SCO-2025-12345
