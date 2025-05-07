@@ -1,134 +1,97 @@
-import { 
-  File, 
-  FileText, 
-  FileSpreadsheet, 
-  FileImage, 
-  FilePdf, 
-  Presentation, 
-  FileCode,
-  Ship,
-  BarChart3,
-  BriefcaseBusiness,
-  FileCheck
-} from 'lucide-react';
+/**
+ * Utility functions for document handling and formatting
+ */
 
-// Returns the appropriate icon component based on file type/extension
-export const getDocumentIcon = (fileType: string) => {
+import { FileText, File, FileSpreadsheet, FileArchive, Archive, Image, Book, PenTool, FileCode, Film } from 'lucide-react';
+
+/**
+ * Formats a file size in bytes to a human-readable string
+ * @param bytes File size in bytes
+ * @returns Formatted string (e.g., "1.5 MB")
+ */
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+/**
+ * Gets the appropriate icon component for a file type
+ * @param fileType The file's MIME type or extension
+ * @returns React component for the file icon
+ */
+export function getDocumentIcon(fileType: string) {
   const type = fileType.toLowerCase();
-  
-  // Images
-  if (type.match(/^(image|png|jpg|jpeg|gif|svg|webp)$/)) {
-    return FileImage;
-  }
-  // PDF
-  else if (type === 'pdf') {
-    return FilePdf;
-  }
-  // Spreadsheets
-  else if (type.match(/^(xlsx|xls|csv|sheet|spreadsheet)$/)) {
-    return FileSpreadsheet;
-  }
-  // Presentations
-  else if (type.match(/^(ppt|pptx|presentation|slide)$/)) {
-    return Presentation;
-  }
-  // Code/development files
-  else if (type.match(/^(json|xml|html|js|jsx|ts|tsx|py|java|c|cpp|php)$/)) {
-    return FileCode;
-  }
-  // Shipping documents
-  else if (type.match(/^(bill of lading|shipping|bl)$/)) {
-    return Ship;
-  }
-  // Financial documents
-  else if (type.match(/^(invoice|payment|financial|receipt)$/)) {
-    return BarChart3;
-  }
-  // Contract documents
-  else if (type.match(/^(contract|agreement|legal)$/)) {
-    return BriefcaseBusiness;
-  }
-  // Certificate documents
-  else if (type.match(/^(certificate|certification|license)$/)) {
-    return FileCheck;
-  }
-  // Text documents
-  else if (type.match(/^(doc|docx|txt|text|rtf)$/)) {
-    return FileText;
-  }
-  // Default
-  else {
-    return File;
-  }
-};
 
-// Format file size to human-readable format
-export const formatFileSize = (bytes: number): string => {
-  if (bytes < 1024) return bytes + ' B';
-  else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  else return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-};
+  if (type.includes('pdf')) return FileText;
+  if (type.includes('image') || type.includes('png') || type.includes('jpg') || type.includes('jpeg') || type.includes('gif')) return Image;
+  if (type.includes('spreadsheet') || type.includes('excel') || type.includes('xlsx') || type.includes('csv')) return FileSpreadsheet;
+  if (type.includes('zip') || type.includes('compress') || type.includes('rar')) return FileArchive;
+  if (type.includes('text/plain') || type.includes('txt')) return File;
+  if (type.includes('word') || type.includes('doc')) return Book;
+  if (type.includes('presentation') || type.includes('ppt')) return PenTool;
+  if (type.includes('code') || type.includes('json') || type.includes('xml') || type.includes('html')) return FileCode;
+  if (type.includes('video')) return Film;
+  return File; // Default icon
+}
 
-// Generate document tags based on document type and name
-export const generateDocumentTags = (name: string, type: string): string[] => {
+/**
+ * Generates a set of relevant tags based on filename and file type
+ * @param filename The name of the file
+ * @param fileType The file's MIME type or extension
+ * @returns Array of tag strings
+ */
+export function generateDocumentTags(filename: string, fileType: string): string[] {
   const tags: string[] = [];
-  
-  // Add file type as a tag
-  tags.push(type.toLowerCase());
-  
-  // Check for specific document types in the name
-  const lowerName = name.toLowerCase();
-  
-  if (lowerName.includes('invoice')) tags.push('invoice');
-  if (lowerName.includes('contract')) tags.push('contract');
-  if (lowerName.includes('bill of lading') || lowerName.includes('bl')) tags.push('shipping');
-  if (lowerName.includes('certificate')) tags.push('certificate');
-  if (lowerName.includes('permit')) tags.push('permit');
-  if (lowerName.includes('insurance')) tags.push('insurance');
-  if (lowerName.includes('origin')) tags.push('origin');
-  if (lowerName.includes('purchase')) tags.push('purchase');
-  if (lowerName.includes('cargo')) tags.push('cargo');
-  if (lowerName.includes('import')) tags.push('import');
-  if (lowerName.includes('export')) tags.push('export');
-  
-  return [...new Set(tags)]; // Remove duplicates
-};
+  const lowercaseFilename = filename.toLowerCase();
+  const lowercaseType = fileType.toLowerCase();
 
-// Check if a document is a viewable type in the browser
-export const isViewableInBrowser = (fileType: string): boolean => {
-  const type = fileType.toLowerCase();
-  return type === 'pdf' || 
-         type.match(/^(image|png|jpg|jpeg|gif|svg|webp)$/) !== null || 
-         type.match(/^(txt|text)$/) !== null;
-};
+  // Add tag based on file type
+  if (lowercaseType.includes('pdf')) tags.push('pdf');
+  else if (lowercaseType.includes('image')) tags.push('image');
+  else if (lowercaseType.includes('spreadsheet') || lowercaseType.includes('excel')) tags.push('spreadsheet');
+  else if (lowercaseType.includes('word') || lowercaseType.includes('doc')) tags.push('document');
+  else if (lowercaseType.includes('text/plain')) tags.push('text');
 
-// Identify document type from a template document URL
-export const identifyTemplateDocType = (url: string): string => {
-  if (url.includes('bill-of-lading')) {
-    return 'Bill of Lading';
-  } else if (url.includes('letter-of-credit')) {
-    return 'Letter of Credit';
-  } else if (url.includes('certificate-of-origin')) {
-    return 'Certificate of Origin';
-  } else if (url.includes('phytosanitary')) {
-    return 'Phytosanitary Certificate';
-  } else if (url.includes('invoice')) {
-    return 'Commercial Invoice';
-  } else if (url.includes('packing-list')) {
-    return 'Packing List';
-  } else if (url.includes('insurance')) {
-    return 'Insurance Certificate';
-  } else {
-    return 'Document Template';
-  }
-};
+  // Add tags based on document content type (from filename)
+  if (lowercaseFilename.includes('invoice')) tags.push('invoice');
+  if (lowercaseFilename.includes('contract')) tags.push('contract');
+  if (lowercaseFilename.includes('agreement')) tags.push('agreement');
+  if (lowercaseFilename.includes('report')) tags.push('report');
+  if (lowercaseFilename.includes('certificate')) tags.push('certificate');
+  if (lowercaseFilename.includes('origin')) tags.push('origin');
+  if (lowercaseFilename.includes('bill') && lowercaseFilename.includes('lading')) tags.push('bill of lading');
+  if (lowercaseFilename.includes('packing') && lowercaseFilename.includes('list')) tags.push('packing list');
+  if (lowercaseFilename.includes('letter') && lowercaseFilename.includes('credit')) tags.push('letter of credit');
+  if (lowercaseFilename.includes('phytosanitary')) tags.push('phytosanitary');
+  if (lowercaseFilename.includes('insurance')) tags.push('insurance');
 
-// Generate preview URL for document
-export const getDocumentPreviewUrl = (url: string, fileType: string): string => {
-  if (isViewableInBrowser(fileType)) {
-    return url;
-  }
-  // For non-viewable documents, could return a thumbnail or preview service URL
-  // For now, just return the original URL
-  return url;
-};
+  return tags;
+}
+
+/**
+ * Identifies the document type based on template URL path or filename
+ * @param url Document URL or path
+ * @returns Human-readable document type string
+ */
+export function identifyTemplateDocType(url: string): string {
+  if (!url) return 'Document';
+  
+  const lowercaseUrl = url.toLowerCase();
+  
+  if (lowercaseUrl.includes('bill-of-lading')) return 'Bill of Lading';
+  if (lowercaseUrl.includes('letter-of-credit')) return 'Letter of Credit';
+  if (lowercaseUrl.includes('certificate-of-origin')) return 'Certificate of Origin';
+  if (lowercaseUrl.includes('phytosanitary')) return 'Phytosanitary Certificate';
+  if (lowercaseUrl.includes('commercial-invoice')) return 'Commercial Invoice';
+  if (lowercaseUrl.includes('packing-list')) return 'Packing List';
+  if (lowercaseUrl.includes('insurance')) return 'Insurance Certificate';
+  if (lowercaseUrl.includes('contract')) return 'Contract';
+  if (lowercaseUrl.includes('invoice')) return 'Invoice';
+  
+  return 'Document';
+}

@@ -1,353 +1,264 @@
-import React, { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from '@/components/ui/button';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import { Badge } from '@/components/ui/badge';
-import { 
-  FileText, 
-  Download, 
-  EyeIcon, 
-  FileCode, 
-  FileSpreadsheet, 
-  X, 
-  ExternalLink,
-  Share2,
-  Copy,
-  CheckCircle2
-} from 'lucide-react';
-import { formatFileSize, isViewableInBrowser, getDocumentIcon } from '../../utils/documentUtils';
-import { format } from 'date-fns';
-import { toast } from '@/hooks/use-toast';
+import React, { useState, useEffect } from 'react';
+import { FileText, Download, ExternalLink, Translate, Check, X } from 'lucide-react';
+import { identifyTemplateDocType } from '../../utils/documentUtils';
+import { useTranslation } from 'react-i18next';
 import DocumentViewerContent from './DocumentViewerContent';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import { Switch } from '../ui/switch';
+import { Badge } from '../ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Label } from '../ui/label';
 
-export interface DocumentViewerProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+interface DocumentViewerProps {
   document: {
-    id: string;
+    id: string | number;
     name: string;
     fileType: string;
-    fileSize: number;
-    referenceNumber: string;
-    createdAt: Date;
     url: string;
-    status: 'approved' | 'pending' | 'draft' | 'expired';
-    tags?: string[];
-  } | null;
+    createdAt: Date;
+    fileSize: number;
+    isVerified?: boolean;
+    referenceNumber?: string;
+    contractId?: string | number | null;
+    contractName?: string | null;
+  };
+  onClose?: () => void;
 }
 
-const DocumentViewer: React.FC<DocumentViewerProps> = ({
-  open,
-  onOpenChange,
-  document
-}) => {
-  const [activeTab, setActiveTab] = useState('preview');
-  const [downloading, setDownloading] = useState(false);
-
-  if (!document) return null;
-
-  const DocumentIcon = getDocumentIcon(document.fileType);
-  const canPreview = isViewableInBrowser(document.fileType);
-  const formattedDate = format(new Date(document.createdAt), 'MMM dd, yyyy');
-
-  const handleDownload = async () => {
-    if (!document?.url) return;
+export default function DocumentViewer({ document, onClose }: DocumentViewerProps) {
+  const { t, i18n } = useTranslation();
+  const [content, setContent] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [translatedContent, setTranslatedContent] = useState<string>('');
+  const [showTranslation, setShowTranslation] = useState<boolean>(false);
+  const [currentLanguage, setCurrentLanguage] = useState<string>(i18n.language || 'en');
+  
+  const documentType = identifyTemplateDocType(document.url);
+  
+  useEffect(() => {
+    const fetchDocument = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(document.url);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch document: ${response.statusText}`);
+        }
+        
+        const text = await response.text();
+        setContent(text);
+        setLoading(false);
+      } catch (err) {
+        setError(`Error loading document: ${err instanceof Error ? err.message : String(err)}`);
+        setLoading(false);
+      }
+    };
     
-    try {
-      setDownloading(true);
+    fetchDocument();
+  }, [document.url]);
+  
+  // When language changes, hide translation until it's ready
+  useEffect(() => {
+    if (showTranslation) {
+      setTranslatedContent('');
+      const translateDocument = async () => {
+        // In a real implementation, this would call a translation API
+        // For now, we'll simulate translation by showing the content with
+        // a header indicating the language
+        const header = `[Document translated to ${i18n.t('common.language', { lng: currentLanguage })}]\n\n`;
+        // Wait a moment to simulate translation process
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        setTranslatedContent(header + content);
+      };
       
-      // Create a temporary anchor element
-      const link = document.createElement('a');
-      link.href = document.url;
-      link.setAttribute('download', document.name);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      toast({
-        title: "Download Started",
-        description: "Your document is being downloaded",
-      });
-    } catch (error) {
-      console.error('Error downloading document:', error);
-      toast({
-        title: "Download Failed",
-        description: "There was an error downloading the document",
-        variant: "destructive"
-      });
-    } finally {
-      setDownloading(false);
+      translateDocument();
     }
+  }, [currentLanguage, showTranslation, content, i18n]);
+  
+  const handleLanguageChange = (value: string) => {
+    setCurrentLanguage(value);
+    i18n.changeLanguage(value);
   };
-
-  const copyLinkToClipboard = () => {
-    if (!document?.url) return;
-    
-    navigator.clipboard.writeText(document.url)
-      .then(() => {
-        toast({
-          title: "Link Copied",
-          description: "Document link copied to clipboard",
-        });
-      })
-      .catch(err => {
-        console.error('Failed to copy link:', err);
-        toast({
-          title: "Copy Failed",
-          description: "Failed to copy link to clipboard",
-          variant: "destructive"
-        });
-      });
+  
+  const toggleTranslation = () => {
+    setShowTranslation(!showTranslation);
   };
-
-  const getStatusBadge = () => {
-    switch (document.status) {
-      case 'approved':
-        return (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-100 border-green-300">
-            <CheckCircle2 className="h-3 w-3 mr-1" />
-            Approved
-          </Badge>
-        );
-      case 'pending':
-        return (
-          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 border-yellow-300">
-            Pending Review
-          </Badge>
-        );
-      case 'draft':
-        return (
-          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100 border-gray-300">
-            Draft
-          </Badge>
-        );
-      case 'expired':
-        return (
-          <Badge className="bg-red-100 text-red-800 hover:bg-red-100 border-red-300">
-            Expired
-          </Badge>
-        );
-      default:
-        return null;
-    }
+  
+  const handleDownload = () => {
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = document.name || 'document.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
+  
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <X className="h-12 w-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900">{t('common.error')}</h3>
+          <p className="mt-2 text-gray-600">{error}</p>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="mt-4 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md"
+            >
+              {t('common.close')}
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[900px] max-h-[90vh] flex flex-col">
-        <DialogHeader className="flex flex-row items-center justify-between">
-          <div className="flex items-center">
-            <div className="bg-primary/10 p-2 rounded-md mr-3">
-              <DocumentIcon className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <DialogTitle className="text-left">{document.name}</DialogTitle>
-              <DialogDescription className="text-left">
-                {document.referenceNumber}
-              </DialogDescription>
-            </div>
-          </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => onOpenChange(false)}
-            className="h-8 w-8 absolute right-4 top-4"
+    <div className="h-full flex flex-col">
+      <div className="border-b px-6 py-4 bg-white flex items-center justify-between">
+        <div className="flex items-center">
+          <FileText className="h-5 w-5 mr-2 text-blue-600" />
+          <h2 className="text-lg font-semibold">{document.name}</h2>
+          {document.isVerified && (
+            <Badge variant="success" className="ml-2">
+              <Check className="h-3 w-3 mr-1" />
+              {t('common.verified')}
+            </Badge>
+          )}
+        </div>
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={handleDownload}
+            className="text-gray-600 hover:text-gray-900"
+            title={t('documents.downloadOriginal')}
           >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
-        </DialogHeader>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
-          <div className="flex justify-between items-center border-b">
-            <TabsList>
-              <TabsTrigger value="preview" className="flex items-center">
-                <EyeIcon className="h-4 w-4 mr-2" />
-                Preview
-              </TabsTrigger>
-              <TabsTrigger value="details" className="flex items-center">
-                <FileText className="h-4 w-4 mr-2" />
-                Details
-              </TabsTrigger>
-            </TabsList>
-            
-            <div className="flex space-x-2 p-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={copyLinkToClipboard}
-                className="text-xs"
-              >
-                <Copy className="h-3.5 w-3.5 mr-1.5" />
-                Copy Link
-              </Button>
-              <Button
-                size="sm"
-                onClick={handleDownload}
-                disabled={downloading}
-                className="text-xs"
-              >
-                <Download className="h-3.5 w-3.5 mr-1.5" />
-                Download
-              </Button>
-            </div>
+            <Download className="h-5 w-5" />
+          </button>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="text-gray-600 hover:text-gray-900"
+              title={t('common.close')}
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+      </div>
+      
+      <div className="border-b px-6 py-2 bg-gray-50 flex items-center justify-between">
+        <div className="text-sm text-gray-600">
+          <span className="font-medium">{t('documents.documentType')}:</span>{' '}
+          {t(`documentTypes.${documentType.toLowerCase().replace(/ /g, '')}.title`, documentType)}
+        </div>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <Label htmlFor="translate-toggle" className="text-sm font-medium cursor-pointer">
+              {t('documents.translate')}
+            </Label>
+            <Switch
+              id="translate-toggle"
+              checked={showTranslation}
+              onCheckedChange={toggleTranslation}
+            />
           </div>
+          <Select value={currentLanguage} onValueChange={handleLanguageChange}>
+            <SelectTrigger className="w-[130px] h-8">
+              <SelectValue>{currentLanguage === 'en' ? 'English' : currentLanguage === 'fr' ? 'Français' : 'Español'}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="en">English</SelectItem>
+              <SelectItem value="fr">Français</SelectItem>
+              <SelectItem value="es">Español</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-          <TabsContent value="preview" className="flex-1 overflow-auto">
-            {canPreview ? (
-              document.fileType.match(/^(image|png|jpg|jpeg|gif|svg|webp)$/) ? (
-                <div className="flex items-center justify-center h-full">
-                  <img 
-                    src={document.url} 
-                    alt={document.name}
-                    className="max-w-full max-h-full object-contain" 
-                    onError={(e) => {
-                      // If image load fails, show error message
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      const container = target.parentElement;
-                      if (container) {
-                        const errorDiv = document.createElement('div');
-                        errorDiv.className = 'flex flex-col items-center justify-center p-8 text-center';
-                        
-                        const iconDiv = document.createElement('div');
-                        iconDiv.className = 'bg-gray-100 p-6 rounded-full mb-4';
-                        iconDiv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
-                        
-                        const title = document.createElement('h3');
-                        title.className = 'text-lg font-medium mb-2';
-                        title.textContent = 'Image preview failed';
-                        
-                        const desc = document.createElement('p');
-                        desc.className = 'text-gray-500 mb-6 max-w-md';
-                        desc.textContent = 'Unable to load image preview. The image may be unavailable or in an unsupported format.';
-                        
-                        errorDiv.appendChild(iconDiv);
-                        errorDiv.appendChild(title);
-                        errorDiv.appendChild(desc);
-                        container.appendChild(errorDiv);
-                      }
-                    }}
-                  />
-                </div>
-              ) : document.fileType === 'pdf' ? (
-                <div className="w-full">
-                  <iframe 
-                    src={`${document.url}#toolbar=0`} 
-                    className="w-full h-[600px]" 
-                    title={document.name}
-                    onError={() => {
-                      // We'd handle PDF loading errors here
-                      console.error('PDF failed to load');
-                    }}
-                  />
-                </div>
-              ) : document.fileType.match(/^(txt|text)$/) || document.url?.includes('sample-docs') ? (
-                // Text preview using our DocumentViewerContent - explicitly handle our sample docs
-                <div className="bg-white min-h-[300px] max-h-[600px] overflow-auto">
-                  <DocumentViewerContent url={document.url} fileType={document.fileType} />
-                </div>
+      <div className="flex-1 overflow-hidden">
+        {showTranslation ? (
+          <Tabs defaultValue="original" className="h-full flex flex-col">
+            <div className="border-b px-4 bg-white">
+              <TabsList className="mt-1">
+                <TabsTrigger value="original">{t('documents.originalText')}</TabsTrigger>
+                <TabsTrigger value="translated">{t('documents.translatedText')}</TabsTrigger>
+              </TabsList>
+            </div>
+            <TabsContent value="original" className="flex-1 overflow-auto p-4">
+              <DocumentViewerContent content={content} documentType={documentType} />
+            </TabsContent>
+            <TabsContent value="translated" className="flex-1 overflow-auto p-4">
+              {translatedContent ? (
+                <DocumentViewerContent content={translatedContent} documentType={documentType} />
               ) : (
-                <div className="flex items-center justify-center h-full">
-                  <a 
-                    href={document.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-primary hover:underline flex items-center"
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    View in new tab
-                  </a>
-                </div>
-              )
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-                <div className="bg-gray-100 p-6 rounded-full mb-4">
-                  <DocumentIcon className="h-12 w-12 text-gray-500" />
-                </div>
-                <h3 className="text-lg font-medium mb-2">Preview not available</h3>
-                <p className="text-gray-500 mb-6 max-w-md">
-                  This document format can't be previewed directly in the browser. 
-                  You can download it to view on your device.
-                </p>
-                <Button onClick={handleDownload} disabled={downloading}>
-                  <Download className="h-4 w-4 mr-2" />
-                  {downloading ? 'Downloading...' : 'Download Document'}
-                </Button>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="details" className="p-4">
-            <div className="space-y-6">
-              <div>
-                <h3 className="font-semibold text-sm text-gray-500 mb-1">Document Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm font-medium">Name</p>
-                    <p className="text-sm text-gray-500">{document.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Reference Number</p>
-                    <p className="text-sm text-gray-500">{document.referenceNumber}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">File Type</p>
-                    <p className="text-sm text-gray-500">{document.fileType.toUpperCase()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Size</p>
-                    <p className="text-sm text-gray-500">{formatFileSize(document.fileSize)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Created Date</p>
-                    <p className="text-sm text-gray-500">{formattedDate}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">Status</p>
-                    <div className="mt-1">
-                      {getStatusBadge()}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {document.tags && document.tags.length > 0 && (
-                <div>
-                  <h3 className="font-semibold text-sm text-gray-500 mb-2">Tags</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {document.tags.map((tag, index) => (
-                      <Badge key={index} variant="secondary">
-                        {tag}
-                      </Badge>
-                    ))}
+                <div className="h-full flex items-center justify-center">
+                  <div className="flex flex-col items-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                    <p className="mt-2 text-gray-600">{t('common.loading')}</p>
                   </div>
                 </div>
               )}
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Close
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <div className="h-full overflow-auto p-4">
+            <DocumentViewerContent content={content} documentType={documentType} />
+          </div>
+        )}
+      </div>
+      
+      <div className="border-t px-6 py-3 bg-gray-50 text-sm text-gray-600">
+        <div className="flex items-center justify-between">
+          <div>
+            {document.referenceNumber && (
+              <span className="mr-4">
+                <span className="font-medium">{t('documents.referenceNumber')}:</span>{' '}
+                {document.referenceNumber}
+              </span>
+            )}
+            {document.contractId && document.contractName && (
+              <span>
+                <span className="font-medium">{t('documents.associatedContract')}:</span>{' '}
+                {document.contractName}
+              </span>
+            )}
+          </div>
+          <div>
+            {document.isVerified && (
+              <a 
+                href={`https://baseexplorer.org/`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 inline-flex items-center"
+              >
+                {t('documents.verifyOnBlockchain')}
+                <ExternalLink className="h-3 w-3 ml-1" />
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
-};
-
-export default DocumentViewer;
+}

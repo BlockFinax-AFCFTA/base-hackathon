@@ -1,74 +1,90 @@
-IRREVOCABLE DOCUMENTARY LETTER OF CREDIT
-==========================================
+                   IRREVOCABLE DOCUMENTARY LETTER OF CREDIT
 
-Letter of Credit Number: LC-2025-001
-Date of Issue: April 20, 2025
-Expiry Date: July 20, 2025
+Letter of Credit Number: LC-2025-001                 Date of Issue: April 20, 2025
+                                                     Expiry Date: July 20, 2025
 
-ISSUING BANK:
-AfriBank International
-100 Financial Center
-Nairobi, Kenya
-SWIFT: AFRBKENA
+ISSUING BANK:                           APPLICANT:
+AfriBank International                  Global Trade Solutions Ltd.
+100 Financial Center                    75 Commerce Avenue 
+Nairobi, Kenya                          Lagos, Nigeria
+SWIFT: AFRBKENA                         Account No.: 9876543210
+Tel: +254-20-1234567                    Tel: +234-1-456-7890
 
-APPLICANT:
-Global Trade Solutions Ltd.
-75 Commerce Avenue
-Lagos, Nigeria
-Account No.: 9876543210
-
-BENEFICIARY:
-Harvest Agricultural Equipment Corp.
-1250 Industry Parkway
-Chicago, IL 60007
-United States of America
-Account No.: 0123456789
+BENEFICIARY:                            ADVISING BANK:
+Harvest Agricultural Equipment Corp.    TradeTrust Bank International
+1250 Industry Parkway                   550 Bank Plaza
+Chicago, IL 60007                       New York, NY 10017
+United States of America                U.S.A.
+Account No.: 0123456789                 SWIFT: TTBIUS33
 
 AMOUNT:
 USD 750,000.00 (Seven Hundred Fifty Thousand United States Dollars)
-Available by: Negotiation
-At: Sight
 
-PARTIAL SHIPMENTS:
-[ ] Permitted    [X] Not Permitted
+AVAILABLE WITH:
+[ ] Issuing Bank   [X] Advising Bank   [ ] Any Bank   [ ] Nominated Bank:___________
+By:
+[X] Payment at Sight   [ ] Deferred Payment   [ ] Acceptance   [ ] Negotiation
 
-TRANSHIPMENT:
-[ ] Permitted    [X] Not Permitted
+PARTIAL SHIPMENTS:                      TRANSHIPMENT:
+[ ] Permitted    [X] Not Permitted     [ ] Permitted    [X] Not Permitted
 
-LOADING:
-Port of Loading: Lagos Port, Nigeria
-Latest Shipment Date: May 31, 2025
+LOADING:                                DISCHARGE:
+Port of Lagos, Nigeria                  Port of Chicago, USA
 
-DISCHARGE:
-Port of Discharge: Chicago, United States of America
+LATEST SHIPMENT DATE: June 15, 2025
 
 DESCRIPTION OF GOODS:
-10 units of Model HE-2025 Grain Harvesters as per Proforma Invoice No. PI-2025-087 dated March 30, 2025.
-Incoterms 2020: CIF Chicago
+Agricultural machinery and equipment as per Proforma Invoice No. AGR-2025-042 
+dated April 5, 2025:
+- 5 units Automated Grain Harvesters Model AGH-450
+- 10 units Precision Seeders Model PS-200
+- Spare parts and maintenance kits
+- Installation and training services
 
 DOCUMENTS REQUIRED:
-1. Signed commercial invoice in triplicate.
-2. Full set (3/3) clean on board ocean bills of lading, made out to the order of AfriBank International, marked "Freight Prepaid" and notify applicant.
-3. Packing list in triplicate.
-4. Certificate of origin in duplicate.
-5. Insurance policy or certificate in negotiable form for 110% of CIF value covering Institute Cargo Clauses (A), Institute War Clauses and Institute Strike Clauses.
-6. Inspection certificate issued by SGS confirming goods are in conformity with the specification of proforma invoice.
+1. Signed commercial invoice in 3 originals and 2 copies.
+2. Full set of clean on board ocean bills of lading marked "Freight Prepaid" 
+   and notify applicant.
+3. Packing list in 3 originals and 2 copies.
+4. Certificate of Origin issued by Chamber of Commerce.
+5. Inspection Certificate issued by SGS or equivalent confirming goods are 
+   in conformity with the order specifications.
+6. Insurance Policy/Certificate for 110% of CIF value covering all risks.
+7. Manufacturer's warranty certificates for all equipment.
 
 SPECIAL CONDITIONS:
 1. All documents must be issued in English.
-2. Documents must be presented within 21 days after the date of shipment but within the validity of this credit.
-3. All banking charges outside Kenya are for beneficiary's account.
-4. This Letter of Credit is subject to the Uniform Customs and Practice for Documentary Credits, 2007 Revision, ICC Publication No. 600.
+2. Documents must be presented within 21 days after shipment date but 
+   within the validity of the credit.
+3. All bank charges outside issuing bank's country are for beneficiary's account.
+4. This Letter of Credit is subject to the Uniform Customs and Practice for 
+   Documentary Credits, 2007 Revision, ICC Publication No. 600.
+5. Discrepancies in documents will incur a fee of USD 100.00 per presentation.
 
-BLOCKCHAIN VERIFICATION:
+We hereby issue this irrevocable documentary letter of credit in your favor
+which is available against presentation of your draft(s) at SIGHT drawn on
+AFRIBANK INTERNATIONAL, accompanied by the stipulated documents.
+
+We engage with you that all drafts drawn under and in compliance with the terms
+of this credit will be duly honored if presented at this office on or before the
+expiry date indicated above.
+
+                                    FOR AND ON BEHALF OF
+                                    AFRIBANK INTERNATIONAL
+
+                                    ______________________________
+                                    AUTHORIZED SIGNATURE
+
+                                    ______________________________
+                                    AUTHORIZED SIGNATURE
+
+----------------------------------------------------------------------------------
+                              BLOCKCHAIN VERIFICATION
+----------------------------------------------------------------------------------
 Transaction Hash: 0x4f8c3d6e2fc94caa2e9247bc9af5d9b91c4ad614a758e39bf43e90d8b4f7d1a2
+Block Number: 10352647
+Network: Base Mainnet
+Verified: April 20, 2025 14:30:16 UTC
 Verification URL: https://baseexplorer.org/tx/0x4f8c3d6e2fc94caa2e9247bc9af5d9b91c4ad614a758e39bf43e90d8b4f7d1a2
 Smart Contract: 0x5F7A021349eFDe188a0Ee79E1047E646faE2A6Af
-
-For and on behalf of AfriBank International
-
-____________________________           ____________________________
-Authorized Signature                    Authorized Signature
-
-Joseph Mbeki                           Sarah Okafor
-International Trade Director           Documentary Credits Manager
+----------------------------------------------------------------------------------

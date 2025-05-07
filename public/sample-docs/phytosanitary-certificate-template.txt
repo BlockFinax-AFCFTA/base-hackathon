@@ -1,0 +1,90 @@
+                PHYTOSANITARY CERTIFICATE
+                         No. KE-KEPHIS-2025/0412
+                            ORIGINAL
+
+PLANT PROTECTION ORGANIZATION OF: KENYA
+TO: PLANT PROTECTION ORGANIZATION(S) OF: THE NETHERLANDS
+
+I. DESCRIPTION OF CONSIGNMENT
+
+Name and address of exporter:             Certificate No: KE-KEPHIS-2025/0412
+African Coffee Exporters Ltd.
+123 Export Drive, Mombasa                 Place of issue: Nairobi, Kenya
+Kenya                                     Date of issue: April 15, 2025
+
+Declared name and address of consignee:
+European Coffee Distributors B.V.
+Havenlaan 42
+3000 Rotterdam, Netherlands
+
+Number and description of packages:       Distinguishing marks:
+320 jute bags                             ECDB-4591-KE
+                                          SEAL: KPA-45912-A
+
+Place of origin:                          Declared means of conveyance:
+Kericho County, Kenya                     Sea Freight - MV Atlantic Navigator
+
+Declared point of entry:                  
+Port of Rotterdam, Netherlands
+
+Name of produce and quantity declared:
+Green Coffee Beans - Kenyan AA Grade (Coffea arabica)
+Quantity: 19,200 kg / 320 bags
+
+Botanical name of plants:
+Coffea arabica
+
+II. ADDITIONAL DECLARATION
+
+This is to certify that the plants, plant products or other regulated articles 
+described herein have been inspected and/or tested according to appropriate 
+official procedures and are considered to be free from the quarantine pests
+specified by the importing contracting party and to conform with the current
+phytosanitary requirements of the importing contracting party, including those
+for regulated non-quarantine pests.
+
+The coffee beans in this consignment:
+1. Have been processed to remove all pulp and parchment
+2. Have been cleaned, sorted and inspected for the absence of insect pests
+3. Have undergone appropriate treatment and have been found free of Hypothenemus hampei 
+   (Coffee Berry Borer)
+4. Originate from a region free from Xylella fastidiosa
+5. Have been found free from Colletotrichum kahawae (Coffee Berry Disease)
+
+III. DISINFESTATION AND/OR DISINFECTION TREATMENT
+
+Date: April 10, 2025              Treatment: Heat treatment
+Chemical (active ingredient): N/A  Duration and temperature: 120 minutes at 60°C
+Concentration: N/A                 Additional information: Treatment conducted at
+                                   Kenya Coffee Research Institute approved facility
+
+IV. ADDITIONAL INFORMATION
+
+This consignment conforms to Phytosanitary Import Requirements as specified in EU 
+Directive 2000/29/EC and Commission Implementing Regulation (EU) 2019/2072.
+
+The coffee beans have been packaged in new, clean jute bags and stored in pest-free 
+conditions prior to export.
+
+V. STAMP OF ORGANIZATION         PLACE OF ISSUE: Nairobi
+                                 DATE: April 15, 2025
+[KEPHIS OFFICIAL STAMP]
+                                 NAME OF AUTHORIZED OFFICER: Elizabeth Wangari
+                                 
+                                 ____________________________
+                                 (Signature)
+
+No financial liability with respect to this certificate shall attach to the 
+Kenya Plant Health Inspectorate Service (KEPHIS) or to any of its officers or 
+representatives.
+
+----------------------------------------------------------------------------------
+                              BLOCKCHAIN VERIFICATION
+----------------------------------------------------------------------------------
+Transaction Hash: 0x1d4a2e3b9c5f8d7e6b0a1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f
+Block Number: 9277158
+Network: Base Mainnet
+Verified: April 15, 2025 09:45:12 UTC
+Verification URL: https://baseexplorer.org/tx/0x1d4a2e3b9c5f8d7e6b0a1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f
+Smart Contract: 0x5F7A021349eFDe188a0Ee79E1047E646faE2A6Af
+----------------------------------------------------------------------------------

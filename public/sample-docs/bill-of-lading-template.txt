@@ -1,71 +1,74 @@
-BILL OF LADING
-===================================
-SHIPPER/EXPORTER:
-African Coffee Exporters Ltd.
-123 Export Drive, Mombasa
-Kenya, East Africa
-Email: info@africancoffe.com
-Tel: +254-700-000-000
+                           BILL OF LADING
+                            ORIGINAL
+                          NON-NEGOTIABLE
 
-CONSIGNEE:
-European Coffee Distributors B.V.
+Shipper/Exporter:                       B/L Number: ECDB-MBAL-2025-001
+African Coffee Exporters Ltd.           Booking No: KE-ROT-12453-A
+123 Export Drive, Mombasa
+Kenya, East Africa                      Export References:
+Tel: +254-700-123-456                   KNY-CTM-00245
+                                        INCOTERMS 2020: FOB MOMBASA
+
+Consignee:                              Notify Party: 
+European Coffee Distributors B.V.       SAME AS CONSIGNEE
 Havenlaan 42
 3000 Rotterdam, Netherlands
+Tel: +31-10-123-4567
 VAT: NL123456789B01
 
-NOTIFY PARTY:
-Same as Consignee
+Vessel/Voyage:                          Port of Loading:
+MV Atlantic Navigator / V.125E          Mombasa, Kenya
 
-VESSEL/VOYAGE:
-MV Atlantic Navigator / V.125E
-Port of Loading: Mombasa, Kenya
-Port of Discharge: Rotterdam, Netherlands
-Place of Receipt: Mombasa Port Terminal
-Place of Delivery: Rotterdam Port
+Port of Discharge:                      Place of Delivery:
+Rotterdam, Netherlands                  Rotterdam, Netherlands
 
-CONTAINER No.: MSDU7654321
-Seal No.: KPA9876543
-Container Type: 40ft High Cube
+Container No./Seal No.   Marks & Numbers       No. of Pkgs    Description of Goods
+ECDB-4591-KE            ECDB-2025-KE          320 bags       Green Coffee Beans
+SEAL: KPA-45912-A       Lot# 20250417                         Kenyan AA Grade
+                                                              PRODUCT OF KENYA
+                                                              Certified Organic
+                                                              Harvest: March 2025
 
-PARTICULARS FURNISHED BY SHIPPER:
---------------------------------
-Marks & Numbers  | No. of Pkgs | Description of Goods              | Gross Weight | Measurement
------------------|-------------|-----------------------------------|--------------|------------
-ECDB-2025-KE     | 320 bags    | Green Coffee Beans                | 19,200 kg    | 40 CBM
-Lot# 20250417    |             | Kenyan AA Grade                   |              |
-                 |             | PRODUCT OF KENYA                  |              |
-                 |             | Certified Organic                  |              |
-                 |             | Harvest: March 2025               |              |
+Gross Weight: 19,200 kg                 Measurement: 40 CBM
 
-FREIGHT CHARGES:
-Prepaid [X]  Collect [ ]
-Freight Payable at: Rotterdam
+SHIPPER'S LOAD, STOW, AND COUNT
+FREIGHT PREPAID
+CLEAN ON BOARD
+
+Freight and Charges:                    Rate                  Prepaid    Collect
+Ocean Freight                           ------                  X
+Documentation Fee                       ------                  X
+Terminal Handling                       ------                  X
+                                        TOTAL                   X
+
+TOTAL PACKAGES: Three Hundred Twenty (320) bags only
 
 DECLARED VALUE: USD 154,000.00
-Invoice No.: INV-2025-0427
 
-***** SHIPPED on board the vessel in apparent good order and condition *****
+Shipped on board the vessel named herein at the port of loading on: April 17, 2025
 
-ORIGINAL BILL OF LADING: 3/3 originals issued
-Date of Issue: April 17, 2025
-Place of Issue: Mombasa, Kenya
+This Bill of Lading is issued pursuant to a booking note and is subject to the terms 
+and conditions thereof. The Carrier accepts no responsibility for incorrect declarations
+by the shipper.
 
-[SIGNATURE SPACE]
-_________________________
-Master or Agent
+IN WITNESS WHEREOF the Master or Agent of the said vessel has signed three (3) Bills 
+of Lading, all of this tenor and date, one of which being accomplished, the others 
+shall stand void.
 
-FOR CARRIER: Oceanic Shipping Line
-Agent: Maritime Services Ltd.
+                                        FOR THE MASTER
+                                        Global Shipping Lines
 
-SPECIAL INSTRUCTIONS:
-- Temperature controlled container: 13-17°C
-- Humidity: 40-70%
-- Keep away from contaminants and odors
-- Handle with care
+                                        _______________________
+                                        AUTHORIZED SIGNATURE
+                                        
+                                        Date: April 17, 2025
 
-BLOCKCHAIN VERIFICATION:
+----------------------------------------------------------------------------------
+                              BLOCKCHAIN VERIFICATION
+----------------------------------------------------------------------------------
 Transaction Hash: 0x7d982f7583d5b0e5d5332acdf911c36157bd0eebd62ae0c4de0b3aee47ba9ab3
+Block Number: 9278256
+Network: Base Mainnet
+Verified: April 17, 2025 10:45:23 UTC
 Verification URL: https://baseexplorer.org/tx/0x7d982f7583d5b0e5d5332acdf911c36157bd0eebd62ae0c4de0b3aee47ba9ab3
-
-This Bill of Lading is issued subject to the standard terms and conditions as printed on reverse.
-CLEAN ON BOARD
+----------------------------------------------------------------------------------

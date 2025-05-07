@@ -1,84 +1,77 @@
-CERTIFICATE OF ORIGIN
-=====================
-Certificate No.: COO-2025-00421
-Reference: SC-2025-K0032-A
+                           CERTIFICATE OF ORIGIN
+                              No. KE-ECDB-2025-045
+                                ORIGINAL COPY
 
-1. Exporter (Name, Address, Country):
-   African Coffee Exporters Ltd.
-   123 Export Drive, Mombasa
-   Kenya, East Africa
-   Registration No.: KE-EXP-75429
+1. Exporter (Name, Address, Country):        2. Importer (Name, Address, Country):
+   African Coffee Exporters Ltd.                European Coffee Distributors B.V.
+   123 Export Drive                             Havenlaan 42
+   Mombasa, Kenya                               3000 Rotterdam
+   Registration No.: KE-2015-7458               Netherlands
+   Tel: +254-700-123-456                        VAT: NL123456789B01
 
-2. Producer (if different from Exporter):
-   Kilimanjaro Cooperative
-   45 Highland Road, Nyeri
-   Kenya
-   Registration No.: KE-PROD-1532
+3. Country of Origin:                        4. Transport Details:
+   KENYA                                        Sea Freight
+                                                Vessel: MV Atlantic Navigator
+                                                From: Port of Mombasa, Kenya
+                                                To: Port of Rotterdam, Netherlands
 
-3. Importer (Name, Address, Country):
-   European Coffee Distributors B.V.
-   Havenlaan 42
-   3000 Rotterdam, Netherlands
-   VAT: NL123456789B01
+5. Remarks:
+   This certificate is issued in accordance with the provisions of the 
+   Kenya-EU Economic Partnership Agreement (EPA)
+   Shipment Date: April 17, 2025
+   
+6. Item  7. Marks & Numbers   8. No. & Kind   9. HS Code     10. Description of Goods          11. Gross     12. Invoice
+   No.     Container/Package    of Packages                                                     Weight (kg)   No. & Date
+   
+   1     ECDB-4591-KE        320 bags       0901.11.00    Green Coffee Beans                 19,200 kg     INV-25042
+         SEAL: KPA-45912-A                                Kenyan AA Grade                                   2025-04-15
+                                                          Certified Organic
+                                                          Harvest: March 2025
 
-4. Country of Origin:
-   KENYA
+13. EXPORTER'S DECLARATION:
 
-5. Country of Destination:
-   NETHERLANDS
+I, the undersigned, declare that the goods 
+described above originate in the country 
+specified in Box 3 and comply with the 
+origin requirements for export to the 
+country specified in Box 2.
 
-6. Transport Details:
-   Mode of Transport: Ocean Freight
-   Vessel Name: MV Atlantic Navigator
-   Voyage: V.125E
-   Departure Date: April 18, 2025
-   Port of Loading: Mombasa, Kenya
-   Port of Discharge: Rotterdam, Netherlands
+Place and Date: Mombasa, April 17, 2025
+Name: Sarah Mwangi
+Title: Export Manager
 
-7. Description of Goods:
-   Harmonized Code: 0901.11.00
-   Product Description: Green Coffee Beans, Kenyan AA Grade, Unroasted
-   Quantity: 320 bags (19,200 kg)
-   Packaging: Hessian bags with GrainPro liner
+Signature: _________________________
 
-8. Origin Criteria:
-   [X] Wholly Obtained
-   [ ] Substantially Transformed
-   [ ] Other: ___________________________
+Company Stamp:
+[AFRICAN COFFEE EXPORTERS LTD.]
 
-9. Value of Goods:
-   Invoice No.: INV-2025-0427
-   Invoice Date: April 15, 2025
-   Invoice Value: USD 154,000.00
+14. CERTIFICATION:
 
-10. Declaration by the Exporter:
-    The undersigned hereby declares that the above details and statements are correct and that the goods were produced in KENYA and comply with the origin requirements applicable in the preferential trade between KENYA and NETHERLANDS.
+It is hereby certified on the basis of control 
+carried out that the declaration by the
+exporter is correct.
 
-    Place and Date: Mombasa, April 17, 2025
-    
-    Name: Samuel Mwangi
-    Title: Export Operations Manager
-    
-    [Signature]_________________________
-    Authorized Signature
+KENYA EXPORT PROMOTION AND BRANDING AGENCY
 
-11. Certification:
-    It is hereby certified, on the basis of control carried out, that the declaration by the exporter is correct.
+Issuing Authority: Kenya Chamber of Commerce
+Place and Date: Nairobi, April 17, 2025
+Name: John Kimani
+Title: Certification Officer
 
-    Issuing Authority: Kenya Export Promotion Authority
-    Place and Date: Mombasa, April 17, 2025
-    Official Stamp: [STAMP AREA]
-    
-    [Signature]_________________________
-    Authorized Signature
+Signature: _________________________
 
-12. Additional Information:
-    This certificate is valid for six months from the date of issue.
-    This certificate comprises one page.
-    This certificate must be presented to customs authorities of the importing country.
+Official Stamp:
+[KENYA CHAMBER OF COMMERCE]
 
-BLOCKCHAIN VERIFICATION:
-Transaction Hash: 0xc4e9b30e58cc79a6f2b8c8911f7a8c1b7fde2ae08a92f2dd7622f7aa79757429
-Verification URL: https://baseexplorer.org/tx/0xc4e9b30e58cc79a6f2b8c8911f7a8c1b7fde2ae08a92f2dd7622f7aa79757429
+This Certificate comprises 1 page including any annexes.
 
-NOT VALID WITHOUT OFFICIAL STAMP AND SIGNATURE
+----------------------------------------------------------------------------------
+                              BLOCKCHAIN VERIFICATION
+----------------------------------------------------------------------------------
+Transaction Hash: 0xc8a49da5e3b57fc9f3a4b0de8b60a14169d88f59e61c298ceae4fbe8d01d8c63
+Block Number: 9278257
+Network: Base Mainnet
+Verified: April 17, 2025 11:20:45 UTC
+Verification URL: https://baseexplorer.org/tx/0xc8a49da5e3b57fc9f3a4b0de8b60a14169d88f59e61c298ceae4fbe8d01d8c63
+Smart Contract: 0x5F7A021349eFDe188a0Ee79E1047E646faE2A6Af
+----------------------------------------------------------------------------------
