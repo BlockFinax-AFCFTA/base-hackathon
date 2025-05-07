@@ -6,6 +6,7 @@ import { Web3Provider } from "../context/Web3Context"
 import { AppProvider } from "../context/AppContext"
 import { Toaster } from "../components/ui/toaster"
 import '../styles/globals.css'
+import '../lib/i18n' // Import i18n configuration
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
