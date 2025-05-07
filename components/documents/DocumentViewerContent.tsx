@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, FileText, Stamp, Ship, CreditCard, FileCheck } from 'lucide-react';
+import { identifyTemplateDocType } from '../../utils/documentUtils';
 
 interface DocumentViewerContentProps {
   url: string;
@@ -55,10 +56,34 @@ const DocumentViewerContent: React.FC<DocumentViewerContentProps> = ({ url, file
     );
   }
 
+  // Get document type for the banner
+  const documentType = identifyTemplateDocType(url);
+  
+  // Choose icon based on document type
+  const getDocumentIcon = () => {
+    if (documentType.includes('Bill of Lading')) {
+      return <Ship className="h-5 w-5 mr-2" />;
+    } else if (documentType.includes('Letter of Credit')) {
+      return <CreditCard className="h-5 w-5 mr-2" />;
+    } else if (documentType.includes('Certificate')) {
+      return <Stamp className="h-5 w-5 mr-2" />;
+    } else {
+      return <FileText className="h-5 w-5 mr-2" />;
+    }
+  };
+
   if (fileType === 'pdf' || fileType.includes('pdf')) {
     return (
-      <div className="bg-gray-100 p-4 border rounded-md">
-        <div className="font-mono whitespace-pre-wrap text-sm overflow-auto max-h-[600px]">
+      <div className="bg-white rounded-md">
+        <div className="bg-primary/10 text-primary font-medium py-2 px-4 flex items-center border-b">
+          {getDocumentIcon()}
+          <span>{documentType}</span>
+          <div className="ml-auto flex items-center">
+            <FileCheck className="h-4 w-4 mr-1 text-green-600" />
+            <span className="text-xs text-green-600">Blockchain Verified</span>
+          </div>
+        </div>
+        <div className="font-mono whitespace-pre-wrap text-sm overflow-auto max-h-[600px] p-4">
           {content}
         </div>
       </div>
@@ -67,8 +92,16 @@ const DocumentViewerContent: React.FC<DocumentViewerContentProps> = ({ url, file
 
   if (fileType === 'xlsx' || fileType.includes('excel') || fileType.includes('spreadsheet')) {
     return (
-      <div className="bg-gray-100 p-4 border rounded-md">
-        <div className="font-mono whitespace-pre-wrap text-sm overflow-auto max-h-[600px]">
+      <div className="bg-white rounded-md">
+        <div className="bg-primary/10 text-primary font-medium py-2 px-4 flex items-center border-b">
+          {getDocumentIcon()}
+          <span>{documentType}</span>
+          <div className="ml-auto flex items-center">
+            <FileCheck className="h-4 w-4 mr-1 text-green-600" />
+            <span className="text-xs text-green-600">Blockchain Verified</span>
+          </div>
+        </div>
+        <div className="font-mono whitespace-pre-wrap text-sm overflow-auto max-h-[600px] p-4">
           {content}
         </div>
       </div>
@@ -77,8 +110,16 @@ const DocumentViewerContent: React.FC<DocumentViewerContentProps> = ({ url, file
 
   // Default text viewer for all other file types
   return (
-    <div className="bg-gray-100 p-4 border rounded-md">
-      <div className="font-mono whitespace-pre-wrap text-sm overflow-auto max-h-[600px]">
+    <div className="bg-white rounded-md">
+      <div className="bg-primary/10 text-primary font-medium py-2 px-4 flex items-center border-b">
+        {getDocumentIcon()}
+        <span>{documentType}</span>
+        <div className="ml-auto flex items-center">
+          <FileCheck className="h-4 w-4 mr-1 text-green-600" />
+          <span className="text-xs text-green-600">Blockchain Verified</span>
+        </div>
+      </div>
+      <div className="font-mono whitespace-pre-wrap text-sm overflow-auto max-h-[600px] p-4">
         {content}
       </div>
     </div>

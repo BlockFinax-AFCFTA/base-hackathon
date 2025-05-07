@@ -102,6 +102,27 @@ export const isViewableInBrowser = (fileType: string): boolean => {
          type.match(/^(txt|text)$/) !== null;
 };
 
+// Identify document type from a template document URL
+export const identifyTemplateDocType = (url: string): string => {
+  if (url.includes('bill-of-lading')) {
+    return 'Bill of Lading';
+  } else if (url.includes('letter-of-credit')) {
+    return 'Letter of Credit';
+  } else if (url.includes('certificate-of-origin')) {
+    return 'Certificate of Origin';
+  } else if (url.includes('phytosanitary')) {
+    return 'Phytosanitary Certificate';
+  } else if (url.includes('invoice')) {
+    return 'Commercial Invoice';
+  } else if (url.includes('packing-list')) {
+    return 'Packing List';
+  } else if (url.includes('insurance')) {
+    return 'Insurance Certificate';
+  } else {
+    return 'Document Template';
+  }
+};
+
 // Generate preview URL for document
 export const getDocumentPreviewUrl = (url: string, fileType: string): string => {
   if (isViewableInBrowser(fileType)) {

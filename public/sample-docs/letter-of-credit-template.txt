@@ -1,70 +1,74 @@
 IRREVOCABLE DOCUMENTARY LETTER OF CREDIT
+==========================================
 
-Letter of Credit No.: LC-2025-AFRIBANK-001
-Date of Issue: April 05, 2025
-Date of Expiry: July 05, 2025
-Place of Expiry: AfriBank, Accra, Ghana
+Letter of Credit Number: LC-2025-001
+Date of Issue: April 20, 2025
+Expiry Date: July 20, 2025
 
-Applicant:
-European Importers B.V.
-456 Harbor Street, Rotterdam
-Netherlands
-Contact: +31 20 987 6543
-Account No.: EIBV-20250045-EUR
-
-Beneficiary:
-Farm Fresh Exports Inc.
-456 Harvest Road, Accra
-Ghana
-Bank Account: Ghana Commercial Bank
-SWIFT: GHCBGHAC
-Account No.: FFE-2025-0045-USD
-
-Issuing Bank:
+ISSUING BANK:
 AfriBank International
-1 Finance Plaza, Accra
-Ghana
-SWIFT: AFRBGHAC
+100 Financial Center
+Nairobi, Kenya
+SWIFT: AFRBKENA
 
-Advising Bank:
-ABN AMRO Bank
-Gustav Mahlerlaan 10
-1082 PP Amsterdam, Netherlands
-SWIFT: ABNANL2A
+APPLICANT:
+Global Trade Solutions Ltd.
+75 Commerce Avenue
+Lagos, Nigeria
+Account No.: 9876543210
 
-Amount: USD 275,000.00 (Two Hundred Seventy-Five Thousand United States Dollars)
+BENEFICIARY:
+Harvest Agricultural Equipment Corp.
+1250 Industry Parkway
+Chicago, IL 60007
+United States of America
+Account No.: 0123456789
+
+AMOUNT:
+USD 750,000.00 (Seven Hundred Fifty Thousand United States Dollars)
 Available by: Negotiation
-Partial shipments: Allowed
-Transhipment: Not allowed
+At: Sight
 
-Documents Required:
-1. Signed commercial invoice in 3 originals and 2 copies.
-2. Full set 3/3 clean on board ocean bills of lading made out to order of shipper, blank endorsed, marked "freight prepaid" and notify applicant.
-3. Packing list in 3 originals and 2 copies.
-4. Certificate of Origin issued by Ghana Export Promotion Authority.
-5. Phytosanitary certificate issued by the Ghana Plant Protection and Regulatory Services Directorate.
-6. Insurance policy/certificate in negotiable form for 110% of CIF value covering all risks.
-7. ICO Certificate of Origin for Coffee.
+PARTIAL SHIPMENTS:
+[ ] Permitted    [X] Not Permitted
 
-Covering:
-36 Metric Tons of Ethiopian Yirgacheffe Coffee Beans, Grade 1
-Unit Price: USD 7.50 per kg, CIF Rotterdam
-HS Code: 0901.11.00
+TRANSHIPMENT:
+[ ] Permitted    [X] Not Permitted
 
-Shipment from: Tema Port, Ghana
-Shipment to: Rotterdam, Netherlands
-Latest Shipment Date: May 20, 2025
+LOADING:
+Port of Loading: Lagos Port, Nigeria
+Latest Shipment Date: May 31, 2025
 
-Special Conditions:
-- All documents must be issued in English
-- This credit is subject to UCP 600 (2007 Revision, ICC Publication No. 600)
-- Documents must be presented within 21 days after the date of shipment but within the validity of the credit
+DISCHARGE:
+Port of Discharge: Chicago, United States of America
 
-Bank Charges:
-- All banking charges outside Ghana are for applicant's account
-- Confirmation charges, if any, are for beneficiary's account
+DESCRIPTION OF GOODS:
+10 units of Model HE-2025 Grain Harvesters as per Proforma Invoice No. PI-2025-087 dated March 30, 2025.
+Incoterms 2020: CIF Chicago
 
-We hereby issue this irrevocable documentary credit in your favor. It is subject to Uniform Customs and Practice for Documentary Credits, 2007 Revision, ICC Publication No. 600.
+DOCUMENTS REQUIRED:
+1. Signed commercial invoice in triplicate.
+2. Full set (3/3) clean on board ocean bills of lading, made out to the order of AfriBank International, marked "Freight Prepaid" and notify applicant.
+3. Packing list in triplicate.
+4. Certificate of origin in duplicate.
+5. Insurance policy or certificate in negotiable form for 110% of CIF value covering Institute Cargo Clauses (A), Institute War Clauses and Institute Strike Clauses.
+6. Inspection certificate issued by SGS confirming goods are in conformity with the specification of proforma invoice.
 
-Authorized Officer: ________________________
-AfriBank International
+SPECIAL CONDITIONS:
+1. All documents must be issued in English.
+2. Documents must be presented within 21 days after the date of shipment but within the validity of this credit.
+3. All banking charges outside Kenya are for beneficiary's account.
+4. This Letter of Credit is subject to the Uniform Customs and Practice for Documentary Credits, 2007 Revision, ICC Publication No. 600.
+
+BLOCKCHAIN VERIFICATION:
+Transaction Hash: 0x4f8c3d6e2fc94caa2e9247bc9af5d9b91c4ad614a758e39bf43e90d8b4f7d1a2
+Verification URL: https://baseexplorer.org/tx/0x4f8c3d6e2fc94caa2e9247bc9af5d9b91c4ad614a758e39bf43e90d8b4f7d1a2
+Smart Contract: 0x5F7A021349eFDe188a0Ee79E1047E646faE2A6Af
+
+For and on behalf of AfriBank International
+
+____________________________           ____________________________
+Authorized Signature                    Authorized Signature
+
+Joseph Mbeki                           Sarah Okafor
+International Trade Director           Documentary Credits Manager

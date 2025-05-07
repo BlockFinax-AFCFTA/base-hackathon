@@ -1,52 +1,84 @@
 CERTIFICATE OF ORIGIN
-GENERALIZED SYSTEM OF PREFERENCES
-CERTIFICATE OF ORIGIN
-(Combined declaration and certificate)
-FORM A
+=====================
+Certificate No.: COO-2025-00421
+Reference: SC-2025-K0032-A
 
-1. Goods consigned from (Exporter's business name, address, country):
-   Farm Fresh Exports Inc.
-   456 Harvest Road, Accra
-   Ghana
+1. Exporter (Name, Address, Country):
+   African Coffee Exporters Ltd.
+   123 Export Drive, Mombasa
+   Kenya, East Africa
+   Registration No.: KE-EXP-75429
 
-2. Goods consigned to (Consignee's name, address, country):
-   European Importers B.V.
-   456 Harbor Street, Rotterdam
-   Netherlands
+2. Producer (if different from Exporter):
+   Kilimanjaro Cooperative
+   45 Highland Road, Nyeri
+   Kenya
+   Registration No.: KE-PROD-1532
 
-3. Means of transport and route (as far as known):
-   Departure date: April 20, 2025
-   Vessel/Flight: MSC AMELIA V.129S
+3. Importer (Name, Address, Country):
+   European Coffee Distributors B.V.
+   Havenlaan 42
+   3000 Rotterdam, Netherlands
+   VAT: NL123456789B01
 
-4. For official use
+4. Country of Origin:
+   KENYA
 
-5. Item number, 6. Marks and numbers of packages, 7. Number and kind of packages, description of goods:
-   Item No: GH-25-0405
-   Marks: FFE/2025/GH/045
-   18 Pallets (360 Jute bags)
-   Ethiopian Yirgacheffe Coffee Beans, Grade 1
-   HS Code: 0901.11.00
-   Net Weight: 34,560 kg
+5. Country of Destination:
+   NETHERLANDS
 
-8. Origin criterion:
-   P (Wholly obtained)
+6. Transport Details:
+   Mode of Transport: Ocean Freight
+   Vessel Name: MV Atlantic Navigator
+   Voyage: V.125E
+   Departure Date: April 18, 2025
+   Port of Loading: Mombasa, Kenya
+   Port of Discharge: Rotterdam, Netherlands
 
-9. Gross weight or other quantity:
-   36,000 kg / 45 CBM
+7. Description of Goods:
+   Harmonized Code: 0901.11.00
+   Product Description: Green Coffee Beans, Kenyan AA Grade, Unroasted
+   Quantity: 320 bags (19,200 kg)
+   Packaging: Hessian bags with GrainPro liner
 
-10. Number and date of invoices:
-    INV-2025-0045, April 18, 2025
+8. Origin Criteria:
+   [X] Wholly Obtained
+   [ ] Substantially Transformed
+   [ ] Other: ___________________________
+
+9. Value of Goods:
+   Invoice No.: INV-2025-0427
+   Invoice Date: April 15, 2025
+   Invoice Value: USD 154,000.00
+
+10. Declaration by the Exporter:
+    The undersigned hereby declares that the above details and statements are correct and that the goods were produced in KENYA and comply with the origin requirements applicable in the preferential trade between KENYA and NETHERLANDS.
+
+    Place and Date: Mombasa, April 17, 2025
+    
+    Name: Samuel Mwangi
+    Title: Export Operations Manager
+    
+    [Signature]_________________________
+    Authorized Signature
 
 11. Certification:
     It is hereby certified, on the basis of control carried out, that the declaration by the exporter is correct.
 
-    Ghana Export Promotion Authority
-    Accra, Ghana
-    April 19, 2025
-    [Official Stamp]
+    Issuing Authority: Kenya Export Promotion Authority
+    Place and Date: Mombasa, April 17, 2025
+    Official Stamp: [STAMP AREA]
+    
+    [Signature]_________________________
+    Authorized Signature
 
-12. Declaration by the exporter:
-    The undersigned hereby declares that the above details and statements are correct; that all the goods were produced in GHANA and that they comply with the origin requirements specified for those goods in the Generalized System of Preferences for goods exported to EUROPEAN UNION.
+12. Additional Information:
+    This certificate is valid for six months from the date of issue.
+    This certificate comprises one page.
+    This certificate must be presented to customs authorities of the importing country.
 
-    Place and date: Accra, April 19, 2025
-    Signature of authorized signatory: _________________
+BLOCKCHAIN VERIFICATION:
+Transaction Hash: 0xc4e9b30e58cc79a6f2b8c8911f7a8c1b7fde2ae08a92f2dd7622f7aa79757429
+Verification URL: https://baseexplorer.org/tx/0xc4e9b30e58cc79a6f2b8c8911f7a8c1b7fde2ae08a92f2dd7622f7aa79757429
+
+NOT VALID WITHOUT OFFICIAL STAMP AND SIGNATURE

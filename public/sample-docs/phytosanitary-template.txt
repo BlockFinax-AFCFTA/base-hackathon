@@ -1,69 +1,71 @@
-INTERNATIONAL PLANT PROTECTION CONVENTION
 PHYTOSANITARY CERTIFICATE
+========================
+Certificate No.: PC-2025-002-KE
+Reference No.: KEPHIS/04/2025/0067
 
-No: GH-PPRSD-2025-0045
+1. Plant Protection Organization of:
+   KENYA PLANT HEALTH INSPECTORATE SERVICE (KEPHIS)
+   P.O. Box 49592-00100, Nairobi
+   Tel: +254-20-3597201/2/3
+   Email: director@kephis.org
 
-FROM: Plant Protection Organization of GHANA
-TO: Plant Protection Organization of NETHERLANDS
+2. TO: Plant Protection Organization of:
+   NETHERLANDS FOOD AND CONSUMER PRODUCT SAFETY AUTHORITY
+   National Plant Protection Organization
+   P.O. Box 9102, 6700 HC Wageningen
+   The Netherlands
 
-I. Description of Consignment
+3. DECLARED NAME AND ADDRESS OF EXPORTER:
+   African Coffee Exporters Ltd.
+   123 Export Drive, Mombasa
+   Kenya, East Africa
+   Registration No.: KE-EXP-75429
 
-Name and address of exporter:
-Farm Fresh Exports Inc.
-456 Harvest Road, Accra
-Ghana
+4. DECLARED NAME AND ADDRESS OF CONSIGNEE:
+   European Coffee Distributors B.V.
+   Havenlaan 42
+   3000 Rotterdam, Netherlands
+   VAT: NL123456789B01
 
-Declared name and address of consignee:
-European Importers B.V.
-456 Harbor Street, Rotterdam
-Netherlands
+5. DECLARED MEANS OF CONVEYANCE:
+   Vessel: MV Atlantic Navigator
+   Flight No./Vessel Name/Vehicle Reg. No.: V.125E
 
-Number and description of packages:
-18 Pallets, 360 Jute bags
+6. DECLARED POINT OF ENTRY:
+   Rotterdam Port, Netherlands
 
-Distinguishing marks:
-FFE/2025/GH/045
+7. DISTINGUISHING MARKS; NUMBER AND DESCRIPTION OF PACKAGES; NAME OF PRODUCE; BOTANICAL NAME OF PLANTS:
+   Marks: ECDB-2025-KE / Lot# 20250417
+   Number and description of packages: 320 jute bags with GrainPro liner
+   Name of produce: Green Coffee Beans, Kenyan AA Grade
+   Botanical name: Coffea arabica
+   Quantity declared: 19,200 kg
 
-Place of origin:
-Accra, Ghana
+8. This is to certify that the plants, plant products or other regulated articles described herein have been inspected and/or tested according to appropriate official procedures and are considered to be free from the quarantine pests specified by the importing contracting party and to conform with the current phytosanitary requirements of the importing contracting party, including those for regulated non-quarantine pests.
 
-Declared means of conveyance:
-MSC AMELIA V.129S
+9. ADDITIONAL DECLARATION:
+   This consignment complies with the import requirements of the Netherlands as specified in EU Directive 2019/523 and is free from Xylella fastidiosa and Coffee Berry Disease (Colletotrichum kahawae).
+   The coffee beans have been treated with methyl bromide fumigation at 32 g/m³ for 24 hours at 21°C.
+   Treatment date: April 12, 2025.
 
-Declared point of entry:
-Port of Rotterdam, Netherlands
+10. DISINFESTATION AND/OR DISINFECTION TREATMENT:
+    Date: April 12, 2025
+    Treatment: Methyl Bromide Fumigation
+    Chemical (active ingredient): Methyl Bromide
+    Duration and temperature: 24 hours at 21°C
+    Concentration: 32 g/m³
+    Additional information: Fumigation conducted under supervision of KEPHIS inspector
 
-Name of produce and quantity declared:
-Ethiopian Yirgacheffe Coffee Beans, Grade 1
-Net weight: 34,560 kg
+Place of Issue: Mombasa, Kenya                    Date of Issue: April 16, 2025
 
-Botanical name of plants:
-Coffea arabica
+Name of Authorized Officer: Dr. Jane Kamau        Stamp of Organization: [STAMP AREA]
 
-II. Phytosanitary Declaration
+Signature: _________________________
 
-This is to certify that the plants, plant products or other regulated articles described herein have been inspected and/or tested according to appropriate official procedures and are considered to be free from the quarantine pests specified by the importing contracting party and to conform with the current phytosanitary requirements of the importing contracting party, including those for regulated non-quarantine pests.
+BLOCKCHAIN VERIFICATION:
+Transaction Hash: 0xa2b7c11e5d8bd4f3e9a6bc89e1f9c7def2c74a580d3e5a2a8c28f6b99ef25a31
+Verification URL: https://baseexplorer.org/tx/0xa2b7c11e5d8bd4f3e9a6bc89e1f9c7def2c74a580d3e5a2a8c28f6b99ef25a31
 
-III. Disinfestation and/or Disinfection Treatment
+NO FINANCIAL LIABILITY WITH RESPECT TO THIS CERTIFICATE SHALL ATTACH TO KEPHIS OR TO ANY OF ITS OFFICERS OR REPRESENTATIVES.
 
-Treatment: Fumigation with Phosphine (PH3)
-Chemical (active ingredient): Phosphine
-Concentration: 2.0 g/m³
-Duration and temperature: 120 hours at 25°C
-Date: April 10, 2025
-
-Additional information:
-- The coffee beans have been processed and are free from pulp and parchment.
-- The consignment has been inspected and found free of live insects, molds, and other contaminants.
-- The bags are new and made of natural jute fiber.
-
-Place of issue: Accra, Ghana
-Date of issue: April 12, 2025
-Name of authorized officer: Dr. Kwame Mensah
-Signature: _________________
-
-Official Stamp of the Ghana Plant Protection and Regulatory Services Directorate
-
-NO FINANCIAL LIABILITY WITH RESPECT TO THIS CERTIFICATE SHALL ATTACH TO THE PLANT PROTECTION ORGANIZATION OF GHANA OR TO ANY OF ITS OFFICERS OR REPRESENTATIVES.
-
-Valid until: July 12, 2025
+--- This certificate is valid for 14 days from the date of issue ---
