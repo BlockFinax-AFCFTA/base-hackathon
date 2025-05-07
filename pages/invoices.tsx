@@ -366,7 +366,7 @@ export default function InvoicesPage() {
               <div>
                 <h1 className="text-xl font-semibold">Stablecoin Invoicing</h1>
                 <p className="text-sm text-muted-foreground">
-                  Create and manage stablecoin invoices on Base Network
+                  Create and manage stablecoin invoices
                 </p>
               </div>
               <Button onClick={() => setIsCreateOpen(true)}>
@@ -488,7 +488,7 @@ export default function InvoicesPage() {
                       required
                     />
                     <p className="text-xs text-muted-foreground">
-                      The customer's Base Network wallet address for payment
+                      The customer's wallet address for payment
                     </p>
                   </div>
                 </div>
