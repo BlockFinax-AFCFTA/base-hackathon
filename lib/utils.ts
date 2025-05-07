@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from "clsx"
+import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -15,6 +15,5 @@ export function cn(...inputs: ClassValue[]) {
 export function shortenAddress(address: string | null | undefined, startChars: number = 6, endChars: number = 4): string {
   if (!address) return '';
   if (address.length <= startChars + endChars) return address;
-  
-  return `${address.slice(0, startChars)}...${address.slice(address.length - endChars)}`;
+  return `${address.slice(0, startChars)}...${address.slice(-endChars)}`;
 }
