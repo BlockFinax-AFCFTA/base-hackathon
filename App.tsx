@@ -15,7 +15,7 @@ import ContractsPage from "./pages/ContractsPage";
 import DocumentsPage from "./pages/DocumentsPage";
 import WalletPage from "./pages/wallet";
 import StablecoinWallet from "./components/wallet/StablecoinWallet";
-import AuthPage from "./pages/auth";
+import AuthPage from "./pages/auth-page";
 import DocumentTranslator from "./pages/document-translator";
 import Layout from "./components/layout/Layout";
 
@@ -35,7 +35,9 @@ function Router() {
         <ProtectedRoute path="/wallet/legacy" component={WalletPage} />
         
         {/* 404 route */}
-        <Route component={NotFound} />
+        <Route path="/:rest*">
+          {(params) => <NotFound />}
+        </Route>
       </Switch>
     </Layout>
   );
