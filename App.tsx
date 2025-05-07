@@ -15,7 +15,7 @@ import ContractsPage from "./pages/ContractsPage";
 import DocumentsPage from "./pages/DocumentsPage";
 import WalletPage from "./pages/wallet";
 import StablecoinWallet from "./components/wallet/StablecoinWallet";
-import LoginPage from "./pages/login";
+import LoginStablecoinsPage from "./pages/login-stablecoins";
 import DocumentTranslator from "./pages/document-translator";
 import Layout from "./components/layout/Layout";
 
@@ -24,7 +24,7 @@ function Router() {
     <Layout>
       <Switch>
         {/* Public routes */}
-        <Route path="/auth" component={LoginPage} />
+        <Route path="/auth" component={LoginStablecoinsPage} />
         
         {/* Protected routes */}
         <ProtectedRoute path="/" component={HomePage} />
