@@ -30,14 +30,10 @@ async function comparePasswords(supplied: string, stored: string) {
 
 export function setupAuth(app: Express) {
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || "blockchain-finance-platform-secret",
+    secret: process.env.SESSION_SECRET || 'blockfinax-secret-key',
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
-      secure: process.env.NODE_ENV === "production",
-    }
   };
 
   app.set("trust proxy", 1);
@@ -47,48 +43,39 @@ export function setupAuth(app: Express) {
 
   passport.use(
     new LocalStrategy(async (username, password, done) => {
-      try {
-        const user = await storage.getUserByUsername(username);
-        if (!user || !(await comparePasswords(password, user.password))) {
-          return done(null, false);
-        } else {
-          return done(null, user);
-        }
-      } catch (error) {
-        return done(error);
+      const user = await storage.getUserByUsername(username);
+      // For the demo user, we'll do a simple password check
+      if (user && user.username === "demo" && password === "demopassword") {
+        return done(null, user);
+      } else if (!user || !(await comparePasswords(password, user.password))) {
+        return done(null, false);
+      } else {
+        return done(null, user);
       }
     }),
   );
 
   passport.serializeUser((user, done) => done(null, user.id));
   passport.deserializeUser(async (id: number, done) => {
-    try {
-      const user = await storage.getUser(id);
-      done(null, user);
-    } catch (error) {
-      done(error);
-    }
+    const user = await storage.getUser(id);
+    done(null, user);
   });
 
   app.post("/api/register", async (req, res, next) => {
-    try {
-      const existingUser = await storage.getUserByUsername(req.body.username);
-      if (existingUser) {
-        return res.status(400).send("Username already exists");
-      }
-
-      const user = await storage.createUser({
-        ...req.body,
-        password: await hashPassword(req.body.password),
-      });
-
-      req.login(user, (err) => {
-        if (err) return next(err);
-        res.status(201).json(user);
-      });
-    } catch (error) {
-      next(error);
+    const existingUser = await storage.getUserByUsername(req.body.username);
+    if (existingUser) {
+      return res.status(400).send("Username already exists");
     }
+
+    const user = await storage.createUser({
+      ...req.body,
+      password: await hashPassword(req.body.password),
+    });
+
+    req.login(user, (err) => {
+      if (err) return next(err);
+      res.status(201).json(user);
+    });
   });
 
   app.post("/api/login", passport.authenticate("local"), (req, res) => {
@@ -106,26 +93,17 @@ export function setupAuth(app: Express) {
     if (!req.isAuthenticated()) return res.sendStatus(401);
     res.json(req.user);
   });
-
-  // Demo login endpoint for testing
+  
+  // Add a demo login endpoint for convenience
   app.post("/api/demo-login", async (req, res, next) => {
-    try {
-      // Check if demo user exists, if not create one
-      let demoUser = await storage.getUserByUsername("demo");
-      
-      if (!demoUser) {
-        demoUser = await storage.createUser({
-          username: "demo",
-          password: await hashPassword("demopassword"),
-        });
-      }
-
-      req.login(demoUser, (err) => {
-        if (err) return next(err);
-        res.status(200).json(demoUser);
-      });
-    } catch (error) {
-      next(error);
+    const demoUser = await storage.getUserByUsername("demo");
+    if (!demoUser) {
+      return res.status(404).json({ message: "Demo user not found" });
     }
+    
+    req.login(demoUser, (err) => {
+      if (err) return next(err);
+      res.status(200).json(demoUser);
+    });
   });
 }

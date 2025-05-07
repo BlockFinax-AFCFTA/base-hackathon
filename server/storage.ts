@@ -116,6 +116,17 @@ export class MemStorage implements IStorage {
     this.logistics = new Map();
     this.logisticsProviders = new Map();
     
+    // Add a demo user for authentication
+    this.users.set(1, {
+      id: 1,
+      username: "demo",
+      password: "demopassword", // In a real app, this would be hashed
+      walletAddress: "0xDEMO00000000000000000000000000000000DEMO",
+      profileImage: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    } as User);
+    
     // Add sample logistics provider
     this.logisticsProviders.set(1, {
       id: 1,

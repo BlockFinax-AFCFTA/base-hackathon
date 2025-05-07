@@ -32,7 +32,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Contract routes
   app.get("/api/contracts", async (req, res) => {
     try {
-      const contracts = await storage.getAllContracts();
+      const contracts = await storage.getContracts();
       res.json(contracts);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch contracts" });
@@ -65,7 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json(documents);
       }
       
-      const documents = await storage.getAllDocuments();
+      const documents = await storage.getDocuments();
       res.json(documents);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch documents" });
