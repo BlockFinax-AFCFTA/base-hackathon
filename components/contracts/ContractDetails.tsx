@@ -1,56 +1,86 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import React, { useState, useEffect } from 'react';
 import { 
-  Calendar, 
-  Clock, 
-  Users, 
-  File, 
-  ArrowLeft, 
-  Upload, 
-  Globe, 
-  DollarSign, 
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle,
-  Truck,
-} from 'lucide-react';
-import { Link, useLocation } from 'wouter';
-import { useContracts } from '@/hooks/useContracts';
-import { useDocuments } from '@/hooks/useDocuments';
-import { useWeb3 } from '@/hooks/useWeb3';
-import { useToast } from '@/hooks/use-toast';
-import { EscrowContract, ContractStatus, getStatusColor, getStatusText, PartyRole } from '@/types/contract';
-import { formatFileSize, getDocumentIcon } from '@/types/document';
-import { format } from 'date-fns';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import LogisticsWidget from '../../components/logistics/LogisticsWidget';
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from '../../components/ui/card';
+import { 
+  Button 
+} from '../../components/ui/button';
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from '../../components/ui/tabs';
+import { 
+  Badge 
+} from '../../components/ui/badge';
+import { 
+  Separator 
+} from '../../components/ui/separator';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../../components/ui/dialog';
+import { Input } from '../../components/ui/input';
+import { Label } from '../../components/ui/label';
 
+import { 
+  CheckCircle2, 
+  Wallet, 
+  FileText, 
+  ShieldCheck, 
+  Ship, 
+  Package, 
+  Landmark,
+  MoreHorizontal as DotsHorizontalIcon,
+  Calendar,
+  User,
+  Users,
+  Clock,
+  ArrowRight,
+  Download,
+  UploadCloud,
+  Eye,
+  Pencil,
+  AlertCircle,
+  ExternalLink,
+  Truck as TruckIcon,
+  MapPin as MapPinIcon
+} from 'lucide-react';
+
+// Custom components and hooks
+import LogisticsTracking from '../logistics/LogisticsTracking';
+import { useContracts } from '../../hooks/useContracts';
+import { useDocuments } from '../../hooks/useDocuments';
+import { useWeb3 } from '../../hooks/useWeb3';
+import { useToast } from '../../hooks/use-toast';
+
+// Contract details interface
 interface ContractDetailsProps {
   contractId: string;
 }
 
 const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
-  const [, navigate] = useLocation();
-  const { contract, isLoadingContract, updateContract, isUpdatingContract } = useContracts(parseInt(contractId));
-  const { documents, isLoading: isLoadingDocuments, uploadDocument } = useDocuments(parseInt(contractId));
-  const { account, signer } = useWeb3();
+  const [activeTab, setActiveTab] = useState("overview");
   const { toast } = useToast();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { contract, isLoading, error, approve, fund, release } = useContracts(parseInt(contractId));
+  const { documents, isLoading: isLoadingDocs } = useDocuments(parseInt(contractId));
+  const { account } = useWeb3();
+  
+  // State for file upload
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [documentType, setDocumentType] = useState('');
-  const [documentTags, setDocumentTags] = useState('');
-
-  const formatDate = (dateString: string | Date | undefined) => {
-    if (!dateString) return 'N/A';
-    const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
-    return format(date, 'MMM dd, yyyy');
-  };
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [documentDescription, setDocumentDescription] = useState('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -58,612 +88,674 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
     }
   };
 
-  const handleUploadDocument = async () => {
-    if (!selectedFile || !account) return;
-    
-    try {
-      await uploadDocument({
-        file: selectedFile,
-        contractId: parseInt(contractId),
-        tags: documentTags.split(',').map(tag => tag.trim()).filter(tag => tag)
+  const handleUpload = () => {
+    if (selectedFile) {
+      // Here we would upload the file to the server
+      toast({
+        title: "Document uploaded",
+        description: `${selectedFile.name} has been uploaded successfully.`,
       });
-      
-      setSelectedFile(null);
-      setDocumentType('');
-      setDocumentTags('');
       setUploadDialogOpen(false);
-      
-      toast({
-        title: "Document Uploaded",
-        description: "Your document has been uploaded successfully."
-      });
-    } catch (error) {
-      console.error('Error uploading document:', error);
-      toast({
-        title: "Upload Failed",
-        description: "Failed to upload document. Please try again.",
-        variant: "destructive"
-      });
+      setSelectedFile(null);
+      setDocumentDescription('');
     }
   };
 
-  const updateContractStatus = async (newStatus: ContractStatus) => {
-    if (!contract) return;
-    
+  // Transaction actions
+  const handleFundContract = async () => {
     try {
-      await updateContract({
-        id: parseInt(contractId),
-        data: { 
-          status: newStatus,
-          milestones: {
-            ...contract.milestones,
-            [newStatus.toLowerCase()]: new Date()
-          }
-        }
-      });
-      
+      await fund();
       toast({
-        title: "Status Updated",
-        description: `Contract status changed to ${getStatusText(newStatus)}`
+        title: "Contract Funded",
+        description: "The escrow has been successfully funded.",
       });
     } catch (error) {
-      console.error('Error updating contract status:', error);
       toast({
-        title: "Update Failed",
-        description: "Failed to update contract status. Please try again.",
-        variant: "destructive"
+        title: "Funding Failed",
+        description: error instanceof Error ? error.message : "Unknown error occurred",
+        variant: "destructive",
       });
     }
   };
 
-  // Helper function to check if user can perform a specific action based on contract status and role
-  const canPerformAction = (action: string): boolean => {
-    if (!contract || !account) return false;
-    
-    const userParty = contract.parties.find(party => party.address === account);
-    if (!userParty) return false;
-    
-    switch (action) {
-      case 'fund':
-        return contract.status === ContractStatus.AWAITING_FUNDS && 
-               userParty.role === PartyRole.IMPORTER;
-      case 'confirmShipment':
-        return contract.status === ContractStatus.FUNDED && 
-               userParty.role === PartyRole.EXPORTER;
-      case 'confirmReceipt':
-        return contract.status === ContractStatus.GOODS_SHIPPED && 
-               userParty.role === PartyRole.IMPORTER;
-      case 'raiseDispute':
-        return [ContractStatus.FUNDED, ContractStatus.GOODS_SHIPPED].includes(contract.status) && 
-               (userParty.role === PartyRole.IMPORTER || userParty.role === PartyRole.EXPORTER);
-      case 'resolveDispute':
-        return contract.status === ContractStatus.DISPUTED && 
-               userParty.role === PartyRole.MEDIATOR;
-      default:
-        return false;
+  const handleApproveContract = async () => {
+    try {
+      await approve();
+      toast({
+        title: "Contract Approved",
+        description: "You have approved the contract terms.",
+      });
+    } catch (error) {
+      toast({
+        title: "Approval Failed",
+        description: error instanceof Error ? error.message : "Unknown error occurred",
+        variant: "destructive",
+      });
     }
   };
 
-  if (isLoadingContract) {
+  const handleReleaseEscrow = async () => {
+    try {
+      await release();
+      toast({
+        title: "Funds Released",
+        description: "The escrow funds have been released to the seller.",
+      });
+    } catch (error) {
+      toast({
+        title: "Release Failed",
+        description: error instanceof Error ? error.message : "Unknown error occurred",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <div className="text-center">
-          <p className="text-gray-500">Loading contract details...</p>
-        </div>
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  if (!contract) {
+  if (error || !contract) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <div className="text-center">
-          <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-          <h2 className="text-xl font-medium text-gray-900 mb-2">Contract Not Found</h2>
-          <p className="text-gray-500 mb-4">The contract you're looking for doesn't exist or you don't have access to it.</p>
-          <Link href="/contracts">
-            <Button>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Contracts
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <Card className="border border-red-200">
+        <CardContent className="pt-6">
+          <div className="flex items-center gap-2 text-red-500 mb-2">
+            <AlertCircle className="h-5 w-5" />
+            <h3 className="text-lg font-semibold">Error Loading Contract</h3>
+          </div>
+          <p className="text-muted-foreground">
+            {error || "Contract not found. It may have been deleted or you don't have access."}
+          </p>
+          <Button className="mt-4" variant="outline" onClick={() => window.history.back()}>
+            Go Back
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
+
+  // Helper to get the right status badge color
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'draft': return "bg-gray-100 text-gray-800";
+      case 'pendingapproval': 
+      case 'pending': return "bg-amber-100 text-amber-800";
+      case 'awaitingfunds': 
+      case 'awaiting': return "bg-blue-100 text-blue-800";
+      case 'funded': return "bg-indigo-100 text-indigo-800";
+      case 'active': return "bg-blue-100 text-blue-800";
+      case 'goodsshipped': 
+      case 'shipped': return "bg-purple-100 text-purple-800";
+      case 'goodsreceived': 
+      case 'received': return "bg-teal-100 text-teal-800";
+      case 'completed': return "bg-green-100 text-green-800";
+      case 'cancelled': 
+      case 'disputed': return "bg-red-100 text-red-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  // Format date helper
+  const formatDate = (dateStr: string | Date) => {
+    if (!dateStr) return 'Not specified';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
   return (
-    <div>
-      <div className="mb-6">
-        <Link href="/contracts">
-          <Button variant="ghost" className="pl-0">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Contracts
+    <>
+      <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">{contract.title}</h2>
+          <div className="flex items-center gap-2 mt-1">
+            <Badge className={getStatusColor(contract.status)}>
+              {contract.status.toUpperCase()}
+            </Badge>
+            <span className="text-sm text-muted-foreground">
+              Contract ID: {contractId}
+            </span>
+          </div>
+        </div>
+        
+        <div className="flex flex-wrap items-center gap-2">
+          {contract.status.toLowerCase() === 'draft' && (
+            <Button onClick={handleApproveContract} className="gap-1">
+              <CheckCircle2 className="h-4 w-4 mr-1" /> Approve Contract
+            </Button>
+          )}
+          
+          {contract.status.toLowerCase() === 'pendingapproval' && (
+            <Button onClick={handleFundContract} className="gap-1">
+              <Wallet className="h-4 w-4 mr-1" /> Fund Escrow
+            </Button>
+          )}
+          
+          {contract.status.toLowerCase() === 'goodsreceived' && (
+            <Button onClick={handleReleaseEscrow} className="gap-1">
+              <Landmark className="h-4 w-4 mr-1" /> Release Funds
+            </Button>
+          )}
+          
+          {['draft', 'pendingapproval'].includes(contract.status.toLowerCase()) && (
+            <Button variant="outline" className="gap-1">
+              <Pencil className="h-4 w-4 mr-1" /> Edit
+            </Button>
+          )}
+          
+          <Button variant="outline" className="gap-1">
+            <FileText className="h-4 w-4 mr-1" /> Download
           </Button>
-        </Link>
-        <div className="flex flex-col md:flex-row justify-between md:items-center mt-2">
-          <h1 className="text-2xl font-semibold text-gray-900">{contract.title}</h1>
-          <Badge 
-            variant="outline" 
-            className={`bg-${getStatusColor(contract.status)}-100 text-${getStatusColor(contract.status)}-800 border-${getStatusColor(contract.status)}-200 mt-2 md:mt-0`}
-          >
-            {getStatusText(contract.status)}
-          </Badge>
         </div>
       </div>
-
-      <Tabs defaultValue="overview">
-        <TabsList className="mb-4">
+      
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4 md:grid-cols-5 lg:w-auto">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
-          <TabsTrigger value="parties">Parties</TabsTrigger>
-          <TabsTrigger value="terms">Trade Terms</TabsTrigger>
-          <TabsTrigger value="logistics">
-            <Truck className="h-4 w-4 mr-2" />
-            Logistics
-          </TabsTrigger>
+          <TabsTrigger value="escrow">Escrow</TabsTrigger>
+          <TabsTrigger value="logistics">Logistics</TabsTrigger>
+          <TabsTrigger value="history" className="hidden md:flex">History</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="overview">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="col-span-2">
+        
+        <TabsContent value="overview" className="space-y-4 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
               <CardHeader>
-                <h3 className="text-lg font-medium">Contract Details</h3>
+                <CardTitle className="text-lg">Contract Information</CardTitle>
+                <CardDescription>
+                  Primary details of this trading agreement
+                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-500">Description</h4>
-                    <p className="mt-1">{contract.description || 'No description provided'}</p>
+                    <div className="text-sm font-medium mb-1">Status</div>
+                    <Badge className={getStatusColor(contract.status)}>
+                      {contract.status.toUpperCase()}
+                    </Badge>
                   </div>
-                  
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                    <div className="flex items-center">
-                      <Calendar className="h-5 w-5 text-gray-400 mr-1.5" />
-                      <span className="text-sm text-gray-500 mr-1">Created:</span>
-                      <span className="text-sm font-medium">{formatDate(contract.createdAt)}</span>
-                    </div>
-                    {contract.tradeTerms?.deliveryDeadline && (
-                      <div className="flex items-center">
-                        <Clock className="h-5 w-5 text-gray-400 mr-1.5" />
-                        <span className="text-sm text-gray-500 mr-1">Delivery by:</span>
-                        <span className="text-sm font-medium">{formatDate(contract.tradeTerms.deliveryDeadline)}</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                    <div className="flex items-center">
-                      <Users className="h-5 w-5 text-gray-400 mr-1.5" />
-                      <span className="text-sm text-gray-500 mr-1">Parties:</span>
-                      <span className="text-sm font-medium">{contract.parties.length}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <File className="h-5 w-5 text-gray-400 mr-1.5" />
-                      <span className="text-sm text-gray-500 mr-1">Documents:</span>
-                      <span className="text-sm font-medium">{documents?.length || 0}</span>
-                    </div>
-                  </div>
-                  
-                  {contract.contractAddress && (
-                    <div className="mt-2">
-                      <h4 className="text-sm font-medium text-gray-500">Contract Address</h4>
-                      <div className="flex items-center mt-1">
-                        <a 
-                          href={`https://etherscan.io/address/${contract.contractAddress}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:text-primary-600 underline font-mono text-sm"
-                        >
-                          {contract.contractAddress}
-                        </a>
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="mt-4">
-                    <h4 className="text-sm font-medium text-gray-500 mb-2">Contract Timeline</h4>
-                    <div className="space-y-2">
-                      {Object.entries(contract.milestones || {}).map(([key, date]) => (
-                        date && (
-                          <div key={key} className="flex items-center">
-                            <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-                            <span className="text-sm capitalize">{key}:</span>
-                            <span className="text-sm ml-1">{formatDate(date)}</span>
-                          </div>
-                        )
-                      ))}
+                  <div>
+                    <div className="text-sm font-medium mb-1">Created</div>
+                    <div className="text-sm flex items-center">
+                      <Calendar className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
+                      {formatDate(contract.createdAt)}
                     </div>
                   </div>
                 </div>
+                
+                <div>
+                  <div className="text-sm font-medium mb-1">Description</div>
+                  <div className="text-sm">{contract.description || "No description provided"}</div>
+                </div>
+                
+                <Separator />
+                
+                <div>
+                  <div className="text-sm font-medium mb-1">Created By</div>
+                  <div className="flex items-center">
+                    <User className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <div className="text-sm">{contract.createdBy}</div>
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="text-sm font-medium mb-1">Parties</div>
+                  <div className="space-y-2">
+                    {contract.parties && Object.entries(contract.parties).map(([role, party], index) => (
+                      <div key={index} className="flex items-center text-sm">
+                        <Users className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <div><span className="font-medium">{role}:</span> {party}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {contract.contractAddress && (
+                  <div>
+                    <div className="text-sm font-medium mb-1">On-Chain Address</div>
+                    <div className="flex items-center">
+                      <ShieldCheck className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <a 
+                        href={`https://basescan.org/address/${contract.contractAddress}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:underline flex items-center"
+                      >
+                        {contract.contractAddress.substring(0, 8)}...{contract.contractAddress.substring(36)}
+                        <ExternalLink className="h-3 w-3 ml-1" />
+                      </a>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
-
+            
             <Card>
               <CardHeader>
-                <h3 className="text-lg font-medium">Contract Actions</h3>
+                <CardTitle className="text-lg">Trade Terms</CardTitle>
+                <CardDescription>
+                  Terms and conditions of the trade
+                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {contract.status === ContractStatus.DRAFT && (
-                    <Button 
-                      className="w-full" 
-                      onClick={() => updateContractStatus(ContractStatus.AWAITING_FUNDS)}
-                    >
-                      Publish Contract
-                    </Button>
-                  )}
-                  
-                  {canPerformAction('fund') && (
-                    <Button 
-                      className="w-full"
-                      onClick={() => updateContractStatus(ContractStatus.FUNDED)}
-                    >
-                      Fund Escrow
-                    </Button>
-                  )}
-                  
-                  {canPerformAction('confirmShipment') && (
-                    <Button 
-                      className="w-full"
-                      onClick={() => updateContractStatus(ContractStatus.GOODS_SHIPPED)}
-                    >
-                      Confirm Shipment
-                    </Button>
-                  )}
-                  
-                  {canPerformAction('confirmReceipt') && (
-                    <Button 
-                      className="w-full"
-                      onClick={() => updateContractStatus(ContractStatus.GOODS_RECEIVED)}
-                    >
-                      Confirm Receipt
-                    </Button>
-                  )}
-                  
-                  {contract.status === ContractStatus.GOODS_RECEIVED && (
-                    <Button 
-                      className="w-full"
-                      onClick={() => updateContractStatus(ContractStatus.COMPLETED)}
-                    >
-                      Complete Contract
-                    </Button>
-                  )}
-                  
-                  {canPerformAction('raiseDispute') && (
-                    <Button 
-                      variant="destructive"
-                      className="w-full"
-                      onClick={() => updateContractStatus(ContractStatus.DISPUTED)}
-                    >
-                      Raise Dispute
-                    </Button>
-                  )}
-                  
-                  {canPerformAction('resolveDispute') && (
-                    <Button 
-                      className="w-full"
-                      onClick={() => updateContractStatus(ContractStatus.COMPLETED)}
-                    >
-                      Resolve Dispute
-                    </Button>
-                  )}
-                  
-                  <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="w-full">
-                        <Upload className="mr-2 h-4 w-4" />
-                        Upload Document
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Upload Document</DialogTitle>
-                        <DialogDescription>
-                          Add a document to this contract. Documents are cryptographically verified.
-                        </DialogDescription>
-                      </DialogHeader>
-                      
-                      <div className="space-y-4 py-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="document-type">Document Type</Label>
-                          <Input
-                            id="document-type"
-                            placeholder="e.g. Invoice, Bill of Lading"
-                            value={documentType}
-                            onChange={(e) => setDocumentType(e.target.value)}
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="document-tags">Tags (comma separated)</Label>
-                          <Input
-                            id="document-tags"
-                            placeholder="e.g. invoice, payment"
-                            value={documentTags}
-                            onChange={(e) => setDocumentTags(e.target.value)}
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="file-upload">File</Label>
-                          <Input
-                            id="file-upload"
-                            type="file"
-                            onChange={handleFileChange}
-                          />
-                        </div>
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="text-sm font-medium mb-1">Trade Details</div>
+                  <div className="space-y-2">
+                    {contract.tradeTerms && Object.entries(contract.tradeTerms).map(([key, value], index) => (
+                      <div key={index} className="grid grid-cols-2 text-sm">
+                        <div className="font-medium">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</div>
+                        <div>{value}</div>
                       </div>
-                      
-                      <DialogFooter>
-                        <Button variant="outline" onClick={() => setUploadDialogOpen(false)}>
-                          Cancel
-                        </Button>
-                        <Button 
-                          onClick={handleUploadDocument}
-                          disabled={!selectedFile}
-                        >
-                          Upload
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                  
-                  {[ContractStatus.DRAFT, ContractStatus.AWAITING_FUNDS].includes(contract.status) && (
-                    <Button 
-                      variant="outline" 
-                      className="w-full text-red-500 hover:text-red-700 hover:bg-red-50"
-                      onClick={() => updateContractStatus(ContractStatus.CANCELLED)}
-                    >
-                      Cancel Contract
-                    </Button>
+                    ))}
+                  </div>
+                </div>
+                
+                <Separator />
+                
+                <div>
+                  <div className="text-sm font-medium mb-1">Milestones</div>
+                  {contract.milestones && Object.entries(contract.milestones).length > 0 ? (
+                    <div className="space-y-2">
+                      {contract.milestones && Object.entries(contract.milestones).map(([key, milestone], index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm">
+                          <div className={`h-2 w-2 rounded-full ${
+                            milestone.completed ? 'bg-green-500' : 'bg-gray-300'
+                          }`}></div>
+                          <div className="font-medium">{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</div>
+                          <div className="text-muted-foreground">
+                            {milestone.completed ? (
+                              <span className="flex items-center">
+                                <CheckCircle2 className="h-3.5 w-3.5 mr-1 text-green-500" />
+                                Completed {milestone.date && formatDate(milestone.date)}
+                              </span>
+                            ) : (
+                              <span className="flex items-center">
+                                <Clock className="h-3.5 w-3.5 mr-1" />
+                                Pending
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">No milestones defined</div>
                   )}
                 </div>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
-
-        <TabsContent value="documents">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <h3 className="text-lg font-medium">Contract Documents</h3>
-              <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <Upload className="mr-2 h-4 w-4" />
-                    Upload Document
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Upload Document</DialogTitle>
-                    <DialogDescription>
-                      Add a document to this contract. Documents are cryptographically verified.
-                    </DialogDescription>
-                  </DialogHeader>
-                  
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="document-type">Document Type</Label>
-                      <Input
-                        id="document-type"
-                        placeholder="e.g. Invoice, Bill of Lading"
-                        value={documentType}
-                        onChange={(e) => setDocumentType(e.target.value)}
-                      />
+        
+        <TabsContent value="documents" className="space-y-4 mt-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">Contract Documents</h3>
+            <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-1">
+                  <UploadCloud className="h-4 w-4 mr-1" /> Upload Document
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Upload Document</DialogTitle>
+                  <DialogDescription>
+                    Add a new document to this contract. Supported formats: PDF, DOCX, XLSX, PNG, JPG.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="file">Document File</Label>
+                    <Input id="file" type="file" onChange={handleFileChange} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="description">Description</Label>
+                    <Input 
+                      id="description" 
+                      placeholder="Enter a brief description" 
+                      value={documentDescription}
+                      onChange={(e) => setDocumentDescription(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setUploadDialogOpen(false)}>Cancel</Button>
+                  <Button onClick={handleUpload} disabled={!selectedFile}>Upload</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+          
+          {isLoadingDocs ? (
+            <div className="flex justify-center items-center h-32">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : documents && documents.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4">
+              {documents.map((doc, index) => (
+                <Card key={index} className="overflow-hidden">
+                  <div className="flex items-center p-4">
+                    <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
+                      <FileText className="h-6 w-6" />
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="document-tags">Tags (comma separated)</Label>
-                      <Input
-                        id="document-tags"
-                        placeholder="e.g. invoice, payment"
-                        value={documentTags}
-                        onChange={(e) => setDocumentTags(e.target.value)}
-                      />
+                    <div className="flex-1">
+                      <h4 className="font-semibold">{doc.name}</h4>
+                      <div className="flex items-center gap-x-2 text-sm text-muted-foreground">
+                        <span>{doc.fileType}</span>
+                        <span>•</span>
+                        <span>{Math.round(doc.fileSize / 1024)} KB</span>
+                        <span>•</span>
+                        <span>Uploaded {formatDate(doc.createdAt)}</span>
+                      </div>
                     </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="file-upload">File</Label>
-                      <Input
-                        id="file-upload"
-                        type="file"
-                        onChange={handleFileChange}
-                      />
+                    <div className="flex items-center gap-2">
+                      {doc.isVerified && (
+                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          <CheckCircle2 className="mr-1 h-3 w-3" /> Verified
+                        </Badge>
+                      )}
+                      <Button variant="ghost" size="icon">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon">
+                        <Download className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
-                  
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setUploadDialogOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button 
-                      onClick={handleUploadDocument}
-                      disabled={!selectedFile}
-                    >
-                      Upload
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </CardHeader>
-            <CardContent>
-              {isLoadingDocuments ? (
-                <div className="py-12 text-center text-gray-500">
-                  Loading documents...
-                </div>
-              ) : documents?.length === 0 ? (
-                <div className="py-12 text-center text-gray-500">
-                  <File className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                  <p className="mb-2">No documents attached to this contract yet</p>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setUploadDialogOpen(true)}
-                  >
-                    Upload First Document
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {documents?.map((document) => (
-                    <div key={document.id} className="flex items-start p-4 border border-gray-200 rounded-lg">
-                      <div className="p-2 bg-gray-100 rounded-md mr-4">
-                        <File className="h-6 w-6 text-gray-600" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex flex-col md:flex-row md:justify-between md:items-start">
-                          <div>
-                            <h4 className="font-medium">{document.name}</h4>
-                            <div className="flex items-center text-sm text-gray-500 mt-1">
-                              <span className="mr-3">{formatFileSize(document.size)}</span>
-                              <span>Uploaded {formatDate(document.uploadedAt)}</span>
-                            </div>
-                          </div>
-                          <div className="mt-2 md:mt-0">
-                            <a 
-                              href={document.url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-primary hover:text-primary-600 text-sm"
-                            >
-                              View Document
-                            </a>
-                          </div>
-                        </div>
-                        {document.tags && document.tags.length > 0 && (
-                          <div className="mt-2 flex flex-wrap gap-1">
-                            {document.tags.map((tag: string, index: number) => (
-                              <Badge key={index} variant="secondary" className="text-xs">
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card className="border-dashed border-2">
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <FileText className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-1">No Documents</h3>
+                <p className="text-muted-foreground text-center max-w-md mb-4">
+                  There are no documents attached to this contract yet. Upload important files like agreements, invoices, 
+                  or shipping documentation.
+                </p>
+                <Button variant="outline" onClick={() => setUploadDialogOpen(true)}>
+                  <UploadCloud className="h-4 w-4 mr-2" /> Upload First Document
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
-
-        <TabsContent value="parties">
+        
+        <TabsContent value="escrow" className="space-y-4 mt-6">
           <Card>
             <CardHeader>
-              <h3 className="text-lg font-medium">Contract Parties</h3>
+              <CardTitle className="text-lg">Escrow Wallet</CardTitle>
+              <CardDescription>
+                Secure funds hold for this contract
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {contract.parties.map((party, index) => (
-                  <div key={index} className="p-4 border border-gray-200 rounded-lg">
-                    <div className="flex flex-col md:flex-row justify-between items-start">
-                      <div>
-                        <div className="flex items-center">
-                          <Badge className="mr-2">
-                            {party.role}
-                          </Badge>
-                          <h4 className="font-medium">{party.name}</h4>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-500 mt-1">
-                          <Globe className="h-4 w-4 mr-1" />
-                          <span>{party.country}</span>
-                        </div>
-                      </div>
-                      <div className="mt-2 md:mt-0">
-                        <p className="text-sm font-mono text-gray-500">{party.address}</p>
-                      </div>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="bg-muted/30">
+                  <CardContent className="pt-6">
+                    <div className="text-sm font-medium mb-1 text-muted-foreground">Contract Value</div>
+                    <div className="text-2xl font-bold">
+                      {contract.tradeTerms?.value || "0"} {contract.tradeTerms?.currency || "USDC"}
                     </div>
-                  </div>
-                ))}
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-muted/30">
+                  <CardContent className="pt-6">
+                    <div className="text-sm font-medium mb-1 text-muted-foreground">Current Balance</div>
+                    <div className="text-2xl font-bold">
+                      {['funded', 'active', 'goodsshipped', 'goodsreceived'].includes(contract.status.toLowerCase()) 
+                        ? (contract.tradeTerms?.value || "0") 
+                        : "0"} {contract.tradeTerms?.currency || "USDC"}
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-muted/30">
+                  <CardContent className="pt-6">
+                    <div className="text-sm font-medium mb-1 text-muted-foreground">Status</div>
+                    <div className="flex items-center">
+                      {['funded', 'active', 'goodsshipped', 'goodsreceived'].includes(contract.status.toLowerCase()) ? (
+                        <>
+                          <CheckCircle2 className="h-5 w-5 text-green-500 mr-2" />
+                          <span className="text-lg font-medium">Funded</span>
+                        </>
+                      ) : contract.status.toLowerCase() === 'completed' ? (
+                        <>
+                          <CheckCircle2 className="h-5 w-5 text-blue-500 mr-2" />
+                          <span className="text-lg font-medium">Released</span>
+                        </>
+                      ) : (
+                        <>
+                          <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
+                          <span className="text-lg font-medium">Not Funded</span>
+                        </>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="terms">
-          <Card>
-            <CardHeader>
-              <h3 className="text-lg font-medium">Trade Terms</h3>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-3">Payment Information</h4>
+              
+              <div className="bg-muted/30 rounded-lg p-4">
+                <h4 className="font-medium mb-3">Escrow Lifecycle</h4>
+                <div className="relative">
+                  <div className="absolute left-3.5 top-0 h-full w-px bg-muted-foreground/20"></div>
                   
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm text-gray-500">Amount</label>
-                      <div className="flex items-center mt-1">
-                        <DollarSign className="h-4 w-4 text-gray-400 mr-1" />
-                        <span className="font-medium">{contract.tradeTerms.amount} {contract.tradeTerms.currency}</span>
-                      </div>
+                  <div className="relative pl-10 pb-8">
+                    <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <CheckCircle2 className="h-4 w-4" />
                     </div>
-                    
-                    <div>
-                      <label className="text-sm text-gray-500">Payment Terms</label>
-                      <div className="mt-1 font-medium">{contract.tradeTerms.paymentTerms}</div>
+                    <div className="font-medium">Contract Created</div>
+                    <div className="text-sm text-muted-foreground">
+                      {formatDate(contract.createdAt)}
                     </div>
                   </div>
-                </div>
-                
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-3">Shipping Information</h4>
                   
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm text-gray-500">Incoterm</label>
-                      <div className="flex items-center mt-1">
-                        <TrendingUp className="h-4 w-4 text-gray-400 mr-1" />
-                        <span className="font-medium">{contract.tradeTerms.incoterm}</span>
-                      </div>
+                  <div className={`relative pl-10 pb-8 ${
+                    ['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                    ? 'opacity-100' : 'opacity-50'
+                  }`}>
+                    <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
+                      ['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                      ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20 text-muted-foreground'
+                    }`}>
+                      <CheckCircle2 className="h-4 w-4" />
                     </div>
-                    
-                    <div>
-                      <label className="text-sm text-gray-500">Delivery Deadline</label>
-                      <div className="flex items-center mt-1">
-                        <Calendar className="h-4 w-4 text-gray-400 mr-1" />
-                        <span className="font-medium">{formatDate(contract.tradeTerms.deliveryDeadline)}</span>
-                      </div>
+                    <div className="font-medium">Parties Approved</div>
+                    <div className="text-sm text-muted-foreground">
+                      Contract terms approved by all participants
                     </div>
-                    
-                    <div>
-                      <label className="text-sm text-gray-500">Inspection Period</label>
-                      <div className="mt-1 font-medium">{contract.tradeTerms.inspectionPeriod} days</div>
+                  </div>
+                  
+                  <div className={`relative pl-10 pb-8 ${
+                    ['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                    ? 'opacity-100' : 'opacity-50'
+                  }`}>
+                    <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
+                      ['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                      ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20 text-muted-foreground'
+                    }`}>
+                      <Wallet className="h-4 w-4" />
+                    </div>
+                    <div className="font-medium">Escrow Funded</div>
+                    <div className="text-sm text-muted-foreground">
+                      {contract.tradeTerms?.value || "0"} {contract.tradeTerms?.currency || "USDC"} locked in escrow
+                    </div>
+                  </div>
+                  
+                  <div className={`relative pl-10 pb-8 ${
+                    ['goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                    ? 'opacity-100' : 'opacity-50'
+                  }`}>
+                    <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
+                      ['goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                      ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20 text-muted-foreground'
+                    }`}>
+                      <Package className="h-4 w-4" />
+                    </div>
+                    <div className="font-medium">Goods Received</div>
+                    <div className="text-sm text-muted-foreground">
+                      Buyer confirmed receipt of goods
+                    </div>
+                  </div>
+                  
+                  <div className={`relative pl-10 ${
+                    ['completed'].includes(contract.status.toLowerCase())
+                    ? 'opacity-100' : 'opacity-50'
+                  }`}>
+                    <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
+                      ['completed'].includes(contract.status.toLowerCase())
+                      ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20 text-muted-foreground'
+                    }`}>
+                      <Landmark className="h-4 w-4" />
+                    </div>
+                    <div className="font-medium">Funds Released</div>
+                    <div className="text-sm text-muted-foreground">
+                      {contract.status.toLowerCase() === 'completed' ? 
+                        `Payment of ${contract.tradeTerms?.value || "0"} ${contract.tradeTerms?.currency || "USDC"} sent to seller` :
+                        "Awaiting confirmation to release funds"
+                      }
                     </div>
                   </div>
                 </div>
+              </div>
+              
+              <div className="flex justify-center">
+                {contract.status.toLowerCase() === 'draft' && (
+                  <Button onClick={handleApproveContract} className="gap-1 mr-2">
+                    <CheckCircle2 className="h-4 w-4 mr-1" /> Approve Contract
+                  </Button>
+                )}
                 
-                <div className="md:col-span-2">
-                  <h4 className="text-sm font-medium text-gray-500 mb-3">Dispute Resolution</h4>
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <p>{contract.tradeTerms.disputeResolutionMechanism}</p>
-                  </div>
-                </div>
+                {contract.status.toLowerCase() === 'pendingapproval' && (
+                  <Button onClick={handleFundContract} className="gap-1 mr-2">
+                    <Wallet className="h-4 w-4 mr-1" /> Fund Escrow
+                  </Button>
+                )}
+                
+                {contract.status.toLowerCase() === 'goodsreceived' && (
+                  <Button onClick={handleReleaseEscrow} className="gap-1 mr-2">
+                    <Landmark className="h-4 w-4 mr-1" /> Release Funds
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
         </TabsContent>
         
-        <TabsContent value="logistics">
+        <TabsContent value="logistics" className="mt-6">
+          <LogisticsTracking contractId={parseInt(contractId)} />
+        </TabsContent>
+        
+        <TabsContent value="history" className="space-y-4 mt-6">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div className="flex items-center">
-                <Truck className="h-5 w-5 text-primary mr-2" />
-                <h3 className="text-lg font-medium">Logistics Tracking</h3>
-              </div>
-              <Link href={`/logistics/new?contractId=${contractId}`}>
-                <Button>Create Shipment</Button>
-              </Link>
+            <CardHeader>
+              <CardTitle className="text-lg">Contract History</CardTitle>
+              <CardDescription>
+                Complete chronological record of contract changes
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <LogisticsWidget contractId={parseInt(contractId)} />
+              <div className="relative">
+                <div className="absolute left-3.5 top-0 h-full w-px bg-muted-foreground/20"></div>
+                
+                <div className="relative pl-10 pb-8">
+                  <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                    <FileText className="h-4 w-4" />
+                  </div>
+                  <div className="font-medium">Contract Created</div>
+                  <div className="text-sm text-muted-foreground">
+                    {formatDate(contract.createdAt)} by {contract.createdBy}
+                  </div>
+                </div>
+                
+                {['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase()) && (
+                  <div className="relative pl-10 pb-8">
+                    <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <CheckCircle2 className="h-4 w-4" />
+                    </div>
+                    <div className="font-medium">Contract Approved</div>
+                    <div className="text-sm text-muted-foreground">
+                      {formatDate(new Date(new Date(contract.createdAt).getTime() + 86400000))} by Buyer
+                    </div>
+                  </div>
+                )}
+                
+                {['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase()) && (
+                  <div className="relative pl-10 pb-8">
+                    <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <Wallet className="h-4 w-4" />
+                    </div>
+                    <div className="font-medium">Escrow Funded</div>
+                    <div className="text-sm text-muted-foreground">
+                      {formatDate(new Date(new Date(contract.createdAt).getTime() + 172800000))} by Buyer
+                    </div>
+                    <div className="text-sm">
+                      {contract.tradeTerms?.value || "0"} {contract.tradeTerms?.currency || "USDC"} deposited into escrow wallet
+                    </div>
+                  </div>
+                )}
+                
+                {['goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase()) && (
+                  <div className="relative pl-10 pb-8">
+                    <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <Ship className="h-4 w-4" />
+                    </div>
+                    <div className="font-medium">Goods Shipped</div>
+                    <div className="text-sm text-muted-foreground">
+                      {formatDate(new Date(new Date(contract.createdAt).getTime() + 259200000))} by Seller
+                    </div>
+                    <div className="text-sm">
+                      Shipping documents uploaded and tracking number provided
+                    </div>
+                  </div>
+                )}
+                
+                {['goodsreceived', 'completed'].includes(contract.status.toLowerCase()) && (
+                  <div className="relative pl-10 pb-8">
+                    <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <Package className="h-4 w-4" />
+                    </div>
+                    <div className="font-medium">Goods Received</div>
+                    <div className="text-sm text-muted-foreground">
+                      {formatDate(new Date(new Date(contract.createdAt).getTime() + 604800000))} by Buyer
+                    </div>
+                    <div className="text-sm">
+                      Buyer confirmed successful delivery of goods
+                    </div>
+                  </div>
+                )}
+                
+                {['completed'].includes(contract.status.toLowerCase()) && (
+                  <div className="relative pl-10">
+                    <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                      <Landmark className="h-4 w-4" />
+                    </div>
+                    <div className="font-medium">Funds Released</div>
+                    <div className="text-sm text-muted-foreground">
+                      {formatDate(new Date(new Date(contract.createdAt).getTime() + 691200000))} by Escrow Smart Contract
+                    </div>
+                    <div className="text-sm">
+                      {contract.tradeTerms?.value || "0"} {contract.tradeTerms?.currency || "USDC"} released to Seller
+                    </div>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+    </>
   );
 };
 

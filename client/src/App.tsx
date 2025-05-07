@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/HomePage";
 import ContractsPage from "@/pages/ContractsPage";
+import ContractDetailsPage from "./pages/ContractDetailsPage";
 import DocumentsPage from "@/pages/DocumentsPage";
 import WalletPage from "@/pages/WalletPage";
 import Layout from "@/components/layout/Layout";
@@ -46,8 +47,8 @@ function Router() {
         
         {/* Contract routes */}
         <PrivateRoute path="/contracts" component={ContractsPage} />
-        <PrivateRoute path="/contracts/:id" component={ContractsPage} />
         <PrivateRoute path="/contracts/new" component={ContractsPage} />
+        <PrivateRoute path="/contracts/:id" component={ContractDetailsPage} />
         
         {/* Document routes */}
         <PrivateRoute path="/documents" component={DocumentsPage} />

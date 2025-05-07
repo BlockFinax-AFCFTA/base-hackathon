@@ -1,122 +1,95 @@
-'use client'
-
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { cn } from '../../lib/utils'
-import { Button } from '../ui/button'
-import {
-  Wallet,
-  FileText,
-  Receipt,
+import React from 'react';
+import { Link, useLocation } from 'wouter';
+import { 
+  CreditCard, 
+  FileText as FileContract, 
+  Pen as FilePen, 
+  Box, 
+  Truck, 
   ChevronRight,
-  Menu,
-  X,
-  FileSpreadsheet,
-  Truck
-} from 'lucide-react'
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
+  Home,
+  BarChart3,
+  FileText,
+  Settings,
+  LogOut
+} from 'lucide-react';
 
-interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-  className?: string
+import { cn } from '../../lib/utils';
+import { useWeb3 } from '../../hooks/useWeb3';
+
+interface BlockchainSidebarProps {
+  className?: string;
 }
 
-export function BlockchainSidebar({ className }: SidebarProps) {
-  const pathname = usePathname()
-  const [open, setOpen] = useState(false)
-  
-  const navigation = [
-    {
-      name: 'Wallet',
-      href: '/wallet',
-      icon: Wallet,
-      current: pathname === '/wallet',
-    },
-    {
-      name: 'Contracts',
-      href: '/contracts',
-      icon: FileSpreadsheet,
-      current: pathname === '/contracts',
-    },
-    {
-      name: 'Documents',
-      href: '/documents',
-      icon: FileText,
-      current: pathname === '/documents',
-    },
-    {
-      name: 'Invoices',
-      href: '/invoices',
-      icon: Receipt,
-      current: pathname === '/invoices',
-    },
-    {
-      name: 'Logistics',
-      href: '/logistics',
-      icon: Truck,
-      current: pathname === '/logistics',
-    },
-  ]
+export const BlockchainSidebar: React.FC<BlockchainSidebarProps> = ({ className }) => {
+  const [location] = useLocation();
+  const { logoutUser } = useWeb3();
+
+  const isActive = (path: string) => {
+    if (path === '/') return location === path;
+    return location.startsWith(path);
+  }
+
+  const navItems = [
+    { name: 'Home', path: '/', icon: Home },
+    { name: 'Wallet', path: '/wallet', icon: CreditCard },
+    { name: 'Contracts', path: '/contracts', icon: FileContract },
+    { name: 'Documents', path: '/documents', icon: FileText },
+    { name: 'Invoices', path: '/invoices', icon: FilePen },
+    { name: 'Logistics', path: '/logistics', icon: Truck },
+  ];
 
   return (
-    <div className={cn('md:block', className)}>
-      <div className="block md:hidden">
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="relative right-0 top-0 md:hidden">
-              <Menu className="h-4 w-4" />
-              <span className="sr-only">Toggle navigation menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="pr-0 sm:max-w-xs">
-            <div className="flex justify-between items-center px-4 h-16">
-              <div className="font-semibold">Base Network Finance</div>
-              <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            <nav className="px-2 py-4">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground mb-1",
-                    item.current ? "bg-accent text-accent-foreground" : "transparent"
-                  )}
-                >
-                  <item.icon className="h-5 w-5 shrink-0" />
-                  <span>{item.name}</span>
-                  {item.current && (
-                    <ChevronRight className="h-4 w-4 ml-auto" />
-                  )}
-                </Link>
-              ))}
-            </nav>
-          </SheetContent>
-        </Sheet>
-      </div>
-      <div className="hidden md:block">
-        <nav className="space-y-1 px-2">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground mb-1",
-                item.current ? "bg-accent text-accent-foreground" : "transparent"
-              )}
-            >
-              <item.icon className="h-5 w-5 shrink-0" />
-              <span>{item.name}</span>
-              {item.current && (
-                <ChevronRight className="h-4 w-4 ml-auto" />
-              )}
+    <div className={cn("flex flex-col space-y-1 p-2", className)}>
+      <div className="py-2">
+        <h3 className="px-4 text-sm font-medium text-muted-foreground">Trade Finance</h3>
+        
+        <nav className="mt-2 flex flex-col space-y-1">
+          {navItems.map((item) => (
+            <Link key={item.path} href={item.path}>
+              <a className={cn(
+                "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+                isActive(item.path) ? "bg-accent text-accent-foreground" : "transparent"
+              )}>
+                <item.icon className="mr-3 h-4 w-4" />
+                <span>{item.name}</span>
+                {isActive(item.path) && (
+                  <ChevronRight className="ml-auto h-4 w-4" />
+                )}
+              </a>
             </Link>
           ))}
         </nav>
       </div>
+      
+      <div className="py-2">
+        <h3 className="px-4 text-sm font-medium text-muted-foreground">Account</h3>
+        
+        <nav className="mt-2 flex flex-col space-y-1">
+          <Link href="/settings">
+            <a className={cn(
+              "group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
+              isActive('/settings') ? "bg-accent text-accent-foreground" : "transparent"
+            )}>
+              <Settings className="mr-3 h-4 w-4" />
+              <span>Settings</span>
+              {isActive('/settings') && (
+                <ChevronRight className="ml-auto h-4 w-4" />
+              )}
+            </a>
+          </Link>
+          
+          <button 
+            onClick={logoutUser}
+            className="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+          >
+            <LogOut className="mr-3 h-4 w-4" />
+            <span>Logout</span>
+          </button>
+        </nav>
+      </div>
     </div>
-  )
-}
+  );
+};
+
+export default BlockchainSidebar;
