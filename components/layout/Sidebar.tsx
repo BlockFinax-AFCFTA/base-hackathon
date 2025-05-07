@@ -1,200 +1,125 @@
-'use client'
-
-import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { useAppContext } from '@/hooks/useAppContext'
-import { useWeb3 } from '@/hooks/useWeb3'
-import { cn } from '@/lib/utils'
+import React from 'react';
+import { Link, useLocation } from 'wouter';
 import { 
-  CreditCard, 
-  FileText, 
-  Menu, 
   Home, 
-  DollarSign, 
-  Wallet,
-  LogOut,
-  ChevronRight
-} from 'lucide-react'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { BASE_NETWORK } from '@/client/src/services/web3Service'
-import { Badge } from '@/components/ui/badge'
+  Wallet, 
+  FileText, 
+  Briefcase, 
+  Truck, 
+  FileIcon, 
+  Settings, 
+  LogOut, 
+  User
+} from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-interface SidebarProps {
-  className?: string
-}
-
-export function Sidebar({ className }: SidebarProps) {
-  const pathname = usePathname()
-  const { sidebarOpen, setSidebarOpen, toggleSidebar } = useAppContext()
-  const { user, account, networkName, isBaseNetwork, logoutUser } = useWeb3()
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
-  
-  const links = [
-    {
-      name: 'Home',
-      href: '/',
-      icon: Home
-    },
-    {
-      name: 'Stablecoin Demo',
-      href: '/stablecoin',
-      icon: DollarSign,
-      highlight: true
-    },
-    {
-      name: 'Wallet',
-      href: '/wallet',
-      icon: Wallet
-    },
-    {
-      name: 'Invoices',
-      href: '/invoice',
-      icon: FileText
-    },
-    {
-      name: 'Contracts',
-      href: '/contracts',
-      icon: CreditCard
-    }
-  ]
+const Sidebar: React.FC = () => {
+  const [location] = useLocation();
+  const { t } = useTranslation();
   
   const isActive = (path: string) => {
-    if (path === '/' && pathname !== '/') {
-      return false
-    }
-    return pathname?.startsWith(path)
-  }
-  
-  const formatAddress = (address: string) => {
-    if (!address) return ''
-    return `${address.slice(0, 4)}...${address.slice(-4)}`
-  }
-  
-  const renderNavLinks = () => {
-    return (
-      <div className="space-y-1">
-        {links.map((link) => (
-          <Link
-            key={link.name}
-            href={link.href}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-              isActive(link.href) ? 
-                "bg-primary/10 text-primary" : 
-                "hover:bg-muted",
-              link.highlight && !isActive(link.href) && "bg-primary/5 text-primary"
-            )}
-          >
-            <link.icon className="h-5 w-5" />
-            <span>{link.name}</span>
-            {link.highlight && <Badge variant="outline" className="ml-auto">New</Badge>}
-          </Link>
-        ))}
-      </div>
-    )
-  }
-  
-  const renderUserInfo = () => {
-    return (
-      <div className="mt-auto pt-4 border-t">
-        <div className="flex items-center gap-3 px-3 py-2">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback>
-              {user?.username?.charAt(0) || 'U'}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">
-              {user?.username || 'Guest User'}
-            </p>
-            {account && (
-              <p className="text-xs text-muted-foreground truncate font-mono">
-                {formatAddress(account)}
-              </p>
-            )}
-          </div>
-          {isBaseNetwork && (
-            <Badge variant="outline" className="text-xs">
-              {networkName}
-            </Badge>
-          )}
-        </div>
-        
-        {user && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={logoutUser}
-            className="w-full mt-2 justify-start px-3"
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
-          </Button>
-        )}
-      </div>
-    )
-  }
-  
-  // Mobile sidebar using Sheet component
-  const mobileSidebar = (
-    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden">
-          <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle Menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="w-64 p-0">
-        <div className="flex flex-col h-full p-4">
-          <div className="flex items-center mb-6 mt-2">
-            <h3 className="text-lg font-semibold">Base Stablecoin</h3>
-          </div>
-          {renderNavLinks()}
-          {renderUserInfo()}
-        </div>
-      </SheetContent>
-    </Sheet>
-  )
-  
-  // Desktop sidebar
-  const desktopSidebar = (
-    <div
-      className={cn(
-        "hidden md:flex h-screen flex-col border-r transition-all overflow-hidden",
-        sidebarOpen ? "w-64" : "w-16",
-        className
-      )}
-    >
-      <div className="flex h-16 items-center px-4 border-b">
-        <div className={cn("flex gap-2 items-center", !sidebarOpen && "justify-center w-full")}>
-          <DollarSign className="h-6 w-6 text-primary" />
-          {sidebarOpen && <h3 className="text-lg font-semibold">Base Stablecoin</h3>}
-        </div>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={toggleSidebar} 
-          className={cn("ml-auto", !sidebarOpen && "hidden")}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
-      
-      <div className="flex-1 overflow-auto py-4 px-3">
-        {renderNavLinks()}
-      </div>
-      
-      {sidebarOpen && renderUserInfo()}
-    </div>
-  )
-  
+    return location === path ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100';
+  };
+
   return (
-    <>
-      {mobileSidebar}
-      {desktopSidebar}
-    </>
-  )
-}
+    <div className="flex flex-col h-full bg-white border-r shadow-sm">
+      {/* Navigation Links */}
+      <nav className="flex-1 overflow-y-auto py-2">
+        <ul className="space-y-1 px-2">
+          <li>
+            <Link href="/">
+              <a className={`flex items-center px-4 py-2 text-sm rounded-md ${isActive('/')}`}>
+                <Home className="h-5 w-5 mr-3" />
+                {t('common.home')}
+              </a>
+            </Link>
+          </li>
+          
+          <li>
+            <Link href="/wallet">
+              <a className={`flex items-center px-4 py-2 text-sm rounded-md ${isActive('/wallet')}`}>
+                <Wallet className="h-5 w-5 mr-3" />
+                {t('wallet.title')}
+              </a>
+            </Link>
+          </li>
+          
+          <li>
+            <Link href="/contracts">
+              <a className={`flex items-center px-4 py-2 text-sm rounded-md ${isActive('/contracts')}`}>
+                <Briefcase className="h-5 w-5 mr-3" />
+                {t('contracts.title')}
+              </a>
+            </Link>
+          </li>
+          
+          <li>
+            <Link href="/documents">
+              <a className={`flex items-center px-4 py-2 text-sm rounded-md ${isActive('/documents')}`}>
+                <FileText className="h-5 w-5 mr-3" />
+                {t('documents.title')}
+              </a>
+            </Link>
+          </li>
+          
+          <li>
+            <Link href="/invoices">
+              <a className={`flex items-center px-4 py-2 text-sm rounded-md ${isActive('/invoices')}`}>
+                <FileIcon className="h-5 w-5 mr-3" />
+                {t('common.invoices')}
+              </a>
+            </Link>
+          </li>
+          
+          <li>
+            <Link href="/logistics">
+              <a className={`flex items-center px-4 py-2 text-sm rounded-md ${isActive('/logistics')}`}>
+                <Truck className="h-5 w-5 mr-3" />
+                {t('logistics.title')}
+              </a>
+            </Link>
+          </li>
+        </ul>
+        
+        <div className="mt-6 pt-4 border-t mx-2">
+          <div className="px-2 mb-2 text-xs font-medium text-gray-400 uppercase">
+            Account
+          </div>
+          <ul className="space-y-1 px-2">
+            <li>
+              <Link href="/settings">
+                <a className={`flex items-center px-4 py-2 text-sm rounded-md ${isActive('/settings')}`}>
+                  <Settings className="h-5 w-5 mr-3" />
+                  Settings
+                </a>
+              </Link>
+            </li>
+            
+            <li>
+              <button 
+                className="w-full flex items-center px-4 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100"
+                onClick={() => console.log('Logout clicked')}
+              >
+                <LogOut className="h-5 w-5 mr-3" />
+                Logout
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      
+      {/* User Section */}
+      <div className="p-3 border-t flex items-center">
+        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+          <User className="h-4 w-4 text-gray-600" />
+        </div>
+        <div className="ml-2">
+          <div className="text-sm font-medium">User</div>
+          <div className="text-xs text-gray-500">user@example.com</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;

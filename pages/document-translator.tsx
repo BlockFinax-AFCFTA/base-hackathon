@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 import DocumentViewer from '../components/documents/DocumentViewer';
+import Layout from '../components/layout/Layout';
+import { Badge } from '../components/ui/badge';
 
 // Sample document data
 const sampleDocuments = [
@@ -43,65 +45,70 @@ const DocumentTranslatorPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto py-6 max-w-6xl">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">
-          {t('documents.title')} - {t('common.translate')}
-        </h1>
-        <p className="text-gray-600 mb-4">
-          {t('documents.translate')} {t('documents.description')}
-        </p>
-        
-        {/* Language Switcher */}
-        <div className="flex items-center justify-between">
-          <div className="flex space-x-4">
-            <button 
-              onClick={() => switchLanguage('en')}
-              className={`px-3 py-1 rounded ${currentLanguage === 'en' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-            >
-              English
-            </button>
-            <button 
-              onClick={() => switchLanguage('fr')}
-              className={`px-3 py-1 rounded ${currentLanguage === 'fr' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-            >
-              Français
-            </button>
-            <button 
-              onClick={() => switchLanguage('es')}
-              className={`px-3 py-1 rounded ${currentLanguage === 'es' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-            >
-              Español
-            </button>
+    <Layout>
+      <div className="mx-auto py-6 max-w-6xl">
+        <header className="mb-8">
+          <div className="flex items-center mb-2">
+            <h1 className="text-3xl font-bold">
+              {t('documents.title')} - {t('common.translate')}
+            </h1>
+            <Badge className="ml-3" variant="info">Beta</Badge>
           </div>
-          <div className="text-sm text-gray-500">
-            {t('common.language')}
+          <p className="text-gray-600 mb-4">
+            {t('documents.translate')} {t('documents.description')}
+          </p>
+          
+          {/* Language Switcher */}
+          <div className="flex items-center justify-between">
+            <div className="flex space-x-4">
+              <button 
+                onClick={() => switchLanguage('en')}
+                className={`px-3 py-1 rounded ${currentLanguage === 'en' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+              >
+                English
+              </button>
+              <button 
+                onClick={() => switchLanguage('fr')}
+                className={`px-3 py-1 rounded ${currentLanguage === 'fr' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+              >
+                Français
+              </button>
+              <button 
+                onClick={() => switchLanguage('es')}
+                className={`px-3 py-1 rounded ${currentLanguage === 'es' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+              >
+                Español
+              </button>
+            </div>
+            <div className="text-sm text-gray-500">
+              {t('common.language')}
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Document Selection Tabs */}
-      <Tabs defaultValue={selectedDocument.id} onValueChange={(value) => {
-        const doc = sampleDocuments.find(d => d.id === value);
-        if (doc) setSelectedDocument(doc);
-      }}>
-        <TabsList className="mb-4">
+        {/* Document Selection Tabs */}
+        <Tabs defaultValue={selectedDocument.id} onValueChange={(value) => {
+          const doc = sampleDocuments.find(d => d.id === value);
+          if (doc) setSelectedDocument(doc);
+        }}>
+          <TabsList className="mb-4">
+            {sampleDocuments.map(doc => (
+              <TabsTrigger key={doc.id} value={doc.id}>
+                {doc.name.split(' - ')[0]}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
           {sampleDocuments.map(doc => (
-            <TabsTrigger key={doc.id} value={doc.id}>
-              {doc.name.split(' - ')[0]}
-            </TabsTrigger>
+            <TabsContent key={doc.id} value={doc.id}>
+              {selectedDocument && selectedDocument.id === doc.id && (
+                <DocumentViewer document={selectedDocument} />
+              )}
+            </TabsContent>
           ))}
-        </TabsList>
-
-        {sampleDocuments.map(doc => (
-          <TabsContent key={doc.id} value={doc.id}>
-            {selectedDocument && selectedDocument.id === doc.id && (
-              <DocumentViewer document={selectedDocument} />
-            )}
-          </TabsContent>
-        ))}
-      </Tabs>
-    </div>
+        </Tabs>
+      </div>
+    </Layout>
   );
 };
 
