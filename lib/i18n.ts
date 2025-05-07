@@ -571,7 +571,8 @@ const esResources = {
     translate: 'Traducir',
     viewOriginal: 'Ver original',
     shareDocument: 'Compartir documento',
-    verifyOnBlockchain: 'Verificar en blockchain'
+    verifyOnBlockchain: 'Verificar en blockchain',
+    relatedDocuments: 'Documentos Relacionados'
   },
   logistics: {
     title: 'Logística',
