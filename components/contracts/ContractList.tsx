@@ -3,9 +3,9 @@ import { Link } from 'wouter';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Users, File, Plus } from 'lucide-react';
+import { Calendar, Clock, Users, File, Plus, DollarSign } from 'lucide-react';
 import { useContracts } from '@/hooks/useContracts';
-import { getStatusColor, getStatusText } from '@/types/contract';
+import { getStatusColor, getStatusText } from '../types/contract';
 import { format } from 'date-fns';
 
 const ContractList = () => {
@@ -65,38 +65,42 @@ const ContractList = () => {
                   <div className="flex justify-between items-start">
                     <div className="flex-grow">
                       <h4 className="text-lg font-medium text-gray-900">{contract.title}</h4>
+                      <p className="text-sm text-gray-500 mt-1">{contract.description}</p>
                       <div className="mt-2 flex items-center text-sm text-gray-500">
                         <span className="mr-3 flex items-center">
                           <Calendar className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
                           Created on {formatDate(contract.createdAt)}
                         </span>
-                        {contract.tradeTerms?.deliveryDeadline && (
+                        {contract.tradeTerms?.endDate && (
                           <span className="flex items-center">
                             <Clock className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                            Delivery by {formatDate(contract.tradeTerms.deliveryDeadline)}
+                            {contract.status === 'COMPLETED' ? 'Completed on' : 'End date'}: {formatDate(contract.tradeTerms.endDate)}
                           </span>
                         )}
                       </div>
                       <div className="mt-2">
                         <Badge 
                           variant="outline" 
-                          className={`bg-${getStatusColor(contract.status)}-100 text-${getStatusColor(contract.status)}-800 border-${getStatusColor(contract.status)}-200`}
+                          className={`bg-${getStatusColor(contract.status)}-100 text-${getStatusColor(contract.status)}-800`}
                         >
                           {getStatusText(contract.status)}
                         </Badge>
-                        <span className="ml-2 text-sm text-gray-500">
-                          Value: {contract.tradeTerms?.amount || 0} {contract.tradeTerms?.currency || 'ETH'}
+                        <span className="ml-2 text-sm text-gray-500 flex items-center inline-flex">
+                          <DollarSign className="h-4 w-4 mr-1 text-gray-400" />
+                          {contract.tradeTerms?.value || contract.tradeTerms?.amount || '0'} {contract.tradeTerms?.currency || 'ETH'}
                         </span>
                       </div>
                       <div className="mt-2 flex items-center text-sm text-gray-500">
                         <span className="flex items-center mr-4">
                           <Users className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                          {contract.parties?.length || 0} Parties
+                          {Array.isArray(contract.parties) ? contract.parties.length : 0} Parties
                         </span>
-                        <span className="flex items-center">
-                          <File className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                          {contract.documents?.length || 0} Documents
-                        </span>
+                        {contract.milestones && (
+                          <span className="flex items-center">
+                            <File className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
+                            {contract.milestones.length} Milestones
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="ml-4">
