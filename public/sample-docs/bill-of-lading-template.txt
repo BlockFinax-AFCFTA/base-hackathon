@@ -1,74 +1,63 @@
-                           BILL OF LADING
-                            ORIGINAL
-                          NON-NEGOTIABLE
+BILL OF LADING - ORIGINAL
 
-Shipper/Exporter:                       B/L Number: ECDB-MBAL-2025-001
-African Coffee Exporters Ltd.           Booking No: KE-ROT-12453-A
-123 Export Drive, Mombasa
-Kenya, East Africa                      Export References:
-Tel: +254-700-123-456                   KNY-CTM-00245
-                                        INCOTERMS 2020: FOB MOMBASA
+Shipper/Exporter: 
+East Asia Trading Co., Ltd.
+123 Harbor Road, Shanghai, China
+Tax ID: CN-9876543210
 
-Consignee:                              Notify Party: 
-European Coffee Distributors B.V.       SAME AS CONSIGNEE
-Havenlaan 42
-3000 Rotterdam, Netherlands
-Tel: +31-10-123-4567
-VAT: NL123456789B01
+Consignee:
+Global Imports Inc.
+456 Ocean Avenue, Los Angeles, CA, USA
+Tax ID: US-1234567890
 
-Vessel/Voyage:                          Port of Loading:
-MV Atlantic Navigator / V.125E          Mombasa, Kenya
+Vessel/Voyage:
+MV Pacific Star / VOY123
 
-Port of Discharge:                      Place of Delivery:
-Rotterdam, Netherlands                  Rotterdam, Netherlands
+Port of Loading:
+Shanghai, China
 
-Container No./Seal No.   Marks & Numbers       No. of Pkgs    Description of Goods
-ECDB-4591-KE            ECDB-2025-KE          320 bags       Green Coffee Beans
-SEAL: KPA-45912-A       Lot# 20250417                         Kenyan AA Grade
-                                                              PRODUCT OF KENYA
-                                                              Certified Organic
-                                                              Harvest: March 2025
+Port of Discharge:
+Los Angeles, USA
 
-Gross Weight: 19,200 kg                 Measurement: 40 CBM
+Place of Delivery:
+Los Angeles Distribution Center
+789 Warehouse Blvd, Los Angeles, CA, USA
 
-SHIPPER'S LOAD, STOW, AND COUNT
-FREIGHT PREPAID
-CLEAN ON BOARD
+Container No./Seal No.:
+ABCD1234567 / SEAL987654
 
-Freight and Charges:                    Rate                  Prepaid    Collect
-Ocean Freight                           ------                  X
-Documentation Fee                       ------                  X
-Terminal Handling                       ------                  X
-                                        TOTAL                   X
+Marks & Numbers:
+GTI-SHAN-2025-05
 
-TOTAL PACKAGES: Three Hundred Twenty (320) bags only
+No. of Packages:
+250 Cartons
 
-DECLARED VALUE: USD 154,000.00
+Description of Goods:
+Electronic Components
+Model: AB-3000
+Commodity Code: HS 8542.31
+250 boxes of semiconductor integrated circuits
+Made in China
 
-Shipped on board the vessel named herein at the port of loading on: April 17, 2025
+Gross Weight:
+2,500 KG
 
-This Bill of Lading is issued pursuant to a booking note and is subject to the terms 
-and conditions thereof. The Carrier accepts no responsibility for incorrect declarations
-by the shipper.
+Measurement:
+20 CBM
 
-IN WITNESS WHEREOF the Master or Agent of the said vessel has signed three (3) Bills 
-of Lading, all of this tenor and date, one of which being accomplished, the others 
-shall stand void.
+Freight and Charges:
+Freight Prepaid
+Ocean Freight: USD 3,500.00
+Documentation Fee: USD 150.00
+Container Handling: USD 350.00
+Total: USD 4,000.00
 
-                                        FOR THE MASTER
-                                        Global Shipping Lines
+Shipped on board:
+May 5, 2025 at Shanghai Port
 
-                                        _______________________
-                                        AUTHORIZED SIGNATURE
-                                        
-                                        Date: April 17, 2025
+FOR THE MASTER
 
-----------------------------------------------------------------------------------
-                              BLOCKCHAIN VERIFICATION
-----------------------------------------------------------------------------------
-Transaction Hash: 0x7d982f7583d5b0e5d5332acdf911c36157bd0eebd62ae0c4de0b3aee47ba9ab3
-Block Number: 9278256
-Network: Base Mainnet
-Verified: April 17, 2025 10:45:23 UTC
-Verification URL: https://baseexplorer.org/tx/0x7d982f7583d5b0e5d5332acdf911c36157bd0eebd62ae0c4de0b3aee47ba9ab3
-----------------------------------------------------------------------------------
+________________________
+Authorized Signature
+
+MAWB/HAWB: 057-12345678
