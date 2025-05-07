@@ -1,7 +1,5 @@
 import React, { ComponentType } from "react";
-import { Route, Redirect } from "wouter";
-import { Loader2 } from "lucide-react";
-import { useAuth } from "./AuthProvider";
+import { Route } from "wouter";
 
 type ProtectedRouteProps = {
   path: string;
@@ -9,27 +7,7 @@ type ProtectedRouteProps = {
 };
 
 export function ProtectedRoute({ path, component: Component }: ProtectedRouteProps) {
-  const { user, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <Route path={path}>
-        <div className="flex items-center justify-center min-h-screen">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      </Route>
-    );
-  }
-
-  // Skipping authentication check for now as we removed login pages
-  if (!user) {
-    return (
-      <Route path={path}>
-        <Component />
-      </Route>
-    );
-  }
-
+  // Completely bypass authentication - always render the component
   return (
     <Route path={path}>
       <Component />

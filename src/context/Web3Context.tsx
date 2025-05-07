@@ -76,38 +76,34 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     }
   };
 
-  // Login user
+  // Login user (simulated)
   const loginUser = async (username: string, password: string) => {
     try {
       setIsInitializing(true);
       setError(null);
       
-      const response = await apiRequest('POST', '/api/auth/login', {
-        username,
-        password
-      });
+      // Create mock user with provided username
+      const mockUser: User = {
+        id: 1,
+        username: username || 'demouser',
+        walletAddress: '0x1234567890123456789012345678901234567890',
+        profileImage: null
+      };
       
-      if (!response.ok) {
-        throw new Error('Invalid username or password');
-      }
-      
-      const userData = await response.json();
-      setUser(userData);
-      setAccount(userData.walletAddress || `user-${userData.id}`);
-      
-      // Fetch user wallet balance
-      await fetchWalletBalance(userData.id);
+      setUser(mockUser);
+      setAccount(mockUser.walletAddress);
+      setBalance('10000.00');
       
       toast({
         title: "Login Successful",
-        description: `Welcome back, ${userData.username}!`,
+        description: `Welcome back, ${mockUser.username}!`,
       });
       
     } catch (err: any) {
-      setError(err.message);
+      setError('Login failed');
       toast({
         title: "Login Failed",
-        description: err.message,
+        description: "An error occurred during login",
         variant: "destructive",
       });
     } finally {
@@ -115,35 +111,34 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     }
   };
 
-  // Create account
+  // Create account (simulated)
   const createAccount = async (username: string, password: string) => {
     try {
       setIsInitializing(true);
       setError(null);
       
-      const response = await apiRequest('POST', '/api/auth/register', {
-        username,
-        password
-      });
+      // Create mock user with provided username
+      const mockUser: User = {
+        id: 1,
+        username: username || 'demouser',
+        walletAddress: '0x1234567890123456789012345678901234567890',
+        profileImage: null
+      };
       
-      if (!response.ok) {
-        throw new Error('Failed to create account');
-      }
-      
-      const userData = await response.json();
-      setUser(userData);
-      setAccount(userData.walletAddress || `user-${userData.id}`);
+      setUser(mockUser);
+      setAccount(mockUser.walletAddress);
+      setBalance('10000.00');
       
       toast({
         title: "Account Created",
-        description: `Welcome, ${userData.username}! Your account is ready.`,
+        description: `Welcome, ${mockUser.username}! Your account is ready.`,
       });
       
     } catch (err: any) {
-      setError(err.message);
+      setError('Registration failed');
       toast({
         title: "Registration Failed",
-        description: err.message,
+        description: "An error occurred during registration",
         variant: "destructive",
       });
     } finally {
@@ -152,26 +147,44 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
   };
 
   // Logout user
-  const logoutUser = async () => {
-    try {
-      await apiRequest('POST', '/api/auth/logout');
+  const logoutUser = () => {
+    setUser(null);
+    setAccount(null);
+    setBalance('0');
+    
+    toast({
+      title: "Logged Out",
+      description: "You have been logged out successfully",
+    });
+    
+    // Auto re-login after 1 second to keep the app functional
+    setTimeout(() => {
+      const mockUser: User = {
+        id: 1,
+        username: 'demouser',
+        walletAddress: '0x1234567890123456789012345678901234567890',
+        profileImage: null
+      };
       
-      setUser(null);
-      setAccount(null);
-      setBalance('0');
-      
-      toast({
-        title: "Logged Out",
-        description: "You have been logged out successfully",
-      });
-    } catch (err) {
-      console.error('Logout failed:', err);
-    }
+      setUser(mockUser);
+      setAccount(mockUser.walletAddress);
+      setBalance('10000.00');
+    }, 1000);
   };
 
   useEffect(() => {
-    // Try to get current user session on component mount
-    fetchCurrentUser();
+    // Create a mock user instead of trying to fetch one
+    const mockUser: User = {
+      id: 1,
+      username: 'demouser',
+      walletAddress: '0x1234567890123456789012345678901234567890',
+      profileImage: null
+    };
+    
+    setUser(mockUser);
+    setAccount(mockUser.walletAddress);
+    setBalance('10000.00');
+    setIsInitializing(false);
   }, []);
 
   return (
