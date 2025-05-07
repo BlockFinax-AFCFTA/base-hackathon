@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from '../components/ui/button'
 import {
   Card,
   CardContent,
@@ -10,16 +10,18 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { useWeb3 } from '@/hooks/useWeb3'
+} from '../components/ui/card'
+import { useWeb3 } from '../hooks/useWeb3'
 import { 
   Wallet, 
   DollarSign, 
   FileText, 
   ArrowRight,
   Globe,
+  FileSpreadsheet,
+  Receipt,
 } from 'lucide-react'
-import { useToast } from '@/hooks/use-toast'
+import { useToast } from '../hooks/use-toast'
 
 export default function Home() {
   const { isConnected, connectWallet } = useWeb3()
@@ -44,46 +46,40 @@ export default function Home() {
   return (
     <div className="container mx-auto py-12 px-4">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Base Network Stablecoin Platform</h1>
+        <h1 className="text-4xl font-bold mb-4">Base Network Finance Platform</h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          A complete solution for cross-border payments using stablecoins on Base Network
+          A complete blockchain solution with integrated wallet, contracts, documents, and invoicing
         </p>
         
         <div className="flex flex-wrap justify-center gap-4 mt-8">
           <Button asChild size="lg">
-            <Link href="/stablecoin">
-              Explore Stablecoin Demo
+            <Link href="/wallet">
+              Launch Application
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          
-          {!isConnected && (
-            <Button variant="outline" size="lg" onClick={handleConnectWallet} disabled={isConnecting}>
-              {isConnecting ? "Connecting..." : "Connect Wallet"}
-            </Button>
-          )}
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         <Card>
           <CardHeader>
             <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
               <Wallet className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle>Multi-Currency Wallet</CardTitle>
+            <CardTitle>Base Network Wallet</CardTitle>
             <CardDescription>
-              Manage all your stablecoins in one secure wallet
+              Integrated stablecoin management
             </CardDescription>
           </CardHeader>
           <CardContent>
             <p>
-              Our wallet supports USDC, USDT, and DAI on Base Network, enabling you to hold, send, and receive with low fees and fast transaction times.
+              Our wallet supports USDC, USDT, and DAI on Base Network, built directly into the application. No external wallet connection required.
             </p>
           </CardContent>
           <CardFooter>
             <Button variant="outline" asChild className="w-full">
-              <Link href="/wallet">View Wallet</Link>
+              <Link href="/wallet">Open Wallet</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -91,21 +87,21 @@ export default function Home() {
         <Card>
           <CardHeader>
             <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
-              <DollarSign className="h-6 w-6 text-primary" />
+              <FileSpreadsheet className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle>Stablecoin Payments</CardTitle>
+            <CardTitle>Smart Contracts</CardTitle>
             <CardDescription>
-              Fast and low-cost cross-border payments
+              Blockchain-secured agreements
             </CardDescription>
           </CardHeader>
           <CardContent>
             <p>
-              Make global payments in stablecoins with near-instant settlement, avoiding traditional banking delays and high currency conversion fees.
+              Create and manage smart contracts with counterparties for secure business relationships and escrow payments.
             </p>
           </CardContent>
           <CardFooter>
             <Button variant="outline" asChild className="w-full">
-              <Link href="/stablecoin">Make Payment</Link>
+              <Link href="/contracts">View Contracts</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -115,19 +111,41 @@ export default function Home() {
             <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
               <FileText className="h-6 w-6 text-primary" />
             </div>
-            <CardTitle>Invoice Management</CardTitle>
+            <CardTitle>Document Management</CardTitle>
             <CardDescription>
-              Create and pay invoices with stablecoins
+              Blockchain-verified documents
             </CardDescription>
           </CardHeader>
           <CardContent>
             <p>
-              Generate professional invoices and accept payments in stablecoins, with automatic verification and tracking on the Base Network.
+              Upload, store, and verify important business documents using blockchain technology for tamper-proof records.
             </p>
           </CardContent>
           <CardFooter>
             <Button variant="outline" asChild className="w-full">
-              <Link href="/invoice">View Invoices</Link>
+              <Link href="/documents">Manage Documents</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <div className="rounded-full bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
+              <DollarSign className="h-6 w-6 text-primary" />
+            </div>
+            <CardTitle>Stablecoin Invoicing</CardTitle>
+            <CardDescription>
+              Digital payments and tracking
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p>
+              Create, send, and manage invoices to be paid in stablecoins on Base Network with automatic tracking and verification.
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Button variant="outline" asChild className="w-full">
+              <Link href="/invoices">View Invoices</Link>
             </Button>
           </CardFooter>
         </Card>
