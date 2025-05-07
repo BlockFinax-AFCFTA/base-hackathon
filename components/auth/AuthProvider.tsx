@@ -22,6 +22,7 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
+  // Create a dummy user instead of fetching from the API
   const {
     data: user,
     error,
@@ -29,15 +30,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   } = useQuery<User | null, Error>({
     queryKey: ["/api/user"],
     queryFn: async () => {
-      try {
-        const res = await fetch("/api/user");
-        if (res.status === 401) return null;
-        if (!res.ok) throw new Error("Failed to fetch user data");
-        return await res.json();
-      } catch (err) {
-        console.error("Failed to fetch user session:", err);
-        return null;
-      }
+      // Return a mock user for all requests
+      return {
+        id: 1,
+        username: "demo_user",
+        walletAddress: "0x9A17c6a0b821c93c199e740a164a06bce9e17E7e", 
+        email: "demo@blockfinax.com",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        profileImage: null
+      };
     },
   });
 

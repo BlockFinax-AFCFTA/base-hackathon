@@ -21,10 +21,11 @@ export function ProtectedRoute({ path, component: Component }: ProtectedRoutePro
     );
   }
 
+  // Skipping authentication check for now as we removed login pages
   if (!user) {
     return (
       <Route path={path}>
-        <Redirect to="/auth" />
+        <Component />
       </Route>
     );
   }

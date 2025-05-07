@@ -21,32 +21,22 @@ import Layout from "./components/layout/Layout";
 
 function Router() {
   return (
-    <Switch>
-      {/* Public routes */}
-      <Route path="/auth" component={BaseStablecoinsLogin} />
-      <Route path="/login" component={BaseStablecoinsLogin} />
-      
-      {/* Protected routes - wrapped in Layout */}
-      <Route path="/">
-        {(params) => (
-          <Layout>
-            <Switch>
-              <ProtectedRoute path="/" exact component={HomePage} />
-              <ProtectedRoute path="/contracts" component={ContractsPage} />
-              <ProtectedRoute path="/documents" component={DocumentsPage} />
-              <ProtectedRoute path="/document-translator" component={DocumentTranslator} />
-              <ProtectedRoute path="/wallet" component={StablecoinWallet} />
-              <ProtectedRoute path="/wallet/legacy" component={WalletPage} />
-              
-              {/* 404 route */}
-              <Route path="*">
-                {() => <NotFound />}
-              </Route>
-            </Switch>
-          </Layout>
-        )}
-      </Route>
-    </Switch>
+    <Layout>
+      <Switch>
+        {/* Protected routes */}
+        <ProtectedRoute path="/" component={HomePage} />
+        <ProtectedRoute path="/contracts" component={ContractsPage} />
+        <ProtectedRoute path="/documents" component={DocumentsPage} />
+        <ProtectedRoute path="/document-translator" component={DocumentTranslator} />
+        <ProtectedRoute path="/wallet" component={StablecoinWallet} />
+        <ProtectedRoute path="/wallet/legacy" component={WalletPage} />
+        
+        {/* 404 route */}
+        <Route path="/:rest*">
+          {(params) => <NotFound />}
+        </Route>
+      </Switch>
+    </Layout>
   );
 }
 
