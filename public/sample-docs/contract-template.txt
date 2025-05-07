@@ -1,0 +1,120 @@
+INTERNATIONAL SUPPLY AGREEMENT
+
+CONTRACT NO.: SCM-2025-001
+DATE: March 10, 2025
+
+BETWEEN:
+
+Akachi Logistics Ltd.
+123 Export Road, Nairobi
+Kenya
+Registration No.: KE-C-2010-45678
+Represented by: Dr. Amara Okafor, Chief Executive Officer
+(Hereinafter referred to as "SUPPLIER")
+
+AND
+
+Farm Fresh Exports Inc.
+456 Harvest Road, Accra
+Ghana
+Registration No.: GH-B-2015-98765
+Represented by: Mr. Kofi Mensah, Director of Operations
+(Hereinafter referred to as "BUYER")
+
+WHEREAS:
+
+A. SUPPLIER is engaged in the business of providing logistics and supply chain management services for agricultural exports from East Africa;
+
+B. BUYER desires to engage SUPPLIER to supply logistics services for the export of coffee beans from Ethiopia to the Netherlands;
+
+C. SUPPLIER has agreed to supply such services to BUYER on the terms and conditions set out in this Agreement.
+
+NOW THEREFORE, in consideration of the mutual covenants and agreements hereinafter set forth, the Parties agree as follows:
+
+1. DEFINITIONS
+
+In this Agreement, unless the context otherwise requires:
+1.1 "Agreement" means this Supply Agreement including all schedules and attachments hereto;
+1.2 "Delivery Date" means the date specified in Schedule A for delivery of the Products;
+1.3 "Delivery Location" means Rotterdam, Netherlands;
+1.4 "Products" means Ethiopian Yirgacheffe Coffee Beans as described in Schedule A;
+1.5 "Services" means the logistics and supply chain services described in Schedule B;
+1.6 "Term" means the period commencing on the date of this Agreement and continuing for twelve (12) months, unless earlier terminated in accordance with the provisions of this Agreement.
+
+2. SUPPLY OF SERVICES
+
+2.1 SUPPLIER agrees to supply the Services to BUYER in accordance with the terms and conditions of this Agreement.
+2.2 SUPPLIER shall ensure that all Products are packaged and labeled in accordance with industry standards and applicable laws and regulations.
+2.3 Title to and risk in the Products shall pass to BUYER upon delivery at the Delivery Location.
+
+3. PRICE AND PAYMENT
+
+3.1 The price for the Services shall be as set out in Schedule C.
+3.2 BUYER shall pay SUPPLIER the price for the Services within thirty (30) days of receipt of a valid invoice from SUPPLIER.
+3.3 All payments shall be made by electronic funds transfer to SUPPLIER's designated bank account.
+3.4 All prices are exclusive of any applicable taxes, duties, or other governmental charges, which shall be paid by BUYER.
+
+4. ESCROW ARRANGEMENTS
+
+4.1 BUYER shall deposit 30% of the total contract value in the escrow account specified in Schedule D within five (5) business days of the execution of this Agreement.
+4.2 The escrow agent shall release the funds to SUPPLIER in accordance with the milestone payment schedule set out in Schedule D.
+4.3 The escrow agent shall be jointly appointed by the Parties and shall act in accordance with the Escrow Agreement attached as Schedule E.
+
+5. REPRESENTATIONS AND WARRANTIES
+
+5.1 SUPPLIER represents and warrants that:
+   (a) it has the right, power, and authority to enter into this Agreement and to perform its obligations hereunder;
+   (b) the Services will be performed with reasonable care and skill and in accordance with industry standards;
+   (c) the Products will comply with the specifications set out in Schedule A;
+   (d) it will comply with all applicable laws, regulations, and standards in the performance of its obligations under this Agreement.
+
+5.2 BUYER represents and warrants that:
+   (a) it has the right, power, and authority to enter into this Agreement and to perform its obligations hereunder;
+   (b) it will comply with all applicable laws, regulations, and standards in the performance of its obligations under this Agreement;
+   (c) it has obtained all necessary licenses, permits, and approvals for the import of the Products.
+
+6. TERM AND TERMINATION
+
+6.1 This Agreement shall commence on the date first written above and shall continue for the Term unless earlier terminated in accordance with this Agreement.
+6.2 Either Party may terminate this Agreement immediately by written notice to the other Party if the other Party commits a material breach of this Agreement which is incapable of remedy or which is not remedied within thirty (30) days of receipt of written notice requiring it to do so.
+
+7. FORCE MAJEURE
+
+7.1 Neither Party shall be liable for any failure or delay in performing its obligations under this Agreement to the extent that such failure or delay is caused by a Force Majeure Event.
+7.2 A "Force Majeure Event" means any event beyond the reasonable control of a Party including, without limitation, acts of God, war, riot, civil commotion, compliance with any law or governmental order, rule, regulation or direction, fire, flood, storm, earthquake, or other natural disaster, but excluding any industrial dispute relating to SUPPLIER, SUPPLIER's personnel, or any other failure in SUPPLIER's supply chain.
+
+8. DISPUTE RESOLUTION
+
+8.1 Any dispute arising out of or in connection with this Agreement shall be referred to and finally resolved by arbitration under the Rules of the London Court of International Arbitration, which Rules are deemed to be incorporated by reference into this clause.
+8.2 The number of arbitrators shall be three.
+8.3 The seat, or legal place, of arbitration shall be London, England.
+8.4 The language to be used in the arbitral proceedings shall be English.
+8.5 The governing law of the contract shall be the substantive law of England and Wales.
+
+9. GENERAL PROVISIONS
+
+9.1 This Agreement constitutes the entire agreement between the Parties relating to the subject matter hereof and supersedes all prior agreements, understandings, negotiations, and discussions between the Parties.
+9.2 No amendment to this Agreement shall be effective unless it is in writing and signed by both Parties.
+9.3 This Agreement may be executed in any number of counterparts, each of which when executed and delivered shall constitute a duplicate original, but all the counterparts shall together constitute the one agreement.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the date first written above.
+
+SIGNED for and on behalf of 
+AKACHI LOGISTICS LTD.
+
+___________________________
+Name: Dr. Amara Okafor
+Title: Chief Executive Officer
+
+SIGNED for and on behalf of 
+FARM FRESH EXPORTS INC.
+
+___________________________
+Name: Mr. Kofi Mensah
+Title: Director of Operations
+
+SCHEDULE A: PRODUCT SPECIFICATIONS
+SCHEDULE B: SERVICES DESCRIPTION
+SCHEDULE C: PRICING
+SCHEDULE D: ESCROW ARRANGEMENTS
+SCHEDULE E: ESCROW AGREEMENT

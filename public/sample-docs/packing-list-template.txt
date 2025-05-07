@@ -1,0 +1,90 @@
+COMMERCIAL PACKING LIST
+
+Exporter:
+Farm Fresh Exports Inc.
+456 Harvest Road, Accra
+Ghana
+Tel: +233 302 123 456
+Email: exports@farmfresh.com
+
+Consignee:
+European Importers B.V.
+456 Harbor Street, Rotterdam
+Netherlands
+Tel: +31 20 987 6543
+Email: imports@europeantraders.nl
+
+Buyer (if different from consignee):
+Same as Consignee
+
+Notify Party:
+Same as Consignee
+
+Shipment Reference:
+Invoice No.: INV-2025-0045
+Purchase Order No.: PO-EU-2025-078
+L/C No.: LC-2025-AFRIBANK-001
+
+Vessel/Flight:
+MSC AMELIA V.129S
+Voyage/Flight No: MSC-EA129S
+
+Port of Loading:
+Tema, Ghana
+
+Port of Discharge:
+Rotterdam, Netherlands
+
+Final Destination:
+Rotterdam, Netherlands
+
+Country of Origin:
+Ethiopia
+
+PACKING DETAILS:
+
+Pallet No. | Bag Numbers | Bags per Pallet | Grade | Lot No. | Weight (kg) | Mark
+-----------|-------------|-----------------|-------|---------|-------------|----------------
+1 | 001-020 | 20 | Grade 1 | YRG-25-001 | 1,920 | FFE/2025/GH/045
+2 | 021-040 | 20 | Grade 1 | YRG-25-001 | 1,920 | FFE/2025/GH/045
+3 | 041-060 | 20 | Grade 1 | YRG-25-001 | 1,920 | FFE/2025/GH/045
+4 | 061-080 | 20 | Grade 1 | YRG-25-001 | 1,920 | FFE/2025/GH/045
+5 | 081-100 | 20 | Grade 1 | YRG-25-001 | 1,920 | FFE/2025/GH/045
+6 | 101-120 | 20 | Grade 1 | YRG-25-002 | 1,920 | FFE/2025/GH/045
+7 | 121-140 | 20 | Grade 1 | YRG-25-002 | 1,920 | FFE/2025/GH/045
+8 | 141-160 | 20 | Grade 1 | YRG-25-002 | 1,920 | FFE/2025/GH/045
+9 | 161-180 | 20 | Grade 1 | YRG-25-002 | 1,920 | FFE/2025/GH/045
+10 | 181-200 | 20 | Grade 1 | YRG-25-002 | 1,920 | FFE/2025/GH/045
+11 | 201-220 | 20 | Grade 1 | YRG-25-003 | 1,920 | FFE/2025/GH/045
+12 | 221-240 | 20 | Grade 1 | YRG-25-003 | 1,920 | FFE/2025/GH/045
+13 | 241-260 | 20 | Grade 1 | YRG-25-003 | 1,920 | FFE/2025/GH/045
+14 | 261-280 | 20 | Grade 1 | YRG-25-003 | 1,920 | FFE/2025/GH/045
+15 | 281-300 | 20 | Grade 1 | YRG-25-003 | 1,920 | FFE/2025/GH/045
+16 | 301-320 | 20 | Grade 1 | YRG-25-004 | 1,920 | FFE/2025/GH/045
+17 | 321-340 | 20 | Grade 1 | YRG-25-004 | 1,920 | FFE/2025/GH/045
+18 | 341-360 | 20 | Grade 1 | YRG-25-004 | 1,920 | FFE/2025/GH/045
+
+TOTAL QUANTITY: 18 Pallets, 360 Bags
+TOTAL NET WEIGHT: 34,560 kg
+TOTAL GROSS WEIGHT: 36,000 kg
+TOTAL VOLUME: 45 CBM
+
+Packaging Specifications:
+- Each bag: Jute, 96 kg net weight, properly stitched and sealed
+- Each pallet: Heat-treated wooden Euro-pallet (EPAL), stretch-wrapped
+- Marks: Each bag marked with lot number, origin, and product designation
+- Each pallet is numbered and marked with shipping references
+
+Special Instructions:
+- Keep in cool, dry place
+- Do not stack more than 2 pallets high
+- Protect from moisture and strong odors
+
+Declaration:
+We hereby certify that the above packing list is true and correct.
+
+Place and Date: Accra, April 18, 2025
+Signature of authorized representative: _______________________
+Name: Kofi Mensah
+Title: Director of Operations
+Company Stamp

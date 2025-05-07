@@ -39,7 +39,7 @@ interface Document {
   tags?: string[];
 }
 
-// Sample documents with enhanced data 
+// Industry-standard document templates with enhanced data
 const sampleDocuments: Document[] = [
   {
     id: 'doc-001',
@@ -50,8 +50,8 @@ const sampleDocuments: Document[] = [
     contractId: 'contract-001',
     contractName: 'Supply Chain Agreement',
     verified: true,
-    description: 'Official signed agreement for supply chain services.',
-    url: '#',
+    description: 'Official signed agreement for supply chain services between Akachi Logistics Ltd. and Farm Fresh Exports Inc.',
+    url: '/sample-docs/contract-template.txt',
     referenceNumber: 'SCM-2025-001',
     status: 'approved',
     tags: ['contract', 'supply chain', 'agreement']
@@ -65,41 +65,41 @@ const sampleDocuments: Document[] = [
     contractId: 'contract-001',
     contractName: 'Supply Chain Agreement',
     verified: true,
-    description: 'Bill of lading for international shipment.',
-    url: '#',
+    description: 'Negotiable FIATA Bill of Lading for containerized coffee shipment from Mombasa to Rotterdam.',
+    url: '/sample-docs/bill-of-lading-template.txt',
     referenceNumber: 'BL-2025-001',
     status: 'approved',
     tags: ['shipping', 'bill of lading', 'cargo']
   },
   {
     id: 'doc-003',
-    name: 'Service Agreement.pdf',
+    name: 'Letter of Credit.pdf',
     fileType: 'pdf',
     fileSize: 3100000,
     createdDate: new Date(2025, 4, 5),
     contractId: 'contract-002',
     contractName: 'Cross-Border Payment Service',
     verified: false,
-    description: 'Partnership service agreement for payment processing.',
-    url: '#',
-    referenceNumber: 'SA-2025-001',
+    description: 'Irrevocable Letter of Credit issued by AfriBank in compliance with UCP 600 standards.',
+    url: 'https://basenetwork.onrender.com/sample-docs/letter-of-credit.pdf',
+    referenceNumber: 'LC-2025-001',
     status: 'pending',
-    tags: ['contract', 'service', 'payments']
+    tags: ['finance', 'letter of credit', 'payments']
   },
   {
     id: 'doc-004',
-    name: 'KYC Documentation.png',
-    fileType: 'image/png',
+    name: 'Packing List - Coffee Beans.xlsx',
+    fileType: 'xlsx',
     fileSize: 1200000,
     createdDate: new Date(2025, 4, 1),
     contractId: null,
     contractName: null,
     verified: true,
-    description: 'KYC supporting documentation for regulatory compliance.',
-    url: '#',
-    referenceNumber: 'KYC-2025-001',
+    description: 'Detailed packing list for 18 pallets of Ethiopian Yirgacheffe coffee for export.',
+    url: 'https://basenetwork.onrender.com/sample-docs/packing-list.xlsx',
+    referenceNumber: 'PL-2025-004',
     status: 'approved',
-    tags: ['kyc', 'compliance', 'regulatory']
+    tags: ['export', 'packing list', 'inventory']
   },
   {
     id: 'doc-005',
@@ -110,26 +110,26 @@ const sampleDocuments: Document[] = [
     contractId: 'contract-001',
     contractName: 'Supply Chain Agreement',
     verified: true,
-    description: 'Certificate of origin for exported goods.',
-    url: '#',
+    description: 'GSP Form A Certificate of Origin issued by Ghana Export Promotion Authority.',
+    url: 'https://basenetwork.onrender.com/sample-docs/certificate-of-origin.pdf',
     referenceNumber: 'CO-2025-001',
     status: 'approved',
     tags: ['certificate', 'origin', 'ghana', 'export']
   },
   {
     id: 'doc-006',
-    name: 'Import Permit - Agricultural Products.pdf',
+    name: 'Phytosanitary Certificate.pdf',
     fileType: 'pdf',
     fileSize: 1200000,
     createdDate: new Date(2025, 2, 10),
     contractId: 'contract-003',
     contractName: 'Equipment Purchase',
     verified: false,
-    description: 'Import permit for agricultural equipment.',
-    url: '#',
-    referenceNumber: 'IP-2025-001',
+    description: 'IPPC compliant Phytosanitary Certificate for agricultural products export.',
+    url: 'https://basenetwork.onrender.com/sample-docs/phytosanitary.pdf',
+    referenceNumber: 'PC-2025-002',
     status: 'expired',
-    tags: ['permit', 'import', 'agriculture']
+    tags: ['certificate', 'phytosanitary', 'agriculture']
   }
 ];
 

@@ -1,0 +1,69 @@
+FIATA MULTIMODAL TRANSPORT BILL OF LADING
+Negotiable unless marked "non-negotiable"
+
+Shipper:
+Akachi Logistics Ltd.
+123 Export Road, Nairobi
+Kenya
+Contact: +254 700 123456
+Email: shipping@akachilogistics.com
+
+Consignee:
+European Importers B.V.
+456 Harbor Street, Rotterdam
+Netherlands
+Contact: +31 20 987 6543
+Email: imports@europeantraders.nl
+
+Notify Party:
+Same as Consignee
+
+Vessel/Flight:
+MSC AMELIA V.129S
+Voyage/Flight No: MSC-EA129S
+
+Port of Loading:
+Mombasa, Kenya
+
+Port of Discharge:
+Rotterdam, Netherlands
+
+Final Destination:
+Rotterdam, Netherlands
+
+Container No./Seal No:
+MSCU1234567 / AKL98765432
+
+Marks and Numbers:
+Farm Fresh Exports 2025-045
+Ethiopian Yirgacheffe, Grade 1
+
+Description of Goods:
+18 Pallets
+36 Metric Tons
+Specialty Coffee - Ethiopian Yirgacheffe
+HS Code: 0901.11.00
+ICO Certificate: ETH-20250405
+
+Gross Weight: 36,000 kg
+Measurement: 45 CBM
+
+SHIPPED on board the vessel at the port of loading in apparent good order and condition 
+unless otherwise stated herein, the goods, or package(s) said to contain the cargo described above, 
+to be transported to port of discharge or place of delivery mentioned above, subject to 
+all the terms and conditions appearing on the front and reverse of this Bill of Lading.
+
+Number of Original Bills of Lading: 3 (Three)
+
+Freight & Charges:
+Freight Prepaid
+
+Place and Date of Issue:
+Mombasa, Kenya, April 15, 2025
+
+Signed for AKACHI LOGISTICS LTD
+As carrier
+____________________
+Authorized Signature
+
+ORIGINAL
