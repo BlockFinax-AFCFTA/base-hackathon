@@ -578,11 +578,11 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   </div>
                   
                   <div className={`relative pl-10 pb-8 ${
-                    ['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                    checkStatus(['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'])
                     ? 'opacity-100' : 'opacity-50'
                   }`}>
                     <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
-                      ['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                      checkStatus(['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'])
                       ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20 text-muted-foreground'
                     }`}>
                       <CheckCircle2 className="h-4 w-4" />
@@ -594,11 +594,11 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   </div>
                   
                   <div className={`relative pl-10 pb-8 ${
-                    ['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                    checkStatus(['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'])
                     ? 'opacity-100' : 'opacity-50'
                   }`}>
                     <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
-                      ['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                      checkStatus(['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'])
                       ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20 text-muted-foreground'
                     }`}>
                       <Wallet className="h-4 w-4" />
@@ -610,11 +610,11 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   </div>
                   
                   <div className={`relative pl-10 pb-8 ${
-                    ['goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                    checkStatus(['goodsreceived', 'completed'])
                     ? 'opacity-100' : 'opacity-50'
                   }`}>
                     <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
-                      ['goodsreceived', 'completed'].includes(contract.status.toLowerCase())
+                      checkStatus(['goodsreceived', 'completed'])
                       ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20 text-muted-foreground'
                     }`}>
                       <Package className="h-4 w-4" />
@@ -626,11 +626,11 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   </div>
                   
                   <div className={`relative pl-10 ${
-                    ['completed'].includes(contract.status.toLowerCase())
+                    checkStatus('completed')
                     ? 'opacity-100' : 'opacity-50'
                   }`}>
                     <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
-                      ['completed'].includes(contract.status.toLowerCase())
+                      checkStatus('completed')
                       ? 'bg-primary text-primary-foreground' : 'bg-muted-foreground/20 text-muted-foreground'
                     }`}>
                       <Landmark className="h-4 w-4" />
@@ -647,19 +647,19 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
               </div>
               
               <div className="flex justify-center">
-                {contract.status.toLowerCase() === 'draft' && (
+                {checkStatus('draft') && (
                   <Button onClick={handleApproveContract} className="gap-1 mr-2">
                     <CheckCircle2 className="h-4 w-4 mr-1" /> Approve Contract
                   </Button>
                 )}
                 
-                {contract.status.toLowerCase() === 'pendingapproval' && (
+                {checkStatus('pendingapproval') && (
                   <Button onClick={handleFundContract} className="gap-1 mr-2">
                     <Wallet className="h-4 w-4 mr-1" /> Fund Escrow
                   </Button>
                 )}
                 
-                {contract.status.toLowerCase() === 'goodsreceived' && (
+                {checkStatus('goodsreceived') && (
                   <Button onClick={handleReleaseEscrow} className="gap-1 mr-2">
                     <Landmark className="h-4 w-4 mr-1" /> Release Funds
                   </Button>
@@ -695,7 +695,7 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   </div>
                 </div>
                 
-                {['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase()) && (
+                {checkStatus(['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed']) && (
                   <div className="relative pl-10 pb-8">
                     <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
                       <CheckCircle2 className="h-4 w-4" />
@@ -707,7 +707,7 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   </div>
                 )}
                 
-                {['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase()) && (
+                {checkStatus(['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed']) && (
                   <div className="relative pl-10 pb-8">
                     <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
                       <Wallet className="h-4 w-4" />
@@ -722,7 +722,7 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   </div>
                 )}
                 
-                {['goodsshipped', 'goodsreceived', 'completed'].includes(contract.status.toLowerCase()) && (
+                {checkStatus(['goodsshipped', 'goodsreceived', 'completed']) && (
                   <div className="relative pl-10 pb-8">
                     <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
                       <Ship className="h-4 w-4" />
@@ -737,7 +737,7 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   </div>
                 )}
                 
-                {['goodsreceived', 'completed'].includes(contract.status.toLowerCase()) && (
+                {checkStatus(['goodsreceived', 'completed']) && (
                   <div className="relative pl-10 pb-8">
                     <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
                       <Package className="h-4 w-4" />
@@ -752,7 +752,7 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                   </div>
                 )}
                 
-                {['completed'].includes(contract.status.toLowerCase()) && (
+                {checkStatus('completed') && (
                   <div className="relative pl-10">
                     <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
                       <Landmark className="h-4 w-4" />
