@@ -12,7 +12,8 @@ import {
   ChevronRight,
   Menu,
   X,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Truck
 } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet'
 
@@ -48,6 +49,12 @@ export function BlockchainSidebar({ className }: SidebarProps) {
       href: '/invoices',
       icon: Receipt,
       current: pathname === '/invoices',
+    },
+    {
+      name: 'Logistics',
+      href: '/logistics',
+      icon: Truck,
+      current: pathname === '/logistics',
     },
   ]
 

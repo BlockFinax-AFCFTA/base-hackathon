@@ -116,6 +116,93 @@ export class MemStorage implements IStorage {
     this.logistics = new Map();
     this.logisticsProviders = new Map();
     
+    // Add sample logistics provider
+    this.logisticsProviders.set(1, {
+      id: 1,
+      name: "Global Logistics Partners",
+      logo: "https://placehold.co/200x100/4A90E2/FFFFFF?text=GLP",
+      rating: "4.8",
+      specialties: ["international shipping", "customs clearance", "cold chain"],
+      description: "Leading provider of global logistics solutions with expertise in international trade",
+      basePrice: "500.00",
+      currency: "USD",
+      estimatedDays: 7,
+      address: "123 Shipping Lane, London, UK",
+      website: "https://globallogisticspartners.com",
+      contactEmail: "contact@globallogistics.com",
+      contactPhone: "+44 20 1234 5678",
+      yearEstablished: 1995,
+      fleetSize: 250,
+      certificates: ["ISO 9001", "ISO 14001", "AEO"],
+      sustainabilityRating: "4.5",
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    
+    // Add sample logistics for the first contract
+    this.logistics.set(1, {
+      id: 1,
+      userId: 1,
+      contractId: 1,
+      type: "TRACKING",
+      status: "IN_TRANSIT",
+      origin: "Lagos, Nigeria",
+      destination: "Accra, Ghana",
+      shipmentDate: new Date(2025, 4, 15),
+      cargoType: "Industrial Equipment",
+      weight: "2500",
+      specialRequirements: "Handle with care, sensitive equipment",
+      providerId: 1,
+      trackingNumber: "GLP-INT-25051501",
+      milestones: [
+        {
+          name: "Order Placed",
+          status: "COMPLETED",
+          timestamp: new Date(2025, 4, 10),
+          location: "Lagos, Nigeria",
+          notes: "Order processed and confirmed"
+        },
+        {
+          name: "Pickup",
+          status: "COMPLETED",
+          timestamp: new Date(2025, 4, 15),
+          location: "Lagos, Nigeria",
+          notes: "Cargo picked up from warehouse"
+        },
+        {
+          name: "Customs Clearance",
+          status: "COMPLETED",
+          timestamp: new Date(2025, 4, 17),
+          location: "Lagos Port, Nigeria",
+          notes: "Export customs clearance completed"
+        },
+        {
+          name: "In Transit",
+          status: "IN_PROGRESS",
+          timestamp: new Date(2025, 4, 18),
+          location: "Gulf of Guinea",
+          notes: "Cargo en route to destination"
+        },
+        {
+          name: "Arrival",
+          status: "PENDING",
+          timestamp: null,
+          location: "Accra, Ghana",
+          notes: null
+        },
+        {
+          name: "Delivery",
+          status: "PENDING",
+          timestamp: null,
+          location: "Customer Warehouse, Accra",
+          notes: null
+        }
+      ],
+      estimatedDelivery: new Date(2025, 4, 22),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
+    
     // Add sample contracts
     this.contracts.set(1, {
       id: 1,
