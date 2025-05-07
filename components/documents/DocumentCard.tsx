@@ -1,9 +1,17 @@
 import React from 'react';
-import { File, CheckCircle, Clock, FileText, Calendar } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { 
+  Clock, 
+  CheckCircle, 
+  AlertCircle, 
+  HelpCircle,
+  Download,
+  Calendar
+} from 'lucide-react';
+import { formatFileSize, getDocumentIcon } from '../../utils/documentUtils';
 import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { getDocumentIcon } from '@/utils/documentUtils';
 
 export interface DocumentCardProps {
   id: string;
@@ -26,89 +34,99 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
   referenceNumber,
   onClick
 }) => {
-  // Format file size to human-readable format
-  const formatFileSize = (bytes: number): string => {
-    if (bytes < 1024) return bytes + ' B';
-    else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    else return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-  };
-
-  // Get document icon based on file type
   const DocumentIcon = getDocumentIcon(fileType);
-
-  // Format date
-  const formattedDate = format(new Date(createdAt), 'MMM dd, yyyy');
-
-  // Get status badge styling
-  const getStatusBadge = () => {
+  
+  const getStatusIcon = () => {
     switch (status) {
       case 'approved':
-        return (
-          <div className="flex items-center text-green-600 bg-green-50 px-2 py-1 rounded text-xs">
-            <CheckCircle className="h-3 w-3 mr-1" />
-            Approved
-          </div>
-        );
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
       case 'pending':
-        return (
-          <div className="flex items-center text-yellow-600 bg-yellow-50 px-2 py-1 rounded text-xs">
-            <Clock className="h-3 w-3 mr-1" />
-            Pending Review
-          </div>
-        );
+        return <Clock className="h-4 w-4 text-amber-500" />;
       case 'draft':
-        return (
-          <div className="flex items-center text-gray-600 bg-gray-100 px-2 py-1 rounded text-xs">
-            <File className="h-3 w-3 mr-1" />
-            Draft
-          </div>
-        );
+        return <HelpCircle className="h-4 w-4 text-gray-500" />;
       case 'expired':
-        return (
-          <div className="flex items-center text-red-600 bg-red-50 px-2 py-1 rounded text-xs">
-            <Clock className="h-3 w-3 mr-1" />
-            Expired
-          </div>
-        );
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
       default:
-        return null;
+        return <HelpCircle className="h-4 w-4" />;
     }
   };
-
+  
+  const getStatusText = () => {
+    switch (status) {
+      case 'approved':
+        return 'Approved';
+      case 'pending':
+        return 'Pending';
+      case 'draft':
+        return 'Draft';
+      case 'expired':
+        return 'Expired';
+      default:
+        return 'Unknown';
+    }
+  };
+  
+  const getStatusBadgeVariant = () => {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-800 hover:bg-green-100 border-green-300';
+      case 'pending':
+        return 'bg-amber-100 text-amber-800 hover:bg-amber-100 border-amber-300';
+      case 'draft':
+        return 'bg-gray-100 text-gray-800 hover:bg-gray-100 border-gray-300';
+      case 'expired':
+        return 'bg-red-100 text-red-800 hover:bg-red-100 border-red-300';
+      default:
+        return '';
+    }
+  };
+  
   return (
-    <div 
-      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer"
+    <Card 
+      className="overflow-hidden hover:border-primary/50 transition-all cursor-pointer group"
       onClick={onClick}
     >
-      <div className="flex">
-        <div className="mr-4">
-          <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg text-primary">
-            <DocumentIcon className="h-6 w-6" />
+      <div className="bg-primary/5 p-4 flex justify-between items-start border-b">
+        <div className="flex items-center">
+          <div className="bg-primary/10 p-2 rounded-md">
+            <DocumentIcon className="h-5 w-5 text-primary" />
           </div>
+          <div className="ml-3">
+            <h3 className="font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors">
+              {name}
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              {referenceNumber}
+            </p>
+          </div>
+        </div>
+        <Badge className={`${getStatusBadgeVariant()} flex items-center gap-1`}>
+          {getStatusIcon()}
+          <span className="text-[10px] font-medium">{getStatusText()}</span>
+        </Badge>
+      </div>
+      
+      <CardContent className="p-4">
+        <div className="flex justify-between items-center text-sm mb-3">
+          <span className="text-muted-foreground text-xs">File Size</span>
+          <span className="font-medium text-xs">{formatFileSize(fileSize)}</span>
         </div>
         
-        <div className="flex-1">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="font-medium text-lg text-gray-900">{name}</h3>
-              <p className="text-sm text-gray-500">Reference Number: {referenceNumber}</p>
-            </div>
-            {getStatusBadge()}
-          </div>
-          
-          <div className="mt-2 flex items-center text-xs text-gray-500 space-x-3">
-            <span className="flex items-center">
-              <FileText className="h-3.5 w-3.5 mr-1 text-gray-400" />
-              {formatFileSize(fileSize)}
-            </span>
-            <span className="flex items-center">
-              <Calendar className="h-3.5 w-3.5 mr-1 text-gray-400" />
-              {formattedDate}
-            </span>
-          </div>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
+          <Calendar className="h-3.5 w-3.5" />
+          <span>{format(new Date(createdAt), 'MMM dd, yyyy')}</span>
         </div>
-      </div>
-    </div>
+        
+        <Button
+          size="sm"
+          variant="outline"
+          className="w-full text-xs group-hover:border-primary group-hover:text-primary transition-colors"
+        >
+          <Download className="h-3.5 w-3.5 mr-1" />
+          View Document
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
 

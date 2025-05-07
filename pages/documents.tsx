@@ -16,8 +16,12 @@ import { format } from 'date-fns'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { useToast } from '../hooks/use-toast'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select'
+import DocumentGrid from '../components/documents/DocumentGrid'
+import DocumentCard from '../components/documents/DocumentCard'
+import DocumentViewer from '../components/documents/DocumentViewer'
+import { formatFileSize, getDocumentIcon, generateDocumentTags } from '../utils/documentUtils'
 
-// Mock document data
+// Document interface for the application
 interface Document {
   id: string;
   name: string;
@@ -29,44 +33,58 @@ interface Document {
   verified: boolean;
   description: string | null;
   url: string;
+  // Additional properties for enhanced functionality
+  referenceNumber?: string;
+  status?: 'approved' | 'pending' | 'draft' | 'expired';
+  tags?: string[];
 }
 
-const mockDocuments: Document[] = [
+// Sample documents with enhanced data 
+const sampleDocuments: Document[] = [
   {
     id: 'doc-001',
     name: 'Supply Chain Agreement.pdf',
-    fileType: 'application/pdf',
+    fileType: 'pdf',
     fileSize: 2500000,
     createdDate: new Date(2025, 3, 10),
     contractId: 'contract-001',
     contractName: 'Supply Chain Agreement',
     verified: true,
     description: 'Official signed agreement for supply chain services.',
-    url: '#'
+    url: '#',
+    referenceNumber: 'SCM-2025-001',
+    status: 'approved',
+    tags: ['contract', 'supply chain', 'agreement']
   },
   {
     id: 'doc-002',
     name: 'Bill of Lading.pdf',
-    fileType: 'application/pdf',
+    fileType: 'pdf',
     fileSize: 1800000,
     createdDate: new Date(2025, 3, 15),
     contractId: 'contract-001',
     contractName: 'Supply Chain Agreement',
     verified: true,
     description: 'Bill of lading for international shipment.',
-    url: '#'
+    url: '#',
+    referenceNumber: 'BL-2025-001',
+    status: 'approved',
+    tags: ['shipping', 'bill of lading', 'cargo']
   },
   {
     id: 'doc-003',
     name: 'Service Agreement.pdf',
-    fileType: 'application/pdf',
+    fileType: 'pdf',
     fileSize: 3100000,
     createdDate: new Date(2025, 4, 5),
     contractId: 'contract-002',
     contractName: 'Cross-Border Payment Service',
     verified: false,
     description: 'Partnership service agreement for payment processing.',
-    url: '#'
+    url: '#',
+    referenceNumber: 'SA-2025-001',
+    status: 'pending',
+    tags: ['contract', 'service', 'payments']
   },
   {
     id: 'doc-004',
@@ -78,7 +96,40 @@ const mockDocuments: Document[] = [
     contractName: null,
     verified: true,
     description: 'KYC supporting documentation for regulatory compliance.',
-    url: '#'
+    url: '#',
+    referenceNumber: 'KYC-2025-001',
+    status: 'approved',
+    tags: ['kyc', 'compliance', 'regulatory']
+  },
+  {
+    id: 'doc-005',
+    name: 'Certificate of Origin - Ghana.pdf',
+    fileType: 'pdf',
+    fileSize: 512000,
+    createdDate: new Date(2025, 3, 20),
+    contractId: 'contract-001',
+    contractName: 'Supply Chain Agreement',
+    verified: true,
+    description: 'Certificate of origin for exported goods.',
+    url: '#',
+    referenceNumber: 'CO-2025-001',
+    status: 'approved',
+    tags: ['certificate', 'origin', 'ghana', 'export']
+  },
+  {
+    id: 'doc-006',
+    name: 'Import Permit - Agricultural Products.pdf',
+    fileType: 'pdf',
+    fileSize: 1200000,
+    createdDate: new Date(2025, 2, 10),
+    contractId: 'contract-003',
+    contractName: 'Equipment Purchase',
+    verified: false,
+    description: 'Import permit for agricultural equipment.',
+    url: '#',
+    referenceNumber: 'IP-2025-001',
+    status: 'expired',
+    tags: ['permit', 'import', 'agriculture']
   }
 ];
 
@@ -90,12 +141,13 @@ const mockContracts = [
 ];
 
 export default function DocumentsPage() {
-  const [documents, setDocuments] = useState<Document[]>(mockDocuments);
-  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+  const [documents, setDocuments] = useState<Document[]>(sampleDocuments);
+  const [selectedDocument, setSelectedDocument] = useState<any>(null);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [viewType, setViewType] = useState<'list' | 'grid'>('grid');
   const { toast } = useToast();
   
   // Upload form state
@@ -105,13 +157,6 @@ export default function DocumentsPage() {
     contractId: '',
     file: null as File | null,
   });
-  
-  // Format file size
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + ' bytes';
-    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    else return (bytes / 1048576).toFixed(1) + ' MB';
-  };
   
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,7 +214,10 @@ export default function DocumentsPage() {
         }
       }
       
-      // Create new document object
+      // Create reference number
+      const referenceNumber = `DOC-${Date.now().toString(36).toUpperCase().substring(0, 6)}`;
+      
+      // Create new document object with enhanced properties
       const newDocumentObject: Document = {
         id: `doc-${Date.now().toString(36)}`,
         name: newDocument.name,
@@ -177,10 +225,13 @@ export default function DocumentsPage() {
         fileSize: newDocument.file.size,
         createdDate: new Date(),
         contractId: newDocument.contractId || null,
-        contractName: contractName,
+        contractName,
         verified: false,
         description: newDocument.description,
-        url: '#'
+        url: '#',
+        referenceNumber,
+        status: 'pending',
+        tags: generateDocumentTags(newDocument.name, newDocument.file.type)
       };
       
       // Add to documents list
@@ -213,7 +264,20 @@ export default function DocumentsPage() {
   
   // View document details
   const handleViewDocument = (document: Document) => {
-    setSelectedDocument(document);
+    // Convert to DocumentViewer compatible format
+    const viewerDocument = {
+      id: document.id,
+      name: document.name,
+      fileType: document.fileType.replace('application/', ''),
+      fileSize: document.fileSize,
+      createdAt: document.createdDate,
+      url: document.url,
+      referenceNumber: document.referenceNumber || `REF-${document.id}`,
+      status: document.status || (document.verified ? 'approved' : 'pending'),
+      tags: document.tags || []
+    };
+    
+    setSelectedDocument(viewerDocument);
     setIsViewOpen(true);
   };
   
@@ -256,10 +320,23 @@ export default function DocumentsPage() {
                   Manage and verify your blockchain-secured documents
                 </p>
               </div>
-              <Button onClick={() => setIsUploadOpen(true)}>
-                <FileUp className="mr-2 h-4 w-4" />
-                Upload Document
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setViewType(viewType === 'list' ? 'grid' : 'list')}
+                  className="px-3"
+                >
+                  {viewType === 'list' ? 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-grid-2x2"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M3 12h18"/><path d="M12 3v18"/></svg> :
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-list"><line x1="8" x2="21" y1="6" y2="6" /><line x1="8" x2="21" y1="12" y2="12" /><line x1="8" x2="21" y1="18" y2="18" /><line x1="3" x2="3.01" y1="6" y2="6" /><line x1="3" x2="3.01" y1="12" y2="12" /><line x1="3" x2="3.01" y1="18" y2="18" /></svg>
+                  }
+                  <span className="ml-2">{viewType === 'list' ? 'Grid View' : 'List View'}</span>
+                </Button>
+                <Button onClick={() => setIsUploadOpen(true)}>
+                  <FileUp className="mr-2 h-4 w-4" />
+                  Upload Document
+                </Button>
+              </div>
             </div>
           </header>
           
@@ -284,73 +361,108 @@ export default function DocumentsPage() {
               </div>
             </div>
             
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Document Name</TableHead>
-                    <TableHead>Size</TableHead>
-                    <TableHead>Contract</TableHead>
-                    <TableHead>Uploaded</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredDocuments.length > 0 ? (
-                    filteredDocuments.map((document) => (
-                      <TableRow key={document.id}>
-                        <TableCell>
-                          <div className="flex items-center">
-                            {getFileIcon(document.fileType)}
-                            <span className="ml-2 font-medium">{document.name}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>{formatFileSize(document.fileSize)}</TableCell>
-                        <TableCell>
-                          {document.contractName ? (
-                            <span>{document.contractName}</span>
-                          ) : (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell>{format(document.createdDate, 'PP')}</TableCell>
-                        <TableCell>
-                          {document.verified ? (
-                            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center">
-                              <Check className="mr-1 h-3 w-3" />
-                              Verified
-                            </Badge>
-                          ) : (
-                            <Badge variant="outline" className="flex items-center">
-                              Unverified
-                            </Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={() => handleViewDocument(document)}
-                          >
-                            View
-                          </Button>
+            {/* Grid View */}
+            {viewType === 'grid' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredDocuments.length > 0 ? (
+                  filteredDocuments.map((document) => (
+                    <DocumentCard
+                      key={document.id}
+                      id={document.id}
+                      name={document.name}
+                      fileType={document.fileType.replace('application/', '')}
+                      fileSize={document.fileSize}
+                      createdAt={document.createdDate}
+                      status={document.status || (document.verified ? 'approved' : 'pending')}
+                      referenceNumber={document.referenceNumber || `REF-${document.id}`}
+                      onClick={() => handleViewDocument(document)}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-3 py-12 text-center text-gray-500">
+                    No documents found
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* List View */}
+            {viewType === 'list' && (
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Document Name</TableHead>
+                      <TableHead>Size</TableHead>
+                      <TableHead>Contract</TableHead>
+                      <TableHead>Uploaded</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredDocuments.length > 0 ? (
+                      filteredDocuments.map((document) => (
+                        <TableRow key={document.id}>
+                          <TableCell>
+                            <div className="flex items-center">
+                              {getFileIcon(document.fileType)}
+                              <span className="ml-2 font-medium">{document.name}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>{formatFileSize(document.fileSize)}</TableCell>
+                          <TableCell>
+                            {document.contractName ? (
+                              <span>{document.contractName}</span>
+                            ) : (
+                              <span className="text-muted-foreground">—</span>
+                            )}
+                          </TableCell>
+                          <TableCell>{format(document.createdDate, 'PP')}</TableCell>
+                          <TableCell>
+                            {document.verified ? (
+                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 flex items-center">
+                                <Check className="mr-1 h-3 w-3" />
+                                Verified
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="flex items-center">
+                                Unverified
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => handleViewDocument(document)}
+                            >
+                              View
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
+                          No documents found
                         </TableCell>
                       </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
-                        No documents found
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </main>
         </div>
       </div>
+      
+      {/* Document Viewer */}
+      <DocumentViewer
+        open={isViewOpen}
+        onOpenChange={setIsViewOpen}
+        document={selectedDocument}
+      />
       
       {/* Upload Document Dialog */}
       <Dialog open={isUploadOpen} onOpenChange={setIsUploadOpen}>
