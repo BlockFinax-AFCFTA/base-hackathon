@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'wouter';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader } from '../ui/card';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
 import { Calendar, Clock, Users, File, Plus, DollarSign } from 'lucide-react';
-import { useContracts } from '@/hooks/useContracts';
-import { getStatusColor, getStatusText } from '../types/contract';
+import { useContracts } from '../../hooks/useContracts';
+import { getStatusColor, getStatusText } from '../../types/contract';
 import { format } from 'date-fns';
 
 const ContractList = () => {
