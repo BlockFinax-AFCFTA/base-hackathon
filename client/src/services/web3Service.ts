@@ -38,7 +38,7 @@ export const STABLECOIN_ADDRESSES = {
 
 // BlockFinaX network configuration
 export const BASE_NETWORK = {
-  name: "BlockFinaX Network",
+  name: "BlockFinaX",
   chainId: 8453,
   rpcUrl: "https://mainnet.base.org",
   blockExplorer: "https://basescan.org",
