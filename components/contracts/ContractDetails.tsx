@@ -562,24 +562,28 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                 </Card>
               </div>
               
-              <div className="bg-muted/30 rounded-lg p-4">
-                <h4 className="font-medium mb-3">Escrow Lifecycle</h4>
+              <div className="bg-muted/30 rounded-lg p-6">
+                <h3 className="text-lg font-medium mb-6">Escrow Lifecycle</h3>
                 <div className="relative">
                   <div className="absolute left-3.5 top-0 h-full w-px bg-muted-foreground/20"></div>
                   
-                  <div className="relative pl-10 pb-8">
+                  {/* Contract Created */}
+                  <div className="relative mb-6">
                     <div className="absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground">
                       <CheckCircle2 className="h-4 w-4" />
                     </div>
-                    <div className="font-medium">Contract Created</div>
-                    <div className="text-sm text-muted-foreground">
-                      {formatDate(contract.createdAt)}
+                    <div className="ml-10">
+                      <div className="font-medium text-base">Contract Created</div>
+                      <div className="text-muted-foreground text-sm mt-1">
+                        {formatDate(contract.createdAt)}
+                      </div>
                     </div>
                   </div>
                   
-                  <div className={`relative pl-10 pb-8 ${
+                  {/* Parties Approved */}
+                  <div className={`relative mb-6 ${
                     checkStatus(['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'])
-                    ? 'opacity-100' : 'opacity-50'
+                    ? 'opacity-100' : 'opacity-60'
                   }`}>
                     <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
                       checkStatus(['pendingapproval', 'awaitingfunds', 'funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'])
@@ -587,15 +591,18 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                     }`}>
                       <CheckCircle2 className="h-4 w-4" />
                     </div>
-                    <div className="font-medium">Parties Approved</div>
-                    <div className="text-sm text-muted-foreground">
-                      Contract terms approved by all participants
+                    <div className="ml-10">
+                      <div className="font-medium text-base">Parties Approved</div>
+                      <div className="text-muted-foreground text-sm mt-1">
+                        Contract terms approved by all participants
+                      </div>
                     </div>
                   </div>
                   
-                  <div className={`relative pl-10 pb-8 ${
+                  {/* Escrow Funded */}
+                  <div className={`relative mb-6 ${
                     checkStatus(['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'])
-                    ? 'opacity-100' : 'opacity-50'
+                    ? 'opacity-100' : 'opacity-60'
                   }`}>
                     <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
                       checkStatus(['funded', 'active', 'goodsshipped', 'goodsreceived', 'completed'])
@@ -603,15 +610,18 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                     }`}>
                       <Wallet className="h-4 w-4" />
                     </div>
-                    <div className="font-medium">Escrow Funded</div>
-                    <div className="text-sm text-muted-foreground">
-                      {contract.tradeTerms?.value || "0"} {contract.tradeTerms?.currency || "USDC"} locked in escrow
+                    <div className="ml-10">
+                      <div className="font-medium text-base">Escrow Funded</div>
+                      <div className="text-muted-foreground text-sm mt-1">
+                        {contract.tradeTerms?.value || "0"} {contract.tradeTerms?.currency || "USDC"} locked in escrow
+                      </div>
                     </div>
                   </div>
                   
-                  <div className={`relative pl-10 pb-8 ${
+                  {/* Goods Received */}
+                  <div className={`relative mb-6 ${
                     checkStatus(['goodsreceived', 'completed'])
-                    ? 'opacity-100' : 'opacity-50'
+                    ? 'opacity-100' : 'opacity-60'
                   }`}>
                     <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
                       checkStatus(['goodsreceived', 'completed'])
@@ -619,15 +629,18 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                     }`}>
                       <Package className="h-4 w-4" />
                     </div>
-                    <div className="font-medium">Goods Received</div>
-                    <div className="text-sm text-muted-foreground">
-                      Buyer confirmed receipt of goods
+                    <div className="ml-10">
+                      <div className="font-medium text-base">Goods Received</div>
+                      <div className="text-muted-foreground text-sm mt-1">
+                        Buyer confirmed receipt of goods
+                      </div>
                     </div>
                   </div>
                   
-                  <div className={`relative pl-10 ${
+                  {/* Funds Released */}
+                  <div className={`relative ${
                     checkStatus('completed')
-                    ? 'opacity-100' : 'opacity-50'
+                    ? 'opacity-100' : 'opacity-60'
                   }`}>
                     <div className={`absolute left-0 top-1 flex h-7 w-7 items-center justify-center rounded-full ${
                       checkStatus('completed')
@@ -635,12 +648,14 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
                     }`}>
                       <Landmark className="h-4 w-4" />
                     </div>
-                    <div className="font-medium">Funds Released</div>
-                    <div className="text-sm text-muted-foreground">
-                      {checkStatus('completed') ? 
-                        `Payment of ${contract.tradeTerms?.value || "0"} ${contract.tradeTerms?.currency || "USDC"} sent to seller` :
-                        "Awaiting confirmation to release funds"
-                      }
+                    <div className="ml-10">
+                      <div className="font-medium text-base">Funds Released</div>
+                      <div className="text-muted-foreground text-sm mt-1">
+                        {checkStatus('completed') ? 
+                          `Payment of ${contract.tradeTerms?.value || "0"} ${contract.tradeTerms?.currency || "USDC"} sent to seller` :
+                          "Awaiting confirmation to release funds"
+                        }
+                      </div>
                     </div>
                   </div>
                 </div>
