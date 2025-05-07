@@ -271,9 +271,9 @@ const InvoiceDetail = ({
         
         {!isConnected && (
           <Alert className="mt-6">
-            <AlertTitle>Connect your wallet to pay this invoice</AlertTitle>
+            <AlertTitle>Wallet initialization in progress</AlertTitle>
             <AlertDescription>
-              You need to connect your wallet to pay this invoice with {invoice.currency} stablecoin.
+              BlockFinaX is initializing your wallet to pay this invoice with {invoice.currency} stablecoin.
             </AlertDescription>
           </Alert>
         )}
@@ -283,7 +283,7 @@ const InvoiceDetail = ({
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Network Error</AlertTitle>
             <AlertDescription>
-              Please switch to the correct network in your wallet to pay this invoice.
+              BlockFinaX is connecting to the correct network to process your payment.
             </AlertDescription>
           </Alert>
         )}
@@ -826,25 +826,13 @@ const PaymentDialog = ({
 
 // Main Component
 const StablecoinInvoice = () => {
-  const { isConnected, connectWallet } = useWeb3()
+  const { isConnected } = useWeb3()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [invoices, setInvoices] = useState<Invoice[]>(mockInvoices)
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
   const [viewMode, setViewMode] = useState<'list' | 'detail' | 'create'>('list')
   const [isPaymentOpen, setIsPaymentOpen] = useState(false)
-  
-  // Handle wallet connection
-  const handleConnectWallet = async () => {
-    try {
-      setIsLoading(true)
-      await connectWallet()
-    } catch (error) {
-      console.error('Failed to connect wallet:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
   
   // View a specific invoice
   const handleViewInvoice = (invoice: Invoice) => {
