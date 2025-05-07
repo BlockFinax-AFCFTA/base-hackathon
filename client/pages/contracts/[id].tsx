@@ -1,6 +1,5 @@
 
 import { useRouter } from 'next/router'
-import Layout from '@/components/layout/Layout'
 import ContractsPage from '@/components/contracts/ContractsPage'
 
 export default function Contract() {
@@ -8,8 +7,8 @@ export default function Contract() {
   const { id } = router.query
   
   return (
-    <Layout>
+    <div>
       <ContractsPage id={id as string} />
-    </Layout>
+    </div>
   )
 }

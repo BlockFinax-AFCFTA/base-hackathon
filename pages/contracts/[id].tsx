@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import Layout from '@/components/layout/Layout';
 import ContractDetails from '@/components/contracts/ContractDetails';
 
 export default function ContractDetailsPage() {
@@ -7,7 +6,7 @@ export default function ContractDetailsPage() {
   const { id } = router.query;
   
   return (
-    <Layout>
+    <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Contract Details</h1>
         <p className="text-sm text-muted-foreground">
@@ -22,6 +21,6 @@ export default function ContractDetailsPage() {
           Contract ID not found. Please go back to contracts page.
         </div>
       )}
-    </Layout>
+    </div>
   );
 }

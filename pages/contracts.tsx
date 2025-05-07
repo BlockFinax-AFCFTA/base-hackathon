@@ -1,10 +1,9 @@
 import React from 'react';
-import Layout from '../components/layout/Layout';
 import ContractList from '../components/contracts/ContractList';
 
 export default function ContractsPage() {
   return (
-    <Layout>
+    <div className="min-h-screen bg-background">
       <header className="mb-8">
         <h1 className="text-xl font-semibold">Contract Management</h1>
         <p className="text-sm text-muted-foreground">
@@ -15,6 +14,6 @@ export default function ContractsPage() {
       <main>
         <ContractList />
       </main>
-    </Layout>
+    </div>
   );
 }
