@@ -30,6 +30,7 @@ import {
 import { formatFileSize, isViewableInBrowser, getDocumentIcon } from '../../utils/documentUtils';
 import { format } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
+import DocumentViewerContent from './DocumentViewerContent';
 
 export interface DocumentViewerProps {
   open: boolean;
@@ -254,12 +255,9 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                   />
                 </div>
               ) : document.fileType.match(/^(txt|text)$/) ? (
-                // Text preview
-                <div className="bg-white p-6 min-h-[300px] max-h-[600px] overflow-auto">
-                  <pre className="font-mono text-sm whitespace-pre-wrap">
-                    {/* We'd fetch and display the text content here */}
-                    {`This is a preview of the text content for ${document.name}.\n\nIn a production environment, this would show the actual text content of the document fetched from the server.`}
-                  </pre>
+                // Text preview using our DocumentViewerContent
+                <div className="bg-white min-h-[300px] max-h-[600px] overflow-auto">
+                  <DocumentViewerContent url={document.url} fileType={document.fileType} />
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-full">

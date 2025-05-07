@@ -81,7 +81,7 @@ const sampleDocuments: Document[] = [
     contractName: 'Cross-Border Payment Service',
     verified: false,
     description: 'Irrevocable Letter of Credit issued by AfriBank in compliance with UCP 600 standards.',
-    url: 'https://basenetwork.onrender.com/sample-docs/letter-of-credit.pdf',
+    url: '/sample-docs/letter-of-credit-template.txt',
     referenceNumber: 'LC-2025-001',
     status: 'pending',
     tags: ['finance', 'letter of credit', 'payments']
@@ -96,7 +96,7 @@ const sampleDocuments: Document[] = [
     contractName: null,
     verified: true,
     description: 'Detailed packing list for 18 pallets of Ethiopian Yirgacheffe coffee for export.',
-    url: 'https://basenetwork.onrender.com/sample-docs/packing-list.xlsx',
+    url: '/sample-docs/packing-list-template.txt',
     referenceNumber: 'PL-2025-004',
     status: 'approved',
     tags: ['export', 'packing list', 'inventory']
@@ -111,7 +111,7 @@ const sampleDocuments: Document[] = [
     contractName: 'Supply Chain Agreement',
     verified: true,
     description: 'GSP Form A Certificate of Origin issued by Ghana Export Promotion Authority.',
-    url: 'https://basenetwork.onrender.com/sample-docs/certificate-of-origin.pdf',
+    url: '/sample-docs/certificate-of-origin-template.txt',
     referenceNumber: 'CO-2025-001',
     status: 'approved',
     tags: ['certificate', 'origin', 'ghana', 'export']
@@ -126,7 +126,7 @@ const sampleDocuments: Document[] = [
     contractName: 'Equipment Purchase',
     verified: false,
     description: 'IPPC compliant Phytosanitary Certificate for agricultural products export.',
-    url: 'https://basenetwork.onrender.com/sample-docs/phytosanitary.pdf',
+    url: '/sample-docs/phytosanitary-template.txt',
     referenceNumber: 'PC-2025-002',
     status: 'expired',
     tags: ['certificate', 'phytosanitary', 'agriculture']
