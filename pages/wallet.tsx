@@ -24,7 +24,28 @@ const sampleEscrows = [
     parties: {
       buyer: '0x2eD29d982B0120d49899a7cC7AfE7f5d5435BdBb',
       seller: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
-    }
+    },
+    txHash: '0x5d53558c27e0afd4a9037c5f0c6717d52055286c928bcdd0432c8e6c796ca23f',
+    relatedDocs: [
+      {
+        id: 1001,
+        name: 'Bill of Lading - Electronics Shipment',
+        fileType: 'pdf',
+        url: '#',
+      },
+      {
+        id: 1002,
+        name: 'Commercial Invoice - Electronics Purchase',
+        fileType: 'pdf',
+        url: '#',
+      },
+      {
+        id: 1003,
+        name: 'Shipment Insurance Certificate',
+        fileType: 'pdf',
+        url: '#',
+      }
+    ]
   },
   {
     id: 2,
@@ -40,7 +61,21 @@ const sampleEscrows = [
     parties: {
       buyer: '0x2eD29d982B0120d49899a7cC7AfE7f5d5435BdBb',
       seller: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8'
-    }
+    },
+    relatedDocs: [
+      {
+        id: 2001,
+        name: 'Certificate of Origin - Agricultural Products',
+        fileType: 'pdf',
+        url: '#',
+      },
+      {
+        id: 2002,
+        name: 'Quality Inspection Report',
+        fileType: 'pdf',
+        url: '#',
+      }
+    ]
   }
 ];
 

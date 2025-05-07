@@ -2,7 +2,18 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '../ui/badge';
 import { Link } from 'wouter';
-import { ArrowRight, ExternalLink, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { 
+  ArrowRight, 
+  ExternalLink, 
+  AlertTriangle, 
+  CheckCircle, 
+  Clock, 
+  LockKeyhole, 
+  Unlock, 
+  FileCheck, 
+  ShieldCheck,
+  Download
+} from 'lucide-react';
 import { shortenAddress } from '../../lib/utils';
 
 interface EscrowWalletProps {
@@ -25,6 +36,13 @@ interface EscrowItem {
     buyer: string;
     seller: string;
   };
+  relatedDocs?: {
+    id: number;
+    name: string;
+    url: string;
+    fileType: string;
+  }[];
+  txHash?: string;
 }
 
 const EscrowWallet: React.FC<EscrowWalletProps> = ({ escrows = [], isLoading = false }) => {
@@ -220,18 +238,88 @@ const EscrowWallet: React.FC<EscrowWalletProps> = ({ escrows = [], isLoading = f
                     </div>
                   </div>
                   
-                  <div className="flex justify-end space-x-3 pt-4 border-t">
-                    <button
-                      onClick={() => setSelectedEscrow(null)}
-                      className="px-4 py-2 border rounded hover:bg-gray-100"
-                    >
-                      {t('common.close')}
-                    </button>
-                    <Link href={`/contracts/${selectedEscrow.contractId}`}>
-                      <a className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                        {t('contracts.viewContract')}
-                      </a>
-                    </Link>
+                  {/* Transaction Information */}
+                  {selectedEscrow.txHash && (
+                    <div className="mb-4 bg-blue-50 rounded p-3 border border-blue-100 flex items-start space-x-3">
+                      <ShieldCheck className="h-5 w-5 text-blue-600 mt-0.5" />
+                      <div>
+                        <div className="text-sm font-medium text-blue-800 mb-1">Blockchain Transaction</div>
+                        <div className="flex items-center">
+                          <span className="text-sm text-blue-700 font-mono mr-2">{shortenAddress(selectedEscrow.txHash, 10, 8)}</span>
+                          <a 
+                            href={`https://basescan.org/tx/${selectedEscrow.txHash}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Related Documents */}
+                  {selectedEscrow.relatedDocs && selectedEscrow.relatedDocs.length > 0 && (
+                    <div className="mb-4">
+                      <div className="text-sm text-gray-500 mb-2">{t('documents.relatedDocuments')}</div>
+                      <div className="space-y-2 border rounded divide-y">
+                        {selectedEscrow.relatedDocs.map(doc => (
+                          <div key={doc.id} className="p-3 flex items-center justify-between bg-gray-50 hover:bg-gray-100">
+                            <div className="flex items-center">
+                              <FileCheck className="h-5 w-5 text-blue-500 mr-3" />
+                              <div>
+                                <div className="font-medium">{doc.name}</div>
+                                <div className="text-xs text-gray-500">{doc.fileType.toUpperCase()}</div>
+                              </div>
+                            </div>
+                            <a 
+                              href={doc.url} 
+                              target="_blank" 
+                              rel="noreferrer"
+                              className="text-blue-600 hover:text-blue-800 flex items-center"
+                            >
+                              <Download className="h-4 w-4" />
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-between items-center space-x-3 pt-4 border-t">
+                    <div>
+                      {selectedEscrow.status === 'FUNDED' && (
+                        <button
+                          className="flex items-center text-green-600 px-3 py-1 border border-green-500 rounded hover:bg-green-50"
+                        >
+                          <Unlock className="h-4 w-4 mr-2" />
+                          Release Funds
+                        </button>
+                      )}
+                      {selectedEscrow.status === 'PENDING' && (
+                        <button
+                          className="flex items-center text-blue-600 px-3 py-1 border border-blue-500 rounded hover:bg-blue-50"
+                        >
+                          <LockKeyhole className="h-4 w-4 mr-2" />
+                          Fund Escrow
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={() => setSelectedEscrow(null)}
+                        className="px-4 py-2 border rounded hover:bg-gray-100"
+                      >
+                        {t('common.close')}
+                      </button>
+                      <Link href={`/contracts/${selectedEscrow.contractId}`}>
+                        <a className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                          {t('contracts.viewContract')}
+                        </a>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>

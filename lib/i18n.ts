@@ -65,7 +65,8 @@ const enResources = {
     translate: 'Translate',
     viewOriginal: 'View original',
     shareDocument: 'Share document',
-    verifyOnBlockchain: 'Verify on blockchain'
+    verifyOnBlockchain: 'Verify on blockchain',
+    relatedDocuments: 'Related Documents'
   },
   logistics: {
     title: 'Logistics',
@@ -112,7 +113,9 @@ const enResources = {
     disputed: 'Disputed',
     amendments: 'Amendments',
     verifiedOnchain: 'Verified on blockchain',
-    smartContract: 'Smart contract'
+    smartContract: 'Smart contract',
+    contractEscrow: 'Contract Escrow Management',
+    viewContract: 'View Contract'
   },
   wallet: {
     title: 'Wallet',
@@ -315,7 +318,8 @@ const frResources = {
     translate: 'Traduire',
     viewOriginal: 'Voir l\'original',
     shareDocument: 'Partager le document',
-    verifyOnBlockchain: 'Vérifier sur la blockchain'
+    verifyOnBlockchain: 'Vérifier sur la blockchain',
+    relatedDocuments: 'Documents Associés'
   },
   logistics: {
     title: 'Logistique',
@@ -362,7 +366,9 @@ const frResources = {
     disputed: 'Contesté',
     amendments: 'Modifications',
     verifiedOnchain: 'Vérifié sur la blockchain',
-    smartContract: 'Contrat intelligent'
+    smartContract: 'Contrat intelligent',
+    contractEscrow: 'Gestion du Séquestre de Contrat',
+    viewContract: 'Voir le Contrat'
   },
   wallet: {
     title: 'Portefeuille',
@@ -612,7 +618,9 @@ const esResources = {
     disputed: 'En disputa',
     amendments: 'Enmiendas',
     verifiedOnchain: 'Verificado en blockchain',
-    smartContract: 'Contrato inteligente'
+    smartContract: 'Contrato inteligente',
+    contractEscrow: 'Gestión de Custodia de Contrato',
+    viewContract: 'Ver Contrato'
   },
   wallet: {
     title: 'Cartera',
