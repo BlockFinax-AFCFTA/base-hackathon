@@ -212,14 +212,55 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                     src={document.url} 
                     alt={document.name}
                     className="max-w-full max-h-full object-contain" 
+                    onError={(e) => {
+                      // If image load fails, show error message
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      const container = target.parentElement;
+                      if (container) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'flex flex-col items-center justify-center p-8 text-center';
+                        
+                        const iconDiv = document.createElement('div');
+                        iconDiv.className = 'bg-gray-100 p-6 rounded-full mb-4';
+                        iconDiv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-500"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+                        
+                        const title = document.createElement('h3');
+                        title.className = 'text-lg font-medium mb-2';
+                        title.textContent = 'Image preview failed';
+                        
+                        const desc = document.createElement('p');
+                        desc.className = 'text-gray-500 mb-6 max-w-md';
+                        desc.textContent = 'Unable to load image preview. The image may be unavailable or in an unsupported format.';
+                        
+                        errorDiv.appendChild(iconDiv);
+                        errorDiv.appendChild(title);
+                        errorDiv.appendChild(desc);
+                        container.appendChild(errorDiv);
+                      }
+                    }}
                   />
                 </div>
               ) : document.fileType === 'pdf' ? (
-                <iframe 
-                  src={`${document.url}#toolbar=0`} 
-                  className="w-full h-full min-h-[500px]" 
-                  title={document.name}
-                />
+                <div className="w-full">
+                  <iframe 
+                    src={`${document.url}#toolbar=0`} 
+                    className="w-full h-[600px]" 
+                    title={document.name}
+                    onError={() => {
+                      // We'd handle PDF loading errors here
+                      console.error('PDF failed to load');
+                    }}
+                  />
+                </div>
+              ) : document.fileType.match(/^(txt|text)$/) ? (
+                // Text preview
+                <div className="bg-white p-6 min-h-[300px] max-h-[600px] overflow-auto">
+                  <pre className="font-mono text-sm whitespace-pre-wrap">
+                    {/* We'd fetch and display the text content here */}
+                    {`This is a preview of the text content for ${document.name}.\n\nIn a production environment, this would show the actual text content of the document fetched from the server.`}
+                  </pre>
+                </div>
               ) : (
                 <div className="flex items-center justify-center h-full">
                   <a 

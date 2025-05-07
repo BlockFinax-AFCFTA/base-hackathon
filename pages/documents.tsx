@@ -594,15 +594,68 @@ export default function DocumentsPage() {
               
               <div className="mt-6 space-y-6">
                 <div className="rounded-md border overflow-hidden">
-                  <div className="bg-black h-64 w-full flex items-center justify-center">
-                    <FileText className="h-16 w-16 text-white/50" />
-                  </div>
+                  {/* File Preview - Show based on file type */}
+                  {selectedDocument.fileType.includes('image') ? (
+                    // Image preview
+                    <div className="bg-black flex items-center justify-center min-h-[300px]">
+                      <img 
+                        src={selectedDocument.url} 
+                        alt={selectedDocument.name}
+                        className="max-w-full max-h-[300px]"
+                        onError={(e) => {
+                          // If image load fails, replace with icon
+                          e.currentTarget.style.display = 'none';
+                          const container = e.currentTarget.parentElement;
+                          if (container) {
+                            const icon = document.createElement('div');
+                            icon.className = 'flex flex-col items-center justify-center min-h-[300px] bg-gray-900';
+                            icon.innerHTML = `
+                              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image">
+                                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                                <circle cx="9" cy="9" r="2"/>
+                                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                              </svg>
+                              <p class="text-white/50 mt-4">Image preview unavailable</p>
+                            `;
+                            container.appendChild(icon);
+                          }
+                        }}
+                      />
+                    </div>
+                  ) : selectedDocument.fileType.includes('pdf') ? (
+                    // PDF preview - using iframe
+                    <div className="bg-gray-100 min-h-[400px] w-full">
+                      <iframe 
+                        src={selectedDocument.url} 
+                        className="w-full h-[400px]"
+                        title={selectedDocument.name}
+                      />
+                    </div>
+                  ) : selectedDocument.fileType.includes('text') || selectedDocument.fileType.includes('plain') ? (
+                    // Text preview
+                    <div className="bg-white p-4 min-h-[300px] max-h-[400px] overflow-auto">
+                      <pre className="font-mono text-sm whitespace-pre-wrap">
+                        {/* We'd normally fetch the text content here */}
+                        {`Sample text content for ${selectedDocument.name}\n\nThis would show the actual text content of the document in a production environment.`}
+                      </pre>
+                    </div>
+                  ) : (
+                    // Default preview for other file types
+                    <div className="bg-gray-900 h-64 w-full flex flex-col items-center justify-center">
+                      {getFileIcon(selectedDocument.fileType)}
+                      <p className="text-white/50 mt-4">Preview not available for this file type</p>
+                      <Button variant="outline" size="sm" className="mt-4">
+                        <Download className="mr-2 h-4 w-4" />
+                        Download to view
+                      </Button>
+                    </div>
+                  )}
                   <div className="p-4 bg-muted/30">
                     <div className="flex justify-between items-center">
                       <div>
                         <h3 className="font-medium">{selectedDocument.name}</h3>
                         <p className="text-sm text-muted-foreground mt-1">
-                          {formatFileSize(selectedDocument.fileSize)} • {selectedDocument.fileType.split('/')[1].toUpperCase()}
+                          {formatFileSize(selectedDocument.fileSize)} • {selectedDocument.fileType.split('/')[1]?.toUpperCase() || selectedDocument.fileType.toUpperCase()}
                         </p>
                       </div>
                       <Button variant="secondary" size="sm">
