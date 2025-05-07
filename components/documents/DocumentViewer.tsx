@@ -254,8 +254,8 @@ const DocumentViewer: React.FC<DocumentViewerProps> = ({
                     }}
                   />
                 </div>
-              ) : document.fileType.match(/^(txt|text)$/) ? (
-                // Text preview using our DocumentViewerContent
+              ) : document.fileType.match(/^(txt|text)$/) || document.url?.includes('sample-docs') ? (
+                // Text preview using our DocumentViewerContent - explicitly handle our sample docs
                 <div className="bg-white min-h-[300px] max-h-[600px] overflow-auto">
                   <DocumentViewerContent url={document.url} fileType={document.fileType} />
                 </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Loader2, FileText, Stamp, Ship, CreditCard, FileCheck } from 'lucide-react';
+import { Loader2, FileText, Stamp, Ship, CreditCard, FileCheck, AlertTriangle } from 'lucide-react';
 import { identifyTemplateDocType } from '../../utils/documentUtils';
 
 interface DocumentViewerContentProps {
@@ -18,6 +18,11 @@ const DocumentViewerContent: React.FC<DocumentViewerContentProps> = ({ url, file
       setError(null);
       
       try {
+        // Check if the URL is provided and valid
+        if (!url) {
+          throw new Error('Invalid document URL');
+        }
+        
         const response = await fetch(url);
         
         if (!response.ok) {
@@ -25,6 +30,7 @@ const DocumentViewerContent: React.FC<DocumentViewerContentProps> = ({ url, file
         }
         
         const text = await response.text();
+        console.log('Document content loaded successfully', text.substring(0, 100));
         setContent(text);
       } catch (err) {
         console.error('Error fetching document:', err);
@@ -36,6 +42,9 @@ const DocumentViewerContent: React.FC<DocumentViewerContentProps> = ({ url, file
     
     if (url) {
       fetchDocumentContent();
+    } else {
+      setError('No document URL provided');
+      setIsLoading(false);
     }
   }, [url]);
 
@@ -51,7 +60,10 @@ const DocumentViewerContent: React.FC<DocumentViewerContentProps> = ({ url, file
   if (error) {
     return (
       <div className="p-4 border border-red-200 bg-red-50 text-red-700 rounded-md">
-        <p>{error}</p>
+        <div className="flex items-center">
+          <AlertTriangle className="h-5 w-5 mr-2" />
+          <p>{error}</p>
+        </div>
       </div>
     );
   }
@@ -72,45 +84,19 @@ const DocumentViewerContent: React.FC<DocumentViewerContentProps> = ({ url, file
     }
   };
 
-  if (fileType === 'pdf' || fileType.includes('pdf')) {
+  // Format the content based on document type
+  const renderFormattedContent = () => {
+    // For text-based documents like Bills of Lading, Certificates, etc.
     return (
-      <div className="bg-white rounded-md">
-        <div className="bg-primary/10 text-primary font-medium py-2 px-4 flex items-center border-b">
-          {getDocumentIcon()}
-          <span>{documentType}</span>
-          <div className="ml-auto flex items-center">
-            <FileCheck className="h-4 w-4 mr-1 text-green-600" />
-            <span className="text-xs text-green-600">Blockchain Verified</span>
-          </div>
-        </div>
-        <div className="font-mono whitespace-pre-wrap text-sm overflow-auto max-h-[600px] p-4">
-          {content}
-        </div>
-      </div>
+      <pre className="font-mono whitespace-pre-wrap text-sm overflow-auto max-h-[600px] p-4 leading-relaxed">
+        {content}
+      </pre>
     );
-  }
+  };
 
-  if (fileType === 'xlsx' || fileType.includes('excel') || fileType.includes('spreadsheet')) {
-    return (
-      <div className="bg-white rounded-md">
-        <div className="bg-primary/10 text-primary font-medium py-2 px-4 flex items-center border-b">
-          {getDocumentIcon()}
-          <span>{documentType}</span>
-          <div className="ml-auto flex items-center">
-            <FileCheck className="h-4 w-4 mr-1 text-green-600" />
-            <span className="text-xs text-green-600">Blockchain Verified</span>
-          </div>
-        </div>
-        <div className="font-mono whitespace-pre-wrap text-sm overflow-auto max-h-[600px] p-4">
-          {content}
-        </div>
-      </div>
-    );
-  }
-
-  // Default text viewer for all other file types
+  // Common document display layout
   return (
-    <div className="bg-white rounded-md">
+    <div className="bg-white rounded-md shadow-sm border">
       <div className="bg-primary/10 text-primary font-medium py-2 px-4 flex items-center border-b">
         {getDocumentIcon()}
         <span>{documentType}</span>
@@ -119,9 +105,8 @@ const DocumentViewerContent: React.FC<DocumentViewerContentProps> = ({ url, file
           <span className="text-xs text-green-600">Blockchain Verified</span>
         </div>
       </div>
-      <div className="font-mono whitespace-pre-wrap text-sm overflow-auto max-h-[600px] p-4">
-        {content}
-      </div>
+      
+      {renderFormattedContent()}
     </div>
   );
 };
