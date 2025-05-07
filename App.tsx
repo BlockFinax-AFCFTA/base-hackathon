@@ -15,7 +15,7 @@ import ContractsPage from "./pages/ContractsPage";
 import DocumentsPage from "./pages/DocumentsPage";
 import WalletPage from "./pages/wallet";
 import StablecoinWallet from "./components/wallet/StablecoinWallet";
-import BaseStablecoinsLogin from "./pages/base-stablecoins-login";
+
 import DocumentTranslator from "./pages/document-translator";
 import Layout from "./components/layout/Layout";
 
