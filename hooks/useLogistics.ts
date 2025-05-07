@@ -1,7 +1,5 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { apiRequest } from '../lib/queryClient';
-import { queryClient } from '../lib/queryClient';
-import { useToast } from './use-toast';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 
 interface Milestone {
   name: string;
@@ -25,7 +23,7 @@ export interface Logistics {
   specialRequirements: string | null;
   providerId: number | null;
   trackingNumber: string | null;
-  milestones: Milestone[] | null;
+  milestones: Record<string, Milestone> | null;
   estimatedDelivery: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -51,155 +49,174 @@ export interface LogisticsProvider {
   sustainabilityRating?: string;
 }
 
-export const useLogistics = (logisticsId?: number, contractId?: number, userId?: number) => {
-  const { toast } = useToast();
-
-  // Get all logistics entries
-  const { 
-    data: logistics = [],
+export const useLogistics = (contractId?: number, logisticsId?: number, userId?: number) => {
+  const queryClient = useQueryClient();
+  
+  // Build query parameters for logistics
+  const getLogisticsQueryParams = () => {
+    const params = new URLSearchParams();
+    if (contractId) params.append('contractId', contractId.toString());
+    if (userId) params.append('userId', userId.toString());
+    return params.toString() ? `?${params.toString()}` : '';
+  };
+  
+  // Get logistics by contract ID or specific logistics ID
+  const {
+    data: logistics,
     isLoading: isLoadingLogistics,
     error: logisticsError,
     refetch: refetchLogistics
   } = useQuery({
-    queryKey: ['/api/logistics'],
-    enabled: !logisticsId && !contractId && !userId,
+    queryKey: ['/api/logistics', logisticsId || contractId],
+    queryFn: async () => {
+      if (logisticsId) {
+        return apiRequest(`/api/logistics/${logisticsId}`);
+      }
+      // Get the first logistics associated with the contract
+      const response = await apiRequest(`/api/logistics${getLogisticsQueryParams()}`);
+      return Array.isArray(response) && response.length > 0 ? response[0] : {};
+    },
+    enabled: !!logisticsId || !!contractId,
   });
-
-  // Get logistics by ID
+  
+  // Get all logistics items for a user (for logistics dashboard)
   const {
-    data: logisticsItem,
-    isLoading: isLoadingLogisticsItem,
-    error: logisticsItemError,
-    refetch: refetchLogisticsItem
+    data: allLogistics,
+    isLoading: isLoadingAllLogistics,
+    error: allLogisticsError,
+    refetch: refetchAllLogistics
   } = useQuery({
-    queryKey: ['/api/logistics', logisticsId],
-    enabled: !!logisticsId,
+    queryKey: ['/api/logistics/all', userId],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (userId) params.append('userId', userId.toString());
+      const queryParams = params.toString() ? `?${params.toString()}` : '';
+      return apiRequest(`/api/logistics${queryParams}`);
+    },
+    enabled: !logisticsId && !contractId && !!userId,
   });
-
-  // Get logistics by contract ID
-  const {
-    data: contractLogistics = [],
-    isLoading: isLoadingContractLogistics,
-    error: contractLogisticsError,
-    refetch: refetchContractLogistics
-  } = useQuery({
-    queryKey: ['/api/contracts', contractId, 'logistics'],
-    enabled: !!contractId,
-  });
-
-  // Get logistics by user ID
-  const {
-    data: userLogistics = [],
-    isLoading: isLoadingUserLogistics,
-    error: userLogisticsError,
-    refetch: refetchUserLogistics
-  } = useQuery({
-    queryKey: ['/api/users', userId, 'logistics'],
-    enabled: !!userId,
-  });
-
+  
   // Get logistics providers
   const {
-    data: logisticsProviders = [],
-    isLoading: isLoadingProviders,
-    error: providersError,
-    refetch: refetchProviders
+    data: logisticsProviders,
+    isLoading: isLoadingProviders
   } = useQuery({
     queryKey: ['/api/logistics/providers'],
+    queryFn: async () => {
+      return apiRequest('/api/logistics/providers');
+    },
   });
-
+  
   // Create logistics
-  const createLogisticsMutation = useMutation({
-    mutationFn: async (logisticsData: Partial<Logistics>) => {
-      const response = await apiRequest('POST', '/api/logistics', logisticsData);
-      return response.json();
+  const { mutateAsync: createLogistics, isPending: isCreatingLogistics } = useMutation({
+    mutationFn: async (data: Partial<Logistics>) => {
+      return apiRequest('/api/logistics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/logistics'] });
       if (contractId) {
-        queryClient.invalidateQueries({ queryKey: ['/api/contracts', contractId, 'logistics'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/logistics', contractId] });
       }
-      if (userId) {
-        queryClient.invalidateQueries({ queryKey: ['/api/users', userId, 'logistics'] });
-      }
-      toast({
-        title: "Logistics Created",
-        description: "Logistics entry has been created successfully",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create logistics entry",
-        variant: "destructive",
-      });
+      queryClient.invalidateQueries({ queryKey: ['/api/logistics/all'] });
     },
   });
-
+  
   // Update logistics
-  const updateLogisticsMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number, data: Partial<Logistics> }) => {
-      const response = await apiRequest('PATCH', `/api/logistics/${id}`, data);
-      return response.json();
+  const { mutateAsync: updateLogistics, isPending: isUpdatingLogistics } = useMutation({
+    mutationFn: async ({ id, ...data }: { id: number; [key: string]: any }) => {
+      return apiRequest(`/api/logistics/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['/api/logistics'] });
       queryClient.invalidateQueries({ queryKey: ['/api/logistics', variables.id] });
-      if (contractId) {
-        queryClient.invalidateQueries({ queryKey: ['/api/contracts', contractId, 'logistics'] });
-      }
-      if (userId) {
-        queryClient.invalidateQueries({ queryKey: ['/api/users', userId, 'logistics'] });
-      }
-      toast({
-        title: "Logistics Updated",
-        description: "Logistics entry has been updated successfully",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update logistics entry",
-        variant: "destructive",
-      });
+      queryClient.invalidateQueries({ queryKey: ['/api/logistics/all'] });
     },
   });
-
+  
+  // Update milestone status
+  const updateMilestone = async (milestoneKey: string, status: 'COMPLETED' | 'IN_PROGRESS' | 'PENDING' = 'COMPLETED') => {
+    if (!logistics || !logistics.id) {
+      throw new Error('No logistics data found');
+    }
+    
+    const updatedMilestones = {
+      ...logistics.milestones,
+      [milestoneKey]: {
+        ...logistics.milestones?.[milestoneKey],
+        status,
+        timestamp: status === 'COMPLETED' ? new Date() : logistics.milestones?.[milestoneKey]?.timestamp,
+      },
+    };
+    
+    return updateLogistics({
+      id: logistics.id,
+      milestones: updatedMilestones,
+    });
+  };
+  
+  // Confirm delivery (final milestone)
+  const confirmDelivery = async () => {
+    if (!logistics || !logistics.id) {
+      throw new Error('No logistics data found');
+    }
+    
+    // Update all milestones to completed
+    const updatedMilestones = { ...logistics.milestones };
+    if (updatedMilestones) {
+      Object.keys(updatedMilestones).forEach(key => {
+        updatedMilestones[key] = {
+          ...updatedMilestones[key],
+          status: 'COMPLETED',
+          timestamp: updatedMilestones[key].timestamp || new Date(),
+        };
+      });
+    }
+    
+    // Update the logistics status to delivered
+    return updateLogistics({
+      id: logistics.id,
+      status: 'DELIVERED',
+      milestones: updatedMilestones,
+    });
+  };
+  
   return {
-    // All logistics
+    // Data and loading states
     logistics,
-    isLoadingLogistics,
-    logisticsError,
-    refetchLogistics,
-    
-    // Single logistics item
-    logisticsItem,
-    isLoadingLogisticsItem,
-    logisticsItemError,
-    refetchLogisticsItem,
-    
-    // Contract logistics
-    contractLogistics,
-    isLoadingContractLogistics,
-    contractLogisticsError,
-    refetchContractLogistics,
-    
-    // User logistics
-    userLogistics,
-    isLoadingUserLogistics,
-    userLogisticsError,
-    refetchUserLogistics,
-    
-    // Providers
+    allLogistics,
     logisticsProviders,
+    isLoadingLogistics,
+    isLoadingAllLogistics,
     isLoadingProviders,
-    providersError,
-    refetchProviders,
+    logisticsError,
+    allLogisticsError,
     
-    // Mutations
-    createLogistics: createLogisticsMutation.mutate,
-    isCreatingLogistics: createLogisticsMutation.isPending,
-    updateLogistics: updateLogisticsMutation.mutate,
-    isUpdatingLogistics: updateLogisticsMutation.isPending,
+    // CRUD operations
+    createLogistics,
+    updateLogistics,
+    
+    // Refetch methods
+    refetchLogistics,
+    refetchAllLogistics,
+    
+    // Logistics-specific actions
+    updateMilestone,
+    confirmDelivery,
+    
+    // Loading states for mutations
+    isCreatingLogistics,
+    isUpdatingLogistics,
+    
+    // Custom helpers for components
+    isLoading: isLoadingLogistics,
+    error: logisticsError,
   };
 };

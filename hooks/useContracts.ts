@@ -1,92 +1,122 @@
-import { useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
-import { queryClient } from '@/lib/queryClient';
-import { EscrowContract } from '../types/contract';
-import { useToast } from '@/hooks/use-toast';
 
 export const useContracts = (contractId?: number) => {
-  const { toast } = useToast();
+  const queryClient = useQueryClient();
   
-  // Get all contracts
+  // For getting all contracts
   const {
-    data: contracts = [],
+    data: contracts,
     isLoading: isLoadingContracts,
     error: contractsError,
-    refetch: refetchContracts,
+    refetch: refetchContracts
   } = useQuery({
     queryKey: ['/api/contracts'],
-    enabled: !contractId,
+    enabled: contractId === undefined,
   });
   
-  // Get specific contract
+  // For getting a specific contract
   const {
     data: contract,
     isLoading: isLoadingContract,
     error: contractError,
-    refetch: refetchContract,
+    refetch: refetchContract
   } = useQuery({
     queryKey: ['/api/contracts', contractId],
-    enabled: !!contractId,
+    enabled: contractId !== undefined,
   });
   
-  // Create contract
-  const createContractMutation = useMutation({
-    mutationFn: async (contractData: Partial<EscrowContract>) => {
-      const response = await apiRequest('POST', '/api/contracts', contractData);
-      return response.json();
+  // Create a new contract
+  const { mutateAsync: createContract } = useMutation({
+    mutationFn: async (contractData: Partial<any>) => {
+      return apiRequest('/api/contracts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contractData),
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/contracts'] });
-      toast({
-        title: "Contract Created",
-        description: "Your contract has been created successfully.",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Contract Creation Failed",
-        description: error.message || "Failed to create contract",
-        variant: "destructive",
-      });
     },
   });
   
-  // Update contract
-  const updateContractMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number, data: Partial<EscrowContract> }) => {
-      const response = await apiRequest('PATCH', `/api/contracts/${id}`, data);
-      return response.json();
+  // Update an existing contract
+  const { mutateAsync: updateContract } = useMutation({
+    mutationFn: async ({ id, ...data }: { id: number; [key: string]: any }) => {
+      return apiRequest(`/api/contracts/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['/api/contracts'] });
       queryClient.invalidateQueries({ queryKey: ['/api/contracts', variables.id] });
-      toast({
-        title: "Contract Updated",
-        description: "Your contract has been updated successfully.",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Contract Update Failed",
-        description: error.message || "Failed to update contract",
-        variant: "destructive",
-      });
     },
   });
   
+  // Delete a contract
+  const { mutateAsync: deleteContract } = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest(`/api/contracts/${id}`, {
+        method: 'DELETE',
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/contracts'] });
+    },
+  });
+  
+  // Additional methods for contract actions
+  const approve = async () => {
+    if (!contractId) throw new Error('Contract ID is required');
+    return updateContract({ 
+      id: contractId, 
+      status: 'PENDINGAPPROVAL' 
+    });
+  };
+  
+  const fund = async () => {
+    if (!contractId) throw new Error('Contract ID is required');
+    return updateContract({ 
+      id: contractId, 
+      status: 'FUNDED' 
+    });
+  };
+  
+  const release = async () => {
+    if (!contractId) throw new Error('Contract ID is required');
+    return updateContract({ 
+      id: contractId, 
+      status: 'COMPLETED' 
+    });
+  };
+  
   return {
+    // Data and loading states
     contracts,
     contract,
     isLoadingContracts,
     isLoadingContract,
     contractsError,
     contractError,
-    createContract: createContractMutation.mutate,
-    isCreatingContract: createContractMutation.isPending,
-    updateContract: updateContractMutation.mutate,
-    isUpdatingContract: updateContractMutation.isPending,
+    
+    // CRUD operations
+    createContract,
+    updateContract,
+    deleteContract,
+    
+    // Refetch methods
     refetchContracts,
     refetchContract,
+    
+    // Contract actions
+    approve,
+    fund,
+    release,
+    
+    // Custom helpers for the component
+    isLoading: contractId ? isLoadingContract : isLoadingContracts,
+    error: contractId ? contractError : contractsError,
   };
 };
