@@ -74,7 +74,7 @@ const mockInvoices: Invoice[] = [
     contractId: 'contract-001',
     contractName: 'Supply Chain Agreement',
     paymentLink: 'https://pay.example.com/inv-001',
-    notes: 'Payment received via Base Network transfer'
+    notes: 'Payment received via blockchain transfer'
   },
   {
     id: 'inv-002',
@@ -349,13 +349,13 @@ export default function InvoicesPage() {
   return (
     <>
       <Head>
-        <title>Invoices | Base Network Finance</title>
+        <title>Invoices | BlockFinaX</title>
       </Head>
       
       <div className="flex min-h-screen">
         <div className="hidden md:flex w-64 flex-col border-r bg-background z-30">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <div className="font-semibold">Base Network Finance</div>
+            <div className="font-semibold">BlockFinaX</div>
           </div>
           <BlockchainSidebar className="flex-1" />
         </div>
@@ -452,7 +452,7 @@ export default function InvoicesPage() {
               Create New Invoice
             </DialogTitle>
             <DialogDescription>
-              Create an invoice to be paid in stablecoins on Base Network
+              Create an invoice to be paid in stablecoins
             </DialogDescription>
           </DialogHeader>
           
