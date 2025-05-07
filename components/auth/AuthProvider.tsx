@@ -1,12 +1,12 @@
-import { createContext, ReactNode, useContext } from "react";
+import React, { createContext, ReactNode, useContext } from "react";
 import {
   useQuery,
   useMutation,
   UseMutationResult,
 } from "@tanstack/react-query";
-import { User, LoginCredentials, RegisterCredentials } from "@shared/schema";
-import { queryClient } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { User, LoginCredentials, RegisterCredentials } from "../../shared/schema";
+import { queryClient } from "../../lib/queryClient";
+import { useToast } from "../../hooks/use-toast";
 
 type AuthContextType = {
   user: User | null;
@@ -30,15 +30,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   } = useQuery<User | null, Error>({
     queryKey: ["/api/user"],
     queryFn: async () => {
-      // Return a mock user for all requests
+      // Return a mock user for all requests that matches the User schema
       return {
         id: 1,
         username: "demo_user",
+        password: "hashed_password_not_used", // Required by schema but not used
         walletAddress: "0x9A17c6a0b821c93c199e740a164a06bce9e17E7e", 
-        email: "demo@blockfinax.com",
+        profileImage: null,
         createdAt: new Date(),
-        updatedAt: new Date(),
-        profileImage: null
+        updatedAt: new Date()
       };
     },
   });

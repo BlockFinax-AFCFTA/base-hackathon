@@ -1,7 +1,7 @@
+import React, { ComponentType } from "react";
 import { Route, Redirect } from "wouter";
-import { ComponentType } from "react";
 import { Loader2 } from "lucide-react";
-import { useAuth } from "@/components/auth/AuthProvider";
+import { useAuth } from "./AuthProvider";
 
 type ProtectedRouteProps = {
   path: string;
