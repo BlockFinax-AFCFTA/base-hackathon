@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { Menu, X, LogOut, User, LogIn, UserPlus } from 'lucide-react';
+import { Menu, X, LogOut, User, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useWeb3 } from '@/hooks/useWeb3';
@@ -31,8 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [tab, setTab] = useState<'login' | 'register'>('login');
-  const { loginUser, createAccount } = useWeb3();
+  const { loginUser } = useWeb3();
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,91 +39,41 @@ const LoginDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
     onClose();
   };
   
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await createAccount(username, password);
-    onClose();
-  };
-  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
-        <Tabs defaultValue="login" value={tab} onValueChange={(value) => setTab(value as 'login' | 'register')}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="register">Register</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="login">
-            <form onSubmit={handleLogin}>
-              <DialogHeader>
-                <DialogTitle>Login to your account</DialogTitle>
-                <DialogDescription>
-                  Enter your credentials to access your account.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="username">Username</Label>
-                  <Input 
-                    id="username" 
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)} 
-                    required 
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input 
-                    id="password" 
-                    type="password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    required 
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">Login</Button>
-              </DialogFooter>
-            </form>
-          </TabsContent>
-          
-          <TabsContent value="register">
-            <form onSubmit={handleRegister}>
-              <DialogHeader>
-                <DialogTitle>Create your account</DialogTitle>
-                <DialogDescription>
-                  Register to create your account and wallet.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="reg-username">Username</Label>
-                  <Input 
-                    id="reg-username" 
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)} 
-                    required 
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="reg-password">Password</Label>
-                  <Input 
-                    id="reg-password" 
-                    type="password" 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    required 
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">Register</Button>
-              </DialogFooter>
-            </form>
-          </TabsContent>
-        </Tabs>
+        <form onSubmit={handleLogin}>
+          <DialogHeader>
+            <DialogTitle>Login to your account</DialogTitle>
+            <DialogDescription>
+              Enter your credentials to access your account.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="username">Username</Label>
+              <Input 
+                id="username" 
+                value={username} 
+                onChange={(e) => setUsername(e.target.value)} 
+                required 
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input 
+                id="password" 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit">Login</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
@@ -220,17 +169,6 @@ const Header = () => {
                 >
                   <LogIn className="h-4 w-4" />
                   <span>Login</span>
-                </Button>
-                <Button 
-                  variant="default" 
-                  size="sm" 
-                  onClick={() => {
-                    setLoginDialogOpen(true);
-                  }}
-                  className="flex items-center gap-1 bg-blue-700 text-white"
-                >
-                  <UserPlus className="h-4 w-4" />
-                  <span>Register</span>
                 </Button>
                 
                 <LoginDialog 
