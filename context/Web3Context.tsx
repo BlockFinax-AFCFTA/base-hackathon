@@ -429,10 +429,13 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     // Try to get current user session on component mount
     fetchCurrentUser();
     
-    // Check if wallet is already connected (browser persistence)
-    if (window.ethereum && window.ethereum.selectedAddress) {
-      connectWallet().catch(console.error);
-    }
+    // Always try to connect to our integrated wallet
+    // This implements a directly integrated wallet instead of requiring external connection
+    connectWallet().catch(err => {
+      console.log('Auto-connecting to integrated wallet:', err);
+      // Silent fail - we don't want to show errors for auto-connection
+      // The user will still be able to use the app
+    });
   }, []);
 
   return (

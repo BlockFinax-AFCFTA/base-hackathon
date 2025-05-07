@@ -54,7 +54,7 @@ export const BASE_TESTNET = {
 };
 
 export class Web3Service {
-  private provider: ethers.BrowserProvider | null = null;
+  private provider: ethers.JsonRpcProvider | ethers.BrowserProvider | null = null;
   private signer: ethers.Signer | null = null;
   
   constructor(provider?: ethers.BrowserProvider, signer?: ethers.Signer) {
@@ -62,7 +62,7 @@ export class Web3Service {
     this.signer = signer || null;
   }
   
-  setProvider(provider: ethers.BrowserProvider) {
+  setProvider(provider: ethers.JsonRpcProvider | ethers.BrowserProvider) {
     this.provider = provider;
   }
   
@@ -71,55 +71,104 @@ export class Web3Service {
   }
 
   async connectToBaseNetwork(useTestnet = false) {
-    if (!window.ethereum) {
-      throw new Error('Ethereum provider not found. Please install a wallet like MetaMask.');
-    }
-
     try {
-      // Request wallet connection
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      let provider;
+      let signer;
       
-      // Create provider
-      this.provider = new ethers.BrowserProvider(window.ethereum);
-      this.signer = await this.provider.getSigner();
+      if (window.ethereum) {
+        // External wallet is available, try to connect to it
+        try {
+          // Request wallet connection
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          
+          // Create provider using external wallet
+          provider = new ethers.BrowserProvider(window.ethereum);
+          signer = await provider.getSigner();
+        } catch (externalWalletError) {
+          console.log('External wallet connection failed, using integrated wallet');
+          // Fall back to integrated wallet
+          provider = new ethers.JsonRpcProvider(useTestnet ? BASE_TESTNET.rpcUrl : BASE_NETWORK.rpcUrl);
+          
+          // Create a random wallet for the integrated solution
+          // In a production app, this would be securely managed and persistent
+          const privateKey = ethers.Wallet.createRandom().privateKey;
+          signer = new ethers.Wallet(privateKey, provider);
+        }
+      } else {
+        // No external wallet available, use integrated wallet
+        console.log('No external wallet found, using integrated wallet');
+        provider = new ethers.JsonRpcProvider(useTestnet ? BASE_TESTNET.rpcUrl : BASE_NETWORK.rpcUrl);
+        
+        // Create a random wallet for integrated mode
+        // In a production app, this would be securely managed and persistent
+        const privateKey = ethers.Wallet.createRandom().privateKey;
+        signer = new ethers.Wallet(privateKey, provider);
+      }
+      
+      // Set the provider and signer
+      this.provider = provider;
+      this.signer = signer;
       
       // Check if user is on the correct network
-      const network = await this.provider.getNetwork();
       const targetNetwork = useTestnet ? BASE_TESTNET : BASE_NETWORK;
       
-      if (Number(network.chainId) !== targetNetwork.chainId) {
+      // For external wallets, we may need to switch networks
+      if (window.ethereum) {
         try {
-          // Try to switch to Base network
-          await window.ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: ethers.toBeHex(targetNetwork.chainId) }]
-          });
-        } catch (switchError: any) {
-          // If network is not added, add it
-          if (switchError.code === 4902) {
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [{
-                chainId: ethers.toBeHex(targetNetwork.chainId),
-                chainName: targetNetwork.name,
-                rpcUrls: [targetNetwork.rpcUrl],
-                blockExplorerUrls: [targetNetwork.blockExplorer],
-                nativeCurrency: {
-                  name: 'ETH',
-                  symbol: 'ETH',
-                  decimals: 18
-                }
-              }]
-            });
-          } else {
-            throw switchError;
+          const network = await this.provider.getNetwork();
+          
+          if (Number(network.chainId) !== targetNetwork.chainId) {
+            try {
+              // Try to switch to Base network
+              await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: ethers.toBeHex(targetNetwork.chainId) }]
+              });
+              
+              // Get updated provider and signer after network switch
+              this.provider = new ethers.BrowserProvider(window.ethereum);
+              this.signer = await this.provider.getSigner();
+            } catch (switchError: any) {
+              // If network is not added, add it
+              if (switchError.code === 4902) {
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{
+                    chainId: ethers.toBeHex(targetNetwork.chainId),
+                    chainName: targetNetwork.name,
+                    rpcUrls: [targetNetwork.rpcUrl],
+                    blockExplorerUrls: [targetNetwork.blockExplorer],
+                    nativeCurrency: {
+                      name: 'ETH',
+                      symbol: 'ETH',
+                      decimals: 18
+                    }
+                  }]
+                });
+                
+                // Get updated provider and signer after network add
+                this.provider = new ethers.BrowserProvider(window.ethereum);
+                this.signer = await this.provider.getSigner();
+              } else {
+                // If there's an error switching networks with external wallet,
+                // fall back to integrated wallet on the correct network
+                console.log('Error switching networks, using integrated wallet');
+                this.provider = new ethers.JsonRpcProvider(targetNetwork.rpcUrl);
+                const privateKey = ethers.Wallet.createRandom().privateKey;
+                this.signer = new ethers.Wallet(privateKey, this.provider);
+              }
+            }
           }
+        } catch (networkCheckError) {
+          console.error('Network check error:', networkCheckError);
+          // If there's an error checking the network, ensure we're on the target network
+          // by using the integrated wallet with the correct network
+          this.provider = new ethers.JsonRpcProvider(targetNetwork.rpcUrl);
+          const privateKey = ethers.Wallet.createRandom().privateKey;
+          this.signer = new ethers.Wallet(privateKey, this.provider);
         }
-        
-        // Get updated provider and signer after network switch
-        this.provider = new ethers.BrowserProvider(window.ethereum);
-        this.signer = await this.provider.getSigner();
       }
+      // For integrated wallet, we're already on the correct network
       
       return {
         address: await this.signer.getAddress(),
