@@ -1,76 +1,57 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-type GetQueryFnOptions = {
-  on401?: "throw" | "returnNull";
-  on404?: "throw" | "returnNull";
-};
+async function throwIfResNotOk(res: Response) {
+  if (!res.ok) {
+    const text = (await res.text()) || res.statusText;
+    throw new Error(`${res.status}: ${text}`);
+  }
+}
+
+export async function apiRequest(
+  method: string,
+  url: string,
+  data?: unknown | undefined,
+): Promise<Response> {
+  const res = await fetch(url, {
+    method,
+    headers: data ? { "Content-Type": "application/json" } : {},
+    body: data ? JSON.stringify(data) : undefined,
+    credentials: "include",
+  });
+
+  await throwIfResNotOk(res);
+  return res;
+}
+
+type UnauthorizedBehavior = "returnNull" | "throw";
+export const getQueryFn: <T>(options: {
+  on401: UnauthorizedBehavior;
+}) => QueryFunction<T> =
+  ({ on401: unauthorizedBehavior }) =>
+  async ({ queryKey }) => {
+    const res = await fetch(queryKey[0] as string, {
+      credentials: "include",
+    });
+
+    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+      return null;
+    }
+
+    await throwIfResNotOk(res);
+    return await res.json();
+  };
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 1,
+      queryFn: getQueryFn({ on401: "throw" }),
+      refetchInterval: false,
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
+      retry: false,
+    },
+    mutations: {
+      retry: false,
     },
   },
 });
-
-/**
- * Creates a function that fetches from the server.
- * 
- * @param options Configuration options for the query function.
- * @returns A function that fetches from the server.
- */
-export function getQueryFn(options: GetQueryFnOptions = {}) {
-  return async ({ queryKey }: { queryKey: string[] }) => {
-    const [endpoint] = queryKey;
-    const res = await fetch(endpoint);
-
-    if (res.status === 401 && options.on401 === "returnNull") {
-      return null;
-    }
-
-    if (res.status === 404 && options.on404 === "returnNull") {
-      return null;
-    }
-
-    if (!res.ok) {
-      throw new Error(`Error fetching ${endpoint}: ${res.statusText}`);
-    }
-
-    return res.json();
-  };
-}
-
-/**
- * Makes an API request to the server.
- * 
- * @param method The HTTP method to use.
- * @param endpoint The API endpoint to send the request to.
- * @param body The body of the request.
- * @returns The fetch response.
- */
-export async function apiRequest(
-  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
-  endpoint: string,
-  body?: any
-) {
-  const options: RequestInit = {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  if (body) {
-    options.body = JSON.stringify(body);
-  }
-
-  const res = await fetch(endpoint, options);
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Error ${method} ${endpoint}: ${res.statusText}`);
-  }
-
-  return res;
-}
