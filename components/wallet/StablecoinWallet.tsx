@@ -165,136 +165,138 @@ const StablecoinWallet = () => {
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <div>
-            <CardTitle>Base Network Stablecoin Wallet</CardTitle>
-            <CardDescription>
-              Manage your stablecoins on Base Network
-            </CardDescription>
+    <div className="space-y-6">
+      <Card className="w-full">
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle>Base Network Stablecoin Wallet</CardTitle>
+              <CardDescription>
+                Manage your stablecoins on Base Network
+              </CardDescription>
+            </div>
+            <Badge variant="default" className="ml-2">
+              Base Network
+            </Badge>
           </div>
-          <Badge variant="default" className="ml-2">
-            Base Network
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col md:flex-row justify-between mb-6">
-          <div className="mb-4 md:mb-0">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-muted-foreground">Your Wallet:</span>
-              <span className="font-mono">{formatAddress(walletAddress)}</span>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row justify-between mb-6">
+            <div className="mb-4 md:mb-0">
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-muted-foreground">Your Wallet:</span>
+                <span className="font-mono">{formatAddress(walletAddress)}</span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => copyToClipboard(walletAddress)}
+                  className="h-6 w-6"
+                >
+                  <Copy className="h-3 w-3" />
+                </Button>
+              </div>
+              <div className="text-sm text-muted-foreground mt-1">
+                ETH Balance: {parseFloat(ethBalance).toFixed(4)} ETH
+              </div>
+            </div>
+            <div className="flex space-x-2">
+              <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Refresh
+              </Button>
               <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => copyToClipboard(walletAddress)}
-                className="h-6 w-6"
+                onClick={() => setIsTransferOpen(true)} 
+                size="sm" 
+                disabled={tokens.length === 0}
               >
-                <Copy className="h-3 w-3" />
+                <Send className="mr-2 h-4 w-4" />
+                Send Tokens
               </Button>
             </div>
-            <div className="text-sm text-muted-foreground mt-1">
-              ETH Balance: {parseFloat(ethBalance).toFixed(4)} ETH
-            </div>
           </div>
-          <div className="flex space-x-2">
-            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Refresh
-            </Button>
-            <Button 
-              onClick={() => setIsTransferOpen(true)} 
-              size="sm" 
-              disabled={tokens.length === 0}
-            >
-              <Send className="mr-2 h-4 w-4" />
-              Send Tokens
-            </Button>
-          </div>
-        </div>
-        
-        <Separator className="my-4" />
-        
-        <Tabs defaultValue="tokens" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="tokens">Stablecoins</TabsTrigger>
-            <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          </TabsList>
           
-          <TabsContent value="tokens" className="p-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-              {tokens.map((token) => (
-                <Card 
-                  key={token.address} 
-                  className={`cursor-pointer ${selectedToken?.address === token.address ? 'border-primary' : 'border-muted'}`} 
-                  onClick={() => handleTokenSelect(token.address)}
-                >
-                  <CardHeader className="p-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <CardTitle className="text-lg">{token.symbol}</CardTitle>
-                        <CardDescription>{token.name}</CardDescription>
-                      </div>
-                      {selectedToken?.address === token.address && (
-                        <Check className="h-5 w-5 text-primary" />
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-4 pt-0">
-                    <p className="text-2xl font-bold">{parseFloat(token.balance).toFixed(2)}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Token address: {formatAddress(token.address)}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
+          <Separator className="my-4" />
           
-          <TabsContent value="transactions">
-            <div className="border rounded-md overflow-hidden mt-4">
-              <div className="bg-muted p-3 font-medium grid grid-cols-12 gap-4">
-                <div className="col-span-3">Date</div>
-                <div className="col-span-3">Type</div>
-                <div className="col-span-3">Amount</div>
-                <div className="col-span-3">Status</div>
-              </div>
-              <Separator />
-              <div className="p-8 text-center">
-                <h3 className="text-lg font-medium">No Recent Transactions</h3>
-                <p className="text-muted-foreground mt-2">
-                  Your transactions will appear here once you start using your wallet.
-                </p>
-                <div className="mt-4">
-                  <a 
-                    href={`${BASE_NETWORK.blockExplorer}/address/${walletAddress}`} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center text-primary hover:text-primary/80"
+          <Tabs defaultValue="tokens" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="tokens">Stablecoins</TabsTrigger>
+              <TabsTrigger value="transactions">Transactions</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="tokens" className="p-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                {tokens.map((token) => (
+                  <Card 
+                    key={token.address} 
+                    className={`cursor-pointer ${selectedToken?.address === token.address ? 'border-primary' : 'border-muted'}`} 
+                    onClick={() => handleTokenSelect(token.address)}
                   >
-                    View on Base Explorer
-                    <ExternalLink className="ml-1 h-3 w-3" />
-                  </a>
+                    <CardHeader className="p-4">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <CardTitle className="text-lg">{token.symbol}</CardTitle>
+                          <CardDescription>{token.name}</CardDescription>
+                        </div>
+                        {selectedToken?.address === token.address && (
+                          <Check className="h-5 w-5 text-primary" />
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0">
+                      <p className="text-2xl font-bold">{parseFloat(token.balance).toFixed(2)}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Token address: {formatAddress(token.address)}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="transactions">
+              <div className="border rounded-md overflow-hidden mt-4">
+                <div className="bg-muted p-3 font-medium grid grid-cols-12 gap-4">
+                  <div className="col-span-3">Date</div>
+                  <div className="col-span-3">Type</div>
+                  <div className="col-span-3">Amount</div>
+                  <div className="col-span-3">Status</div>
+                </div>
+                <Separator />
+                <div className="p-8 text-center">
+                  <h3 className="text-lg font-medium">No Recent Transactions</h3>
+                  <p className="text-muted-foreground mt-2">
+                    Your transactions will appear here once you start using your wallet.
+                  </p>
+                  <div className="mt-4">
+                    <a 
+                      href={`${BASE_NETWORK.blockExplorer}/address/${walletAddress}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-primary hover:text-primary/80"
+                    >
+                      View on Base Explorer
+                      <ExternalLink className="ml-1 h-3 w-3" />
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-        
-        <Separator className="my-6" />
-        
-        <div className="bg-muted/40 rounded-lg p-4">
-          <h3 className="text-lg font-medium mb-2">Add Tokens to Your Wallet</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            This is your Base Network wallet built directly into the application. No external wallet connection required.
-          </p>
-          <Button variant="outline" disabled={true}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Custom Token
-          </Button>
-        </div>
-      </CardContent>
+            </TabsContent>
+          </Tabs>
+          
+          <Separator className="my-6" />
+          
+          <div className="bg-muted/40 rounded-lg p-4">
+            <h3 className="text-lg font-medium mb-2">Add Tokens to Your Wallet</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              This is your Base Network wallet built directly into the application. No external wallet connection required.
+            </p>
+            <Button variant="outline" disabled={true}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Custom Token
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
       
       <Dialog open={isTransferOpen} onOpenChange={setIsTransferOpen}>
         <DialogContent>
@@ -374,7 +376,7 @@ const StablecoinWallet = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Card>
+    </div>
   )
 }
 
