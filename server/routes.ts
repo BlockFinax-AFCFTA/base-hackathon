@@ -20,6 +20,7 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { analyzeExportRequirements } from "./routes/regulatoryAI";
+import logisticsRoutes from "./routes/logistics";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
@@ -1257,6 +1258,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to create logistics provider" });
     }
   });
+
+  // Register logistics routes
+  app.use(logisticsRoutes);
 
   // Register the regulatory AI endpoint
   app.post('/api/regulatory-ai/analyze', analyzeExportRequirements);
