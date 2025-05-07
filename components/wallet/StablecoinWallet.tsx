@@ -286,7 +286,7 @@ const StablecoinWallet = () => {
             
             <TabsContent value="escrow">
               <div className="mt-4">
-                <EscrowWallet />
+                <EscrowWallet escrows={[]} />
               </div>
             </TabsContent>
           </Tabs>
