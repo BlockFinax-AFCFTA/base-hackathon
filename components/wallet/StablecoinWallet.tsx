@@ -45,6 +45,7 @@ import { BASE_NETWORK, BASE_TESTNET } from '../../client/src/services/web3Servic
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Badge } from '../ui/badge'
 import { useToast } from '../../hooks/use-toast'
+import EscrowWallet from './EscrowWallet'
 
 // Simulated token data for Base Network - in a real app this would come from an API
 const mockTokenData = [
@@ -218,13 +219,14 @@ const StablecoinWallet = () => {
           <Separator className="my-4" />
           
           <Tabs defaultValue="tokens" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="tokens">Stablecoins</TabsTrigger>
               <TabsTrigger value="transactions">Transactions</TabsTrigger>
+              <TabsTrigger value="escrow">Escrow Wallet</TabsTrigger>
             </TabsList>
             
             <TabsContent value="tokens" className="p-1">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-1 gap-4 mt-4">
                 {tokens.map((token) => (
                   <Card 
                     key={token.address} 
@@ -279,6 +281,12 @@ const StablecoinWallet = () => {
                     </a>
                   </div>
                 </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="escrow">
+              <div className="mt-4">
+                <EscrowWallet />
               </div>
             </TabsContent>
           </Tabs>

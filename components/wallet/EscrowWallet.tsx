@@ -1,27 +1,16 @@
 'use client'
 
 import React, { useState } from 'react'
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from '../ui/card'
 import { Button } from '../ui/button'
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
-import { Separator } from '../ui/separator'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '../ui/dialog'
+import { Badge } from '../ui/badge'
 import {
   Table,
   TableBody,
@@ -32,901 +21,516 @@ import {
   TableRow,
 } from '../ui/table'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../ui/select'
-import { 
-  Wallet, 
-  FilePlus2, 
-  Lock, 
-  Shield, 
-  Handshake, 
-  ArrowRightLeft,
-  FileText,
-  Clock,
-  Calendar,
-  ExternalLink,
-  Info,
-  Check,
-  PlusCircle,
-  Truck,
-  FileCheck,
-  AlertTriangle,
-  Copy,
-  DollarSign
-} from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
-import { Badge } from '../ui/badge'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog'
+import { Separator } from '../ui/separator'
 import { format } from 'date-fns'
-import { Textarea } from '../ui/textarea'
+import { 
+  Shield, 
+  Clock, 
+  FileText, 
+  Lock, 
+  Unlock, 
+  CheckSquare,
+  AlertCircle,
+  Eye,
+  FileSpreadsheet
+} from 'lucide-react'
 import { useToast } from '../../hooks/use-toast'
 
-// Mock data for escrow transactions
-interface ContractDocument {
-  id: string;
-  name: string;
-  type: string;
-  size: number;
-  uploadDate: Date;
-  url: string;
-  verified: boolean;
-}
-
+// Mock escrow transactions
 interface EscrowTransaction {
-  id: string;
-  contractId: string;
-  contractName: string;
-  status: 'draft' | 'active' | 'completed' | 'disputed' | 'refunded';
-  amount: string;
-  currency: string;
-  createdDate: Date;
-  completionDate: Date | null;
-  counterpartyName: string;
-  counterpartyAddress: string;
-  terms: {
-    paymentConditions: string;
-    deliveryDetails: string;
-    disputeResolution: string;
-    additionalTerms: string;
-  };
-  documents: ContractDocument[];
+  id: string
+  status: 'pending' | 'active' | 'completed' | 'cancelled'
+  contractId: string
+  contractName: string
+  amount: string
+  currency: string
+  createdDate: Date
+  releaseDate: Date | null
+  description: string
+  sender: {
+    name: string
+    address: string
+  }
+  recipient: {
+    name: string
+    address: string
+  }
+  documents: {
+    id: string
+    name: string
+    dateAdded: Date
+    verified: boolean
+  }[]
+  terms: string[]
 }
 
-// Sample data for demonstration
 const mockEscrowTransactions: EscrowTransaction[] = [
   {
     id: 'escrow-001',
+    status: 'active',
     contractId: 'contract-001',
     contractName: 'Supply Chain Agreement',
-    status: 'active',
     amount: '5000.00',
     currency: 'USDC',
-    createdDate: new Date(2025, 3, 10),
-    completionDate: null,
-    counterpartyName: 'Global Logistics Inc.',
-    counterpartyAddress: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-    terms: {
-      paymentConditions: "Payment to be released upon verification of goods received",
-      deliveryDetails: "Door-to-door delivery within 30 days of contract activation",
-      disputeResolution: "Third-party arbitration through Base Chain DAO",
-      additionalTerms: "Cancellation with 7-day notice subject to 10% fee"
+    createdDate: new Date(2025, 3, 15),
+    releaseDate: new Date(2025, 4, 15),
+    description: 'Payment for logistics services - Q2 2025',
+    sender: {
+      name: 'Your Company',
+      address: '0x7C4E46d9D576B32598Bc4D77A91Ad4a00B188Deb'
+    },
+    recipient: {
+      name: 'Global Logistics Inc.',
+      address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F'
     },
     documents: [
       {
         id: 'doc-001',
-        name: 'Contract Agreement.pdf',
-        type: 'application/pdf',
-        size: 2500000,
-        uploadDate: new Date(2025, 3, 10),
-        url: '#',
+        name: 'Service Agreement.pdf',
+        dateAdded: new Date(2025, 3, 15),
         verified: true
       },
       {
         id: 'doc-002',
         name: 'Bill of Lading.pdf',
-        type: 'application/pdf',
-        size: 1800000,
-        uploadDate: new Date(2025, 3, 15),
-        url: '#',
+        dateAdded: new Date(2025, 3, 16),
         verified: true
       }
+    ],
+    terms: [
+      'Funds will be released upon confirmation of goods delivery',
+      'Verification must be completed within 30 days',
+      'Disputes must be raised within 7 days of delivery'
     ]
   },
   {
     id: 'escrow-002',
+    status: 'pending',
     contractId: 'contract-002',
     contractName: 'Cross-Border Payment Service',
-    status: 'draft',
-    amount: '7500.00',
+    amount: '2500.00',
     currency: 'USDT',
     createdDate: new Date(2025, 4, 5),
-    completionDate: null,
-    counterpartyName: 'International Payments Ltd.',
-    counterpartyAddress: '0x9e35b23dba3dfae7fbfc3b1f0dfde7b6ae619304',
-    terms: {
-      paymentConditions: "Monthly billing with net-30 payment terms",
-      deliveryDetails: "Service activation within 14 days of contract signing",
-      disputeResolution: "Joint committee resolution with option for arbitration",
-      additionalTerms: "Monthly minimum transaction volume: $5,000, Fee structure: 1.5% per transaction"
+    releaseDate: null,
+    description: 'Initial payment for payment gateway integration',
+    sender: {
+      name: 'Your Company',
+      address: '0x7C4E46d9D576B32598Bc4D77A91Ad4a00B188Deb'
+    },
+    recipient: {
+      name: 'International Payments Ltd.',
+      address: '0x9e35b23dba3dfae7fbfc3b1f0dfde7b6ae619304'
     },
     documents: [
       {
         id: 'doc-003',
-        name: 'Service Agreement.pdf',
-        type: 'application/pdf',
-        size: 3100000,
-        uploadDate: new Date(2025, 4, 5),
-        url: '#',
+        name: 'Integration Agreement.pdf',
+        dateAdded: new Date(2025, 4, 5),
         verified: false
       }
+    ],
+    terms: [
+      'Funds to be escrowed prior to integration start',
+      'Payment released in stages based on project milestones',
+      'Final payment upon successful testing of payment gateway'
     ]
   },
   {
     id: 'escrow-003',
+    status: 'completed',
     contractId: 'contract-003',
     contractName: 'Equipment Purchase',
-    status: 'completed',
     amount: '12000.00',
     currency: 'USDC',
-    createdDate: new Date(2025, 2, 20),
-    completionDate: new Date(2025, 3, 25),
-    counterpartyName: 'Industrial Equipment Co.',
-    counterpartyAddress: '0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db',
-    terms: {
-      paymentConditions: "50% upfront, 50% upon delivery and inspection",
-      deliveryDetails: "Delivery within 45 days to specified warehouse location",
-      disputeResolution: "Inspection period of 7 days to report defects",
-      additionalTerms: "Warranty period: 12 months, Technical support included for 6 months"
+    createdDate: new Date(2025, 2, 25),
+    releaseDate: new Date(2025, 3, 10),
+    description: 'Purchase of industrial manufacturing equipment',
+    sender: {
+      name: 'Your Company',
+      address: '0x7C4E46d9D576B32598Bc4D77A91Ad4a00B188Deb'
+    },
+    recipient: {
+      name: 'Industrial Equipment Co.',
+      address: '0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db'
     },
     documents: [
       {
         id: 'doc-004',
         name: 'Purchase Order.pdf',
-        type: 'application/pdf',
-        size: 1500000,
-        uploadDate: new Date(2025, 2, 20),
-        url: '#',
+        dateAdded: new Date(2025, 2, 25),
         verified: true
       },
       {
         id: 'doc-005',
-        name: 'Warranty Certificate.pdf',
-        type: 'application/pdf',
-        size: 900000,
-        uploadDate: new Date(2025, 3, 25),
-        url: '#',
+        name: 'Equipment Receipt.pdf',
+        dateAdded: new Date(2025, 3, 8),
         verified: true
       },
       {
         id: 'doc-006',
-        name: 'Inspection Report.pdf',
-        type: 'application/pdf',
-        size: 2200000,
-        uploadDate: new Date(2025, 3, 23),
-        url: '#',
+        name: 'Inspection Certificate.pdf',
+        dateAdded: new Date(2025, 3, 9),
         verified: true
       }
+    ],
+    terms: [
+      'Full payment held in escrow until equipment delivered',
+      'Release conditional on equipment passing quality inspection',
+      'Warranty period begins upon escrow release'
     ]
   }
 ];
 
-// Mock contracts for creating new escrows
-const mockContracts = [
-  { id: 'contract-004', name: 'Software Development Agreement' },
-  { id: 'contract-005', name: 'Agricultural Export Contract' },
-  { id: 'contract-006', name: 'Consulting Services Agreement' },
-];
-
-// EscrowWallet Component
-const EscrowWallet: React.FC = () => {
-  const [escrows, setEscrows] = useState<EscrowTransaction[]>(mockEscrowTransactions);
-  const [selectedEscrow, setSelectedEscrow] = useState<EscrowTransaction | null>(null);
+const EscrowWallet = () => {
+  const [transactions, setTransactions] = useState<EscrowTransaction[]>(mockEscrowTransactions);
+  const [selectedTransaction, setSelectedTransaction] = useState<EscrowTransaction | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [isCreateEscrowOpen, setIsCreateEscrowOpen] = useState(false);
-  const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeFilter, setActiveFilter] = useState<string>('all');
   const { toast } = useToast();
   
-  // Create Escrow Form State
-  const [newEscrow, setNewEscrow] = useState({
-    contractId: '',
-    counterpartyName: '',
-    counterpartyAddress: '',
-    amount: '',
-    currency: 'USDC',
-    paymentConditions: '',
-    deliveryDetails: '',
-    disputeResolution: '',
-    additionalTerms: ''
+  // View transaction details
+  const handleViewDetails = (transaction: EscrowTransaction) => {
+    setSelectedTransaction(transaction);
+    setIsDetailsOpen(true);
+  };
+  
+  // Release funds from escrow
+  const handleReleaseFunds = async (transactionId: string) => {
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Update transaction status
+      setTransactions(transactions.map(txn => 
+        txn.id === transactionId 
+          ? { ...txn, status: 'completed', releaseDate: new Date() }
+          : txn
+      ));
+      
+      setIsDetailsOpen(false);
+      
+      toast({
+        title: "Funds Released",
+        description: "The escrow funds have been successfully released.",
+      });
+    } catch (error) {
+      toast({
+        title: "Action Failed",
+        description: "There was an error processing your request.",
+        variant: "destructive"
+      });
+    }
+  };
+  
+  // Filter transactions
+  const filteredTransactions = transactions.filter(txn => {
+    if (activeFilter === 'all') return true;
+    return txn.status === activeFilter;
   });
   
-  // Format currency amount
-  const formatCurrency = (amount: string | number) => {
-    const value = typeof amount === 'string' ? parseFloat(amount) : amount;
-    return value.toFixed(2);
+  // Format currency
+  const formatCurrency = (amount: string, currency: string) => {
+    return `${parseFloat(amount).toFixed(2)} ${currency}`;
   };
   
-  // Format file size
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + ' bytes';
-    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    else return (bytes / 1048576).toFixed(1) + ' MB';
-  };
-  
-  // Format wallet address
+  // Format address
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
   
-  // Copy address to clipboard
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "Address Copied",
-      description: "Address copied to clipboard",
-    });
-  };
-  
-  // Handle viewing escrow details
-  const handleViewDetails = (escrow: EscrowTransaction) => {
-    setSelectedEscrow(escrow);
-    setIsDetailsOpen(true);
-  };
-  
-  // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setNewEscrow({
-      ...newEscrow,
-      [name]: value
-    });
-  };
-  
-  // Handle select changes
-  const handleSelectChange = (name: string, value: string) => {
-    setNewEscrow({
-      ...newEscrow,
-      [name]: value
-    });
-  };
-  
-  // Handle creating new escrow
-  const handleCreateEscrow = async () => {
-    // Validate form
-    if (!newEscrow.contractId || !newEscrow.counterpartyAddress || !newEscrow.amount) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Get selected contract name
-      const contractName = mockContracts.find(c => c.id === newEscrow.contractId)?.name || '';
-      
-      // Create new escrow object
-      const newEscrowTransaction: EscrowTransaction = {
-        id: `escrow-${Date.now().toString(36)}`,
-        contractId: newEscrow.contractId,
-        contractName,
-        status: 'draft',
-        amount: newEscrow.amount,
-        currency: newEscrow.currency,
-        createdDate: new Date(),
-        completionDate: null,
-        counterpartyName: newEscrow.counterpartyName,
-        counterpartyAddress: newEscrow.counterpartyAddress,
-        terms: {
-          paymentConditions: newEscrow.paymentConditions,
-          deliveryDetails: newEscrow.deliveryDetails,
-          disputeResolution: newEscrow.disputeResolution,
-          additionalTerms: newEscrow.additionalTerms
-        },
-        documents: []
-      };
-      
-      // Add to escrows list
-      setEscrows([newEscrowTransaction, ...escrows]);
-      
-      // Reset form and close dialog
-      setNewEscrow({
-        contractId: '',
-        counterpartyName: '',
-        counterpartyAddress: '',
-        amount: '',
-        currency: 'USDC',
-        paymentConditions: '',
-        deliveryDetails: '',
-        disputeResolution: '',
-        additionalTerms: ''
-      });
-      
-      setIsCreateEscrowOpen(false);
-      
-      toast({
-        title: "Escrow Created",
-        description: "Your escrow transaction has been created as a draft. Fund it to activate."
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create escrow transaction. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  // Handle funding escrow (moves from draft to active)
-  const handleFundEscrow = async () => {
-    if (!selectedEscrow) return;
-    
-    setIsLoading(true);
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Update escrow status
-      const updatedEscrows = escrows.map(escrow => 
-        escrow.id === selectedEscrow.id
-          ? { ...escrow, status: 'active' as const }
-          : escrow
-      );
-      
-      setEscrows(updatedEscrows);
-      setSelectedEscrow({
-        ...selectedEscrow,
-        status: 'active'
-      });
-      
-      toast({
-        title: "Escrow Funded",
-        description: "The escrow has been funded and is now active."
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fund escrow. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  // Handle releasing escrow funds
-  const handleReleaseEscrow = async () => {
-    if (!selectedEscrow) return;
-    
-    setIsLoading(true);
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Update escrow status
-      const updatedEscrows = escrows.map(escrow => 
-        escrow.id === selectedEscrow.id
-          ? { ...escrow, status: 'completed' as const, completionDate: new Date() }
-          : escrow
-      );
-      
-      setEscrows(updatedEscrows);
-      setSelectedEscrow({
-        ...selectedEscrow,
-        status: 'completed',
-        completionDate: new Date()
-      });
-      
-      toast({
-        title: "Funds Released",
-        description: "The escrow funds have been released successfully."
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to release escrow funds. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  // Handle uploading document to escrow
-  const handleUploadDocument = () => {
-    toast({
-      title: "Feature Coming Soon",
-      description: "Document upload functionality will be available in a future update."
-    });
-  };
-  
-  // Filter escrows based on active tab
-  const filteredEscrows = escrows.filter(escrow => {
-    if (activeTab === 'all') return true;
-    return escrow.status === activeTab;
-  });
-  
-  // Status badge color
-  const getStatusBadgeVariant = (status: EscrowTransaction['status']): "default" | "destructive" | "outline" | "secondary" => {
+  // Get status badge variant
+  const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'draft': return 'outline';
-      case 'active': return 'default';
-      case 'completed': return 'secondary';
-      case 'disputed': return 'destructive';
-      case 'refunded': return 'secondary';
-      default: return 'outline';
+      case 'pending':
+        return <Badge variant="outline">Pending</Badge>;
+      case 'active':
+        return <Badge variant="default">Active</Badge>;
+      case 'completed':
+        return <Badge variant="secondary">Completed</Badge>;
+      case 'cancelled':
+        return <Badge variant="destructive">Cancelled</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+  
+  // Get status icon
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return <Clock className="h-4 w-4 text-muted-foreground" />;
+      case 'active':
+        return <Lock className="h-4 w-4 text-primary" />;
+      case 'completed':
+        return <CheckSquare className="h-4 w-4 text-green-500" />;
+      case 'cancelled':
+        return <AlertCircle className="h-4 w-4 text-destructive" />;
+      default:
+        return <Clock className="h-4 w-4" />;
     }
   };
   
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-center">
-            <div>
-              <CardTitle className="flex items-center">
-                <Shield className="mr-2 h-5 w-5" />
-                Contract Escrow Wallet
-              </CardTitle>
-              <CardDescription>
-                Manage secure escrow transactions linked to your contracts
-              </CardDescription>
-            </div>
-            <Button onClick={() => setIsCreateEscrowOpen(true)}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Create Escrow
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="all" onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="draft">Drafts</TabsTrigger>
-              <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="completed">Completed</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value={activeTab}>
-              <div className="rounded-md border mt-4">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Contract</TableHead>
-                      <TableHead>Counterparty</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredEscrows.length > 0 ? (
-                      filteredEscrows.map(escrow => (
-                        <TableRow key={escrow.id}>
-                          <TableCell className="font-medium">{escrow.contractName}</TableCell>
-                          <TableCell>{escrow.counterpartyName}</TableCell>
-                          <TableCell>{formatCurrency(escrow.amount)} {escrow.currency}</TableCell>
-                          <TableCell>
-                            <Badge variant={getStatusBadgeVariant(escrow.status)}>
-                              {escrow.status.charAt(0).toUpperCase() + escrow.status.slice(1)}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              onClick={() => handleViewDetails(escrow)}
-                            >
-                              Details
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center py-6 text-muted-foreground">
-                          No escrow transactions found
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+        <div className="mb-4 md:mb-0">
+          <h2 className="text-xl font-semibold flex items-center">
+            <Shield className="mr-2 h-5 w-5 text-primary" />
+            Escrow Wallet
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Securely manage funds in escrow for contracts and agreements
+          </p>
+        </div>
+        <div className="flex space-x-2">
+          <Button 
+            variant={activeFilter === 'all' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setActiveFilter('all')}
+          >
+            All
+          </Button>
+          <Button 
+            variant={activeFilter === 'active' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setActiveFilter('active')}
+          >
+            Active
+          </Button>
+          <Button 
+            variant={activeFilter === 'pending' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setActiveFilter('pending')}
+          >
+            Pending
+          </Button>
+          <Button 
+            variant={activeFilter === 'completed' ? 'default' : 'outline'} 
+            size="sm"
+            onClick={() => setActiveFilter('completed')}
+          >
+            Completed
+          </Button>
+        </div>
+      </div>
       
-      {/* Escrow Details Dialog */}
-      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-3xl">
-          {selectedEscrow && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="flex items-center text-xl">
-                  <Handshake className="mr-2 h-5 w-5" />
-                  Escrow Transaction Details
-                </DialogTitle>
-                <DialogDescription>
-                  Contract: {selectedEscrow.contractName}
-                </DialogDescription>
-              </DialogHeader>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Transaction Information</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Escrow ID:</span>
-                      <span className="font-mono">{selectedEscrow.id}</span>
+      {filteredTransactions.length > 0 ? (
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Status</TableHead>
+                <TableHead>Contract</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Created</TableHead>
+                <TableHead>Recipient</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredTransactions.map((transaction) => (
+                <TableRow key={transaction.id}>
+                  <TableCell>
+                    <div className="flex items-center">
+                      {getStatusIcon(transaction.status)}
+                      <span className="ml-2">{getStatusBadge(transaction.status)}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Contract ID:</span>
-                      <span className="font-mono">{selectedEscrow.contractId}</span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center">
+                      <FileSpreadsheet className="h-4 w-4 mr-2 text-muted-foreground" />
+                      {transaction.contractName}
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Amount:</span>
-                      <span className="font-semibold">{formatCurrency(selectedEscrow.amount)} {selectedEscrow.currency}</span>
+                  </TableCell>
+                  <TableCell>
+                    <span className="font-medium">
+                      {formatCurrency(transaction.amount, transaction.currency)}
+                    </span>
+                  </TableCell>
+                  <TableCell>{format(transaction.createdDate, 'PP')}</TableCell>
+                  <TableCell>
+                    <span title={transaction.recipient.address}>
+                      {formatAddress(transaction.recipient.address)}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleViewDetails(transaction)}
+                    >
+                      <Eye className="h-4 w-4 mr-1" />
+                      Details
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <div className="border rounded-md p-8 text-center">
+          <Shield className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium">No Escrow Transactions</h3>
+          <p className="text-muted-foreground mt-2 max-w-md mx-auto">
+            When you secure funds in escrow for a contract, they will appear here. Escrow provides security for both parties in a transaction.
+          </p>
+        </div>
+      )}
+      
+      {/* Transaction Details Dialog */}
+      {selectedTransaction && (
+        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <div className="flex items-center">
+                <Shield className="mr-2 h-5 w-5 text-primary" />
+                <DialogTitle>Escrow Transaction Details</DialogTitle>
+              </div>
+              <DialogDescription>
+                ID: {selectedTransaction.id} • {selectedTransaction.description}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="mt-6 space-y-6">
+              <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+                <Card className="w-full md:w-1/2">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base flex items-center">
+                      <FileSpreadsheet className="mr-2 h-4 w-4" />
+                      Contract Information
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    <div>
+                      <span className="text-muted-foreground">Contract: </span>
+                      <span className="font-medium">{selectedTransaction.contractName}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Status:</span>
-                      <Badge variant={getStatusBadgeVariant(selectedEscrow.status)}>
-                        {selectedEscrow.status.charAt(0).toUpperCase() + selectedEscrow.status.slice(1)}
-                      </Badge>
+                    <div>
+                      <span className="text-muted-foreground">Status: </span>
+                      {getStatusBadge(selectedTransaction.status)}
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Created:</span>
-                      <span>{format(selectedEscrow.createdDate, 'PPP')}</span>
+                    <div>
+                      <span className="text-muted-foreground">Created: </span>
+                      {format(selectedTransaction.createdDate, 'PPP')}
                     </div>
-                    {selectedEscrow.completionDate && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Completed:</span>
-                        <span>{format(selectedEscrow.completionDate, 'PPP')}</span>
+                    {selectedTransaction.releaseDate && (
+                      <div>
+                        <span className="text-muted-foreground">Released: </span>
+                        {format(selectedTransaction.releaseDate, 'PPP')}
                       </div>
                     )}
+                  </CardContent>
+                </Card>
+                
+                <Card className="w-full md:w-1/2">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">
+                      Amount in Escrow
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">
+                      {formatCurrency(selectedTransaction.amount, selectedTransaction.currency)}
+                    </div>
+                    
+                    {selectedTransaction.status === 'active' && (
+                      <Button 
+                        className="mt-4 w-full" 
+                        onClick={() => handleReleaseFunds(selectedTransaction.id)}
+                      >
+                        <Unlock className="mr-2 h-4 w-4" />
+                        Release Funds
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h3 className="font-medium text-sm mb-2">Sender</h3>
+                  <div className="border rounded-md p-3">
+                    <p className="font-medium">{selectedTransaction.sender.name}</p>
+                    <p className="text-xs font-mono mt-1">{selectedTransaction.sender.address}</p>
                   </div>
                 </div>
                 
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">Counterparty Information</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Name:</span>
-                      <span>{selectedEscrow.counterpartyName}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Wallet Address:</span>
-                      <div className="flex items-center">
-                        <span className="font-mono">{formatAddress(selectedEscrow.counterpartyAddress)}</span>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          onClick={() => copyToClipboard(selectedEscrow.counterpartyAddress)}
-                          className="h-6 w-6 ml-1"
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
+                  <h3 className="font-medium text-sm mb-2">Recipient</h3>
+                  <div className="border rounded-md p-3">
+                    <p className="font-medium">{selectedTransaction.recipient.name}</p>
+                    <p className="text-xs font-mono mt-1">{selectedTransaction.recipient.address}</p>
                   </div>
                 </div>
               </div>
-              
-              <Separator className="my-4" />
               
               <div>
-                <h3 className="text-lg font-semibold mb-4">Terms & Conditions</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card>
-                    <CardHeader className="p-4 pb-2">
-                      <CardTitle className="text-sm flex items-center">
-                        <DollarSign className="h-4 w-4 mr-1" />
-                        Payment Conditions
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0 text-sm">
-                      {selectedEscrow.terms.paymentConditions}
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="p-4 pb-2">
-                      <CardTitle className="text-sm flex items-center">
-                        <Truck className="h-4 w-4 mr-1" />
-                        Delivery Details
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0 text-sm">
-                      {selectedEscrow.terms.deliveryDetails}
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="p-4 pb-2">
-                      <CardTitle className="text-sm flex items-center">
-                        <AlertTriangle className="h-4 w-4 mr-1" />
-                        Dispute Resolution
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0 text-sm">
-                      {selectedEscrow.terms.disputeResolution}
-                    </CardContent>
-                  </Card>
-                  
-                  <Card>
-                    <CardHeader className="p-4 pb-2">
-                      <CardTitle className="text-sm flex items-center">
-                        <Info className="h-4 w-4 mr-1" />
-                        Additional Terms
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0 text-sm">
-                      {selectedEscrow.terms.additionalTerms}
-                    </CardContent>
-                  </Card>
-                </div>
+                <h3 className="font-medium text-sm mb-2">Escrow Terms</h3>
+                <Card>
+                  <CardContent className="p-4">
+                    <ul className="list-disc pl-5 space-y-1">
+                      {selectedTransaction.terms.map((term, index) => (
+                        <li key={index} className="text-sm">{term}</li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
               </div>
               
-              <Separator className="my-4" />
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">Documents</h3>
-                  <Button variant="outline" size="sm" onClick={handleUploadDocument}>
-                    <FilePlus2 className="mr-2 h-4 w-4" />
-                    Upload Document
-                  </Button>
-                </div>
+              <div>
+                <h3 className="font-medium text-sm mb-2 flex items-center">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Attached Documents ({selectedTransaction.documents.length})
+                </h3>
                 
-                {selectedEscrow.documents.length > 0 ? (
+                {selectedTransaction.documents.length > 0 ? (
                   <div className="border rounded-md divide-y">
-                    {selectedEscrow.documents.map(doc => (
-                      <div key={doc.id} className="flex items-center justify-between p-3">
+                    {selectedTransaction.documents.map(doc => (
+                      <div key={doc.id} className="p-3 flex justify-between items-center">
                         <div className="flex items-center">
-                          <FileText className="h-5 w-5 mr-2 text-blue-500" />
+                          <FileText className="h-4 w-4 mr-2 text-muted-foreground" />
                           <div>
-                            <div className="flex items-center">
-                              <p className="font-medium">{doc.name}</p>
-                              {doc.verified && (
-                                <Badge variant="outline" className="ml-2 flex items-center">
-                                  <FileCheck className="h-3 w-3 mr-1" />
-                                  Verified
-                                </Badge>
-                              )}
-                            </div>
+                            <p className="text-sm font-medium">{doc.name}</p>
                             <p className="text-xs text-muted-foreground">
-                              {formatFileSize(doc.size)} • Uploaded on {format(doc.uploadDate, 'MMM d, yyyy')}
+                              Added {format(doc.dateAdded, 'PP')}
                             </p>
                           </div>
                         </div>
-                        <Button variant="ghost" size="sm" asChild>
-                          <a href={doc.url} target="_blank" rel="noopener noreferrer">
-                            View
-                          </a>
-                        </Button>
+                        
+                        {doc.verified ? (
+                          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                            Verified
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline">Unverified</Badge>
+                        )}
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center p-6 border rounded-md">
-                    <p className="text-muted-foreground">No documents attached to this escrow</p>
+                  <div className="border rounded-md p-4 text-center text-muted-foreground">
+                    No documents attached to this escrow transaction
                   </div>
                 )}
               </div>
-              
-              <DialogFooter className="sm:justify-between mt-4">
-                <div>
-                  {selectedEscrow.status === 'active' && (
-                    <Button variant="outline" size="sm" className="mr-2">
-                      Report Issue
-                    </Button>
-                  )}
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>
-                    Close
-                  </Button>
-                  
-                  {selectedEscrow.status === 'draft' && (
-                    <Button 
-                      onClick={handleFundEscrow} 
-                      disabled={isLoading}
-                    >
-                      {isLoading ? 'Processing...' : 'Fund Escrow'}
-                    </Button>
-                  )}
-                  
-                  {selectedEscrow.status === 'active' && (
-                    <Button 
-                      onClick={handleReleaseEscrow} 
-                      disabled={isLoading}
-                    >
-                      {isLoading ? 'Processing...' : 'Release Funds'}
-                    </Button>
-                  )}
-                </div>
-              </DialogFooter>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
-      
-      {/* Create Escrow Dialog */}
-      <Dialog open={isCreateEscrowOpen} onOpenChange={setIsCreateEscrowOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center">
-              <Lock className="mr-2 h-5 w-5" />
-              Create New Escrow
-            </DialogTitle>
-            <DialogDescription>
-              Create a secure escrow transaction linked to a contract
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="grid gap-6 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="contractId">Select Contract</Label>
-              <Select
-                value={newEscrow.contractId}
-                onValueChange={(value) => handleSelectChange('contractId', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a contract" />
-                </SelectTrigger>
-                <SelectContent>
-                  {mockContracts.map(contract => (
-                    <SelectItem key={contract.id} value={contract.id}>
-                      {contract.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">
-                The contract this escrow transaction will be linked to
-              </p>
             </div>
             
-            <div className="grid gap-2">
-              <Label htmlFor="counterpartyName">Counterparty Name</Label>
-              <Input
-                id="counterpartyName"
-                name="counterpartyName"
-                value={newEscrow.counterpartyName}
-                onChange={handleInputChange}
-                placeholder="Company or individual name"
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="counterpartyAddress">Counterparty Wallet Address</Label>
-              <Input
-                id="counterpartyAddress"
-                name="counterpartyAddress"
-                value={newEscrow.counterpartyAddress}
-                onChange={handleInputChange}
-                placeholder="0x..."
-                required
-              />
-              <p className="text-xs text-muted-foreground">
-                The wallet address that will receive funds when the escrow is released
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="amount">Amount</Label>
-                <Input
-                  id="amount"
-                  name="amount"
-                  type="number"
-                  step="0.01"
-                  min="0.01"
-                  value={newEscrow.amount}
-                  onChange={handleInputChange}
-                  placeholder="0.00"
-                  required
-                />
-              </div>
-              
-              <div className="grid gap-2">
-                <Label htmlFor="currency">Currency</Label>
-                <Select
-                  value={newEscrow.currency}
-                  onValueChange={(value) => handleSelectChange('currency', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select currency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="USDC">USDC</SelectItem>
-                    <SelectItem value="USDT">USDT</SelectItem>
-                    <SelectItem value="DAI">DAI</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            
-            <Separator />
-            
-            <h3 className="text-md font-medium">Terms & Conditions</h3>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="paymentConditions">Payment Conditions</Label>
-              <Textarea
-                id="paymentConditions"
-                name="paymentConditions"
-                value={newEscrow.paymentConditions}
-                onChange={handleInputChange}
-                placeholder="Specify payment release conditions..."
-                rows={2}
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="deliveryDetails">Delivery Details</Label>
-              <Textarea
-                id="deliveryDetails"
-                name="deliveryDetails"
-                value={newEscrow.deliveryDetails}
-                onChange={handleInputChange}
-                placeholder="Specify delivery terms and timeframe..."
-                rows={2}
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="disputeResolution">Dispute Resolution</Label>
-              <Textarea
-                id="disputeResolution"
-                name="disputeResolution"
-                value={newEscrow.disputeResolution}
-                onChange={handleInputChange}
-                placeholder="Outline dispute resolution process..."
-                rows={2}
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="additionalTerms">Additional Terms</Label>
-              <Textarea
-                id="additionalTerms"
-                name="additionalTerms"
-                value={newEscrow.additionalTerms}
-                onChange={handleInputChange}
-                placeholder="Any additional contract terms..."
-                rows={2}
-              />
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCreateEscrowOpen(false)}>
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleCreateEscrow} 
-              disabled={isLoading}
-            >
-              {isLoading ? 'Creating...' : 'Create Escrow'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDetailsOpen(false)}>
+                Close
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
