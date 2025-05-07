@@ -645,6 +645,23 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
             </CardContent>
           </Card>
         </TabsContent>
+        
+        <TabsContent value="logistics">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div className="flex items-center">
+                <Truck className="h-5 w-5 text-primary mr-2" />
+                <h3 className="text-lg font-medium">Logistics Tracking</h3>
+              </div>
+              <Link href={`/logistics/new?contractId=${contractId}`}>
+                <Button>Create Shipment</Button>
+              </Link>
+            </CardHeader>
+            <CardContent>
+              <LogisticsWidget contractId={parseInt(contractId)} />
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
