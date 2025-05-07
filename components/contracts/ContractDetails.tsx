@@ -16,6 +16,7 @@ import {
   TrendingUp,
   AlertTriangle,
   CheckCircle,
+  Truck,
 } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { useContracts } from '@/hooks/useContracts';
@@ -28,6 +29,7 @@ import { format } from 'date-fns';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import LogisticsWidget from '../../components/logistics/LogisticsWidget';
 
 interface ContractDetailsProps {
   contractId: string;
@@ -196,6 +198,10 @@ const ContractDetails: React.FC<ContractDetailsProps> = ({ contractId }) => {
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="parties">Parties</TabsTrigger>
           <TabsTrigger value="terms">Trade Terms</TabsTrigger>
+          <TabsTrigger value="logistics">
+            <Truck className="h-4 w-4 mr-2" />
+            Logistics
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
