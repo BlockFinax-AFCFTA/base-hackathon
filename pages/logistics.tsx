@@ -33,13 +33,13 @@ export default function LogisticsPage() {
   return (
     <>
       <Head>
-        <title>Logistics | BlockFinaX</title>
+        <title>Logistics | Base Network Finance</title>
       </Head>
       
       <div className="flex min-h-screen">
         <div className="hidden md:flex w-64 flex-col border-r bg-background z-30">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-            <div className="font-semibold">BlockFinaX</div>
+            <div className="font-semibold">Base Network Finance</div>
           </div>
           <BlockchainSidebar className="flex-1" />
         </div>
