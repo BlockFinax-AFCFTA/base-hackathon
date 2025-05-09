@@ -10,7 +10,7 @@ const LogisticsPage: React.FC = () => {
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <div className="font-semibold">BlockFinaX</div>
           </div>
-          <BlockchainSidebar className="flex-1" />
+          <Sidebar />
         </div>
         
         <div className="flex-1">
